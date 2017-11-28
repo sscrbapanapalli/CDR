@@ -1,23 +1,19 @@
 
-package com.cmacgm.cdrservice; 
+package com.cmacgm.cdrserver; 
 
 import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.naming.Context;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
 
 /**
  *  Active Directory using Java
  * 
  * @filename ActiveDirectory.java
- * @author Basker Ammu
+ * @author Ramesh Kumar B
  
  */
 public class ActiveDirectory {
@@ -34,7 +30,7 @@ public class ActiveDirectory {
      */
     public static Boolean getActiveDirectoryAuthentication(String username, String password) {
     	
-    	System.out.println(" in cdr server Active Directory"+username + "-" + password );
+    	//System.out.println(" in cdr server Active Directory"+username + "-" + password );
     	 
         Properties properties;
         DirContext dirContext;    
@@ -61,7 +57,6 @@ public class ActiveDirectory {
     
    public static void main (String args[]){
 	  System.out.println( ActiveDirectory.getActiveDirectoryAuthentication("SSC.RBAPANAPALLI",""));
-	  //System.out.println( ActiveDirectory.getActiveDirectoryUserName("ssc.bammu","ssc.bammu",Constants.password));
-	   
+	  	   
    }
 }

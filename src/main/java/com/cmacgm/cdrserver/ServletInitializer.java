@@ -1,4 +1,4 @@
-package com.cmacgm.cdrservice;
+package com.cmacgm.cdrserver;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;

@@ -1,4 +1,4 @@
-package com.cmacgm.cdrservice.controller;
+package com.cmacgm.cdrserver.controller;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -24,8 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.cmacgm.cdrservice.model.Application;
-import com.cmacgm.cdrservice.repository.CdrRepository;
+import com.cmacgm.cdrserver.model.Application;
+import com.cmacgm.cdrserver.repository.CdrRepository;
+
+/**
+ * @filename CdrController.java(To get application vise folder path and to upload file to respective path)
+* @author Ramesh Kumar B
+
+*/
 
 @RestController
 @RequestMapping("/api")
@@ -113,7 +119,7 @@ public class CdrController {
 				stream = new BufferedOutputStream(
 						new FileOutputStream(serverFile));
 				stream.write(bytes);
-				
+				stream.close();
 
 				logger.info("Server File Location="
 						+ serverFile.getAbsolutePath());
@@ -126,7 +132,7 @@ public class CdrController {
 					return serverResponse; 
 			}
 		finally{
-			stream.close();
+			
 			return serverResponse;
 			
 		}

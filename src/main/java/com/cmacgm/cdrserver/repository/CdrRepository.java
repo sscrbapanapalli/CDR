@@ -1,4 +1,4 @@
-package com.cmacgm.cdrservice.repository;
+package com.cmacgm.cdrserver.repository;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.cmacgm.cdrservice.model.Application;
+import com.cmacgm.cdrserver.model.Application;
 
 @Repository
 public interface CdrRepository extends JpaRepository<Application, Long>{

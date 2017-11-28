@@ -1,4 +1,4 @@
-package com.cmacgm.cdrservice.model;
+package com.cmacgm.cdrserver.model;
 
 public class User {
 

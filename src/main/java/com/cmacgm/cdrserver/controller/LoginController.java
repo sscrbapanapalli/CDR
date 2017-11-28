@@ -1,10 +1,6 @@
-package com.cmacgm.cdrservice.controller;
-
-import java.util.HashMap;
+package com.cmacgm.cdrserver.controller;
 
 import org.apache.log4j.Logger;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +8,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cmacgm.cdrservice.ActiveDirectory;
-import com.cmacgm.cdrservice.model.User;
+import com.cmacgm.cdrserver.ActiveDirectory;
+import com.cmacgm.cdrserver.model.User;
 
+/**
+  * @filename LoginController.java(To Validate user login credentials across LDAP)
+ * @author Ramesh Kumar B
+ 
+ */
 
 @RestController
 @RequestMapping("/login")
@@ -27,7 +28,7 @@ public class LoginController {
 	@ResponseBody public  Boolean  loginUser(@RequestBody  User user) throws Exception   {
 	
 		Boolean authStatus=false;
-		String token=null;
+		
 		//HashMap map=new HashMap();
 		try{
 			if (user.getUsername()!=null && user.getPassword() !=null ||user.getUsername().trim()!="" && user.getPassword().trim() !="") {
@@ -38,7 +39,7 @@ public class LoginController {
 				 username=words[0];
 						
 				username=username.toUpperCase();
-				System.out.println(" in cdr server login controller"+username + "-" + password );
+				//System.out.println(" in cdr server login controller"+username + "-" + password );
 				authStatus = ActiveDirectory.getActiveDirectoryAuthentication(username, password);
 				System.out.println(authStatus);
 				return authStatus;

@@ -1,4 +1,4 @@
-package com.cmacgm.cdrservice.model;
+package com.cmacgm.cdrserver.model;
 
 import java.io.Serializable;
 import java.util.Date;
