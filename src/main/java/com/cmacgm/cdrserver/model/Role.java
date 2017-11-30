@@ -11,38 +11,39 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "application")
-public class Application {
+@Table(name = "role")
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="id")
     private Long id;
-    @Column(name="app_name",length = 100)
-    private String appName;
+    @Column(name="role_name",length = 100)
+    private String roleName;
     @Column(name="created_date")
     private Date createdDate;
     @Column(name="updated_date")
     private Date updatedDate;
     @Column(name="active_indicator")
     private boolean activeIndicator;
-    @Column(name="created_by",length = 100)    
+    @Column(name="created_by",length = 100)
     private String createdBy;
     @Column(name="updated_by",length = 100)
-    private String updatedBy;    
-    @ManyToMany(mappedBy = "applications")
-    @JsonManagedReference
-    private Collection<User> users;   
-
-    public Application() {
+    private String updatedBy;  
+    @ManyToMany(mappedBy = "roles")
+    @JsonBackReference
+    private Collection<User> users;  
+  
+    public Role() {
         super();
     }
 
-    public Application(final String appName) {
+    public Role(final String roleName) {
         super();
-        this.appName = appName;
+        this.roleName = roleName;
     }
 
     //
@@ -55,12 +56,12 @@ public class Application {
         this.id = id;
     }   
   
-    public String getappName() {
-		return appName;
+    public String getRoleName() {
+		return roleName;
 	}
 
-	public void setappName(String appName) {
-		this.appName = appName;
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 
 	public Date getCreatedDate() {
@@ -109,13 +110,13 @@ public class Application {
 
     public void setUsers(final Collection<User> users) {
         this.users = users;
-    }
+    }    
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((appName == null) ? 0 : appName.hashCode());
+        result = prime * result + ((roleName == null) ? 0 : roleName.hashCode());
         return result;
     }
 
@@ -130,8 +131,8 @@ public class Application {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Application application = (Application) obj;
-        if (!application.equals(application.appName)) {
+        final Role role = (Role) obj;
+        if (!role.equals(role.roleName)) {
             return false;
         }
         return true;
@@ -140,7 +141,7 @@ public class Application {
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("Application [id=").append(id).append("]").append("[appName=").append(appName).append("]")
+        builder.append("Role [id=").append(id).append("]").append("[roleName=").append(roleName).append("]")
         .append("[createdDate=").append(createdDate).append("]").append("[updatedDate=").append(updatedDate).append("]")
         .append("[activeIndicator=").append(activeIndicator).append("]").append("[createdBy=").append(createdBy).append("]")
         .append("[updatedBy=").append(updatedBy).append("]");

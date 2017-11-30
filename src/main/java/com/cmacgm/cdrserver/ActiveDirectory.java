@@ -45,7 +45,7 @@ public class ActiveDirectory {
         try {
 			dirContext = new InitialDirContext(properties);		
 			return true;
-		} catch (NamingException e) {
+		} catch (Exception e) {
 			LOG.severe(e.getMessage());
 			return false;
 		}

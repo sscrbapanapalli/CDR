@@ -1,0 +1,13 @@
+					
+	<div class="overall">		
+       <nav class="navbar">
+       		<ul > <li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_USER' || currentUser.roleType=='ROLE_ADMIN' " ui-sref="home" ><span class="icon fa "></span>Home</a></li>       			
+       				<span class="divider"></span>
+       				<li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_USER' || currentUser.roleType=='ROLE_ADMIN' " ui-sref="upload" ><span class="icon fa "></span>Upload</a></li>       			
+       				<span class="divider"></span>
+       				<li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_ADMIN' " ui-sref="settings" ><span class="icon fa "></span>Settings</a></li>       			
+       				<span class="divider"></span>       			
+       			</div>
+       			</ul>
+       </nav>
+   </div>

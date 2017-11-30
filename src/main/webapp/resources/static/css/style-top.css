@@ -1,0 +1,130 @@
+
+
+body {
+  padding-top: 0px;
+  height: 100%;
+  position: relative;
+  font-size: 13px; 
+  margin:0;}
+
+.overall{
+	margin:0 0 0 0;
+	width:100%;
+}
+.navbar{
+	margin:0;
+	 height: 40px;
+    float: left;
+    width: 100%;
+    border-bottom:1px solid black !important;
+	
+}
+.top-header{
+	 background-color: #D42842 !important;
+    height: 65px;
+    float: left;
+    width: 100%;
+    border-bottom:2px solid #185382 !important;
+}
+
+#main {
+    width:100%;/*IE6 haslayout (contain floats)*/
+	height:75px;
+	border-bottom:1px solid black !important;
+}
+#main-index {
+    width:100%;/*IE6 haslayout (contain floats)*/
+	height:75px;
+	
+}
+    #header-left {
+        float:left;
+        width:30%;
+        min-height:75px;
+        background:#0055A4;
+    }
+    #header-middle {
+        float:left;
+        width:30%;
+        min-height:75px;
+        background:#0055A4;
+    }
+    #header-right{
+    float:right;
+    width:40%;
+    min-height:75px;
+    background:#0055A4;
+    }
+.header-title{
+	margin:18px 20px;
+	float:left;
+	color:#fff;
+	font-size:15px;
+}
+.header-title-right{
+	margin:18px 20px;
+	float:right;
+	color:#fff;
+	font-size:15px;
+}
+
+.header-time-right{
+	margin:25px 20px;
+	float:right;
+	color:#fff;
+	font-size:15px;
+}
+.navbar ul{
+	margin:0;
+	float:left;
+	padding: 0px 15px;
+	
+}
+.navbar ul li{
+	float:left;
+	list-style:none;
+	margin:10px 0
+}
+.navbar ul li a{
+	color:#185382 ;
+	text-decoration:none;
+	padding:15px;
+	color:#185382;
+	font-weight:bold;
+}
+.navbar ul li .active {
+	    background-color: #185382 !important;
+    color: #fff;
+    float: left;
+    padding: 7px 15px;
+    margin: -6px 0;
+}
+.navbar ul li a:hover {
+	    background-color: #185382 !important;
+    color: #fff;
+    float: left;
+    padding: 7px 15px;
+    margin: -6px 0;
+}
+
+.divider{
+	margin:4px 0 0 0;;
+	width:2px;
+	height:31px;
+	background-color: #185382 !important;
+	float:left;
+}
+.navbar ul li span {
+	margin:2px 11px 0 1px;
+
+}
+.inner_cover{
+	margin:50px auto;
+	width:80%;
+	border:3px solid #185382;
+
+	min-height:500px;
+}
+	
+
+	/*************************button style end********************************/
