@@ -1,58 +1,37 @@
 
 <style>
-#footer {
+/* #footer {
    					 position: absolute;
    					 top:300px;
   					 bottom: 30px;
    					 width: 100%;
-				}
+				} */
 
-.imgData {
-	background: url('../resources/static/images/Logo_CDR.png')no-repeat 0 0;
-	background-size: c;
-}
-.home{
-height: 65px;
-    float: left;
-    width: 100%;
-	inline-block; 
-}
 
-.fa-14 {
-    font-size: 18em;
-}
-header{text-align:center;}
-header a{display:inline-block; width:300px;
-padding-top:100px;
-
-}
-.icon1{
-color: #53a7d1;
-}
-.icon2{
-color: #11d857;
-}.icon3{
-color: #1b926c;
-}
-.icon4{
-color: #1b9230;
-}
 
 </style>
-	<div  ng-controller="uploadController" ng-init="init()">
-	
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- <script>
+	$(function(){
+	    $("#upload").hide();
+	    $("#GET_PAID,#OCEAN").on("click", function(){
+	    	alert('hi');
+	        $("#upload").show();
+	    });
+	})
+	</script> -->
+	<div  ng-controller="uploadController" ng-init="appServerFolder()">
 	
 	<div class="overall">
 	
 		
        <nav class="navbar">
        		<ul > <li><a ui-sref="home" ><span class="icon fa fa-home"></span>Home</a></li>       			
+       				
+       				<!-- <li ng-repeat="application in applications">
+       			 <a  id="{{application.appName}}"  ng-click="appServerFolder(application.id);" ng-model="application.id">{{application.appName}}</a><a  class="active" name="appName" id="getpaid" ng-model="appName" href="#" ng-click="appServerFolder($event)"><span class="icon fa fa-table"></span>GETPAID</a>       			
        				<span class="divider"></span>
-       				<div ng-repeat="application in applications">
-       			<li>  <button ng-click="appServerFolder(application.id);" ng-model="application.id">{{application.appName}}<span class="icon fa fa-table"></button><!-- <a  class="active" name="appName" id="getpaid" ng-model="appName" href="#" ng-click="appServerFolder($event)"><span class="icon fa fa-table"></span>GETPAID</a> --></li>       			
-       				<span class="divider"></span>
-       			</div>
+       			</li> -->
        			</ul>
        </nav>
    </div>
@@ -60,14 +39,14 @@ color: #1b9230;
 	<div class="main">
 		 <form class="form-horizontal" >
 			<div class="form-group" ng-repeat="obj in serverFoldersResult">
-				<label class="control-label col-sm-2" for="uploadfile">{{obj.folderCaption}}</label>
+				<label class="control-label col-sm-3" for="uploadfile">{{obj.folderCaption}}</label>
 				<div class="col-sm-5">
-					<input type="file" id="file{{$index+1}}" name="file{{$index+1}}" onchange="angular.element(this).scope().setFile(this.files, angular.element(this).scope().$index+1)"  class="btn btn-warning" />
+					<input type="file" accept="{{obj.validationType}}" id="file{{$index+1}}" name="file{{$index+1}}" onchange="angular.element(this).scope().setFile(this.files, angular.element(this).scope().$index+1)"  class="btn btn-warning" />
 
 				</div>
 			</div>
 			<div class="form-group" id="upload"> 
-			    <div class="col-sm-offset-2 col-sm-10">
+			    <div class="col-sm-offset-5 col-sm-10">
 			      <button type="submit" class="btn btn-default" ng-click = "doUploadFile()">Upload</button>
 			    </div>
 			</div>

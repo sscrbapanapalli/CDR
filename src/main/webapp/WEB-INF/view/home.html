@@ -1,13 +1,86 @@
-					
+<style>
+table, th , td  {
+  border: 2px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+}
+table  tr:nth-child(odd) {
+  background-color: 	#778899;
+}
+table  tr:nth-child(even) {
+  background-color: #ffffff;
+}
+</style>
+
+<div  class="container" ng-controller="homeController" ng-init="init()">					
 	<div class="overall">		
        <nav class="navbar">
-       		<ul > <li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_USER' || currentUser.roleType=='ROLE_ADMIN' " ui-sref="home" ><span class="icon fa "></span>Home</a></li>       			
+       
+       <ul > <li><a ui-sref="home" ><span class="icon fa fa-home"></span>Home</a></li>       			
+       		 <li ng-repeat="application in applications">
+       			 <a  id="{{application.appName}}"  ng-click="batchHistoryDetails(application.id);" ng-model="application.id">{{application.appName}}</a><!-- <a  class="active" name="appName" id="getpaid" ng-model="appName" href="#" ng-click="appServerFolder($event)"><span class="icon fa fa-table"></span>GETPAID</a> -->       			
        				<span class="divider"></span>
-       				<li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_USER' || currentUser.roleType=='ROLE_ADMIN' " ui-sref="upload" ><span class="icon fa "></span>Upload</a></li>       			
+       		 </li>
+       		 <li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_ADMIN' " ui-sref="settings" ><span class="icon fa "></span>Settings</a></li>       			
        				<span class="divider"></span>
-       				<li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_ADMIN' " ui-sref="settings" ><span class="icon fa "></span>Settings</a></li>       			
-       				<span class="divider"></span>       			
-       			</div>
        			</ul>
+       		
        </nav>
    </div>
+
+<div  style="margin:20px auto">  
+
+
+	<table id="myTable" class="table table-striped table-bordered" >  
+          
+          <tr>  
+          	<th>Select</th>
+            <th>BatchId</th>
+            <th>Data Time</th>
+            <th>Status</th>
+            <th>LoginUser</th>
+            <th>Month</th>
+            <th>Batch Details</th> 
+          </tr>  
+         
+           <tr ng-repeat="obj in batchDetailsResult">
+ 			<td><input type="checkbox" id="{{category}}" ng-true-value="{{'category'}}" ng-model="obj.category[$index]"></td>
+            <td>{{obj.batchId}}</td>
+            <td>{{obj.batchUploadCrDate}}</td>
+            <td>{{obj.batchUploadStatus}}</td>
+            <td>{{obj.batchUploadUserName}}</td>
+            <td>{{obj.batchUploadMonth}}</td>
+            <td><a  ng-click="batchFiles($index)">{{obj.batchId}}</a></td>
+        </tr>
+        
+      </table>  
+     
+      
+      <div class="form-group" id="upload"> 
+			    <div class="col-sm-offset-2 col-sm-10">
+			   		 <button type="submit" class="btn btn-default" ng-click = "">Reverse</button>
+			      <button type="submit" class="btn btn-default" ng-click = "doUpload()">Upload</button>
+			    </div>
+	  </div>
+		<br>
+			 <table id="filesTable" class="table table-striped table-bordered" ng-show="checkStatus">  
+          
+          <tr>  
+          	<th>File Name</th>
+            <th>File Path</th>
+           
+          </tr>  
+         
+           <tr ng-repeat="obj1 in batchFileslist">
+ 			<td>{{obj1.batchFileName}}</td>
+            <td href="">{{obj1.batchFileTrgtPath}}</td>
+           
+        </tr>
+        
+      </table> 
+</div>
+</div>
+
+ 
+
+  

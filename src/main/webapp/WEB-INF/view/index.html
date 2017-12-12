@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html class="no-js" ng-app="cdrApp" class="ng-cloak">
+
+<html  class="no-js" ng-app="cdrApp" class="ng-cloak" >
 
     <head>
 
@@ -48,13 +49,14 @@
 
 <body ng-class="isProfilePage==false?'bg':''" ng-cloak>
 
-	<div  ng-include="'/header.html'" ng-show="isProfilePage" ></div>
+	<div  ng-include="'/header'" ng-show="isProfilePage" ></div>
+	<div  ng-include="'/dummy'" ng-hide="isProfilePage" ></div>
 	<div >
 		<div  ui-view></div>
+		</div>
+	<div class="footer">
+		<div ng-include="'/footer'"   ></div>
 	</div>
-<div class="footer">
-	<div ng-include="'/footer.html'" ng-show="isProfilePage" ></div>
-</div>
 
 
         <!-- Javascript -->
@@ -69,22 +71,15 @@
 
         <script src="/resources/static/assets/js/jquery-1.11.1.min.js"></script>
         <script src="/resources/static/assets/bootstrap/js/bootstrap.min.js"></script>
-        <script src="/resources/static/assets/js/jquery.backstretch.min.js"></script>
+       
     <!--     <script src="/resources/static/assets/js/scripts.js"></script> -->
          <script src="/resources/static/js/app.js"></script>  
-	<script>
-	$(function(){
-	    $("#upload").hide();
-	    $("#getpaid,#ocean,#cira").on("click", function(){
-	        $("#upload").show();
-	    });
-	})
-	</script>
+	
         
         <!--[if lt IE 10]>
             <script src="assets/js/placeholder.js"></script>
         <![endif]-->
 
-    </body>
+</body>
 
 </html>

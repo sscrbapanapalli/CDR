@@ -1,39 +1,65 @@
 package com.cmacgm.cdrserver.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "batch_history_detail")
-public class BatchHistoryDetail {
+public class BatchHistoryDetail implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id")
     private Long id;
-    @OneToOne(targetEntity = BatchFileDetail.class, fetch = FetchType.EAGER)
+    /*@OneToOne(targetEntity = BatchFileDetail.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "batch_id", foreignKey = @ForeignKey(name = "FK_VERIFY_BATCHFILE"))
-    private BatchFileDetail batchFileDetail;
+    private BatchFileDetail batchFileDetail;*/
+    
+    
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @JoinColumn( name = "batch_id" , referencedColumnName = "batch_id")
+    private List<BatchFileDetail> batchFileDetailList=new ArrayList<>();
+    
+    @Column(name="app_id")
+    private Long appId;
+    
+    @Column(name="batch_id" , unique=true)
+    private String batchId;
     @Column(name="batch_upload_month",length = 10)
     private String batchUploadMonth;  
     @Column(name="batch_upload_user_name",length = 100)
     private String batchUploadUserName;
     @Column(name="batch_upload_status",length = 20)
     private String batchUploadStatus;
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="batch_upload_cr_date")
     private Date batchUploadCrDate;
+    
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="created_date")
     private Date createdDate;
+    
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="updated_date")
     private Date updatedDate;
     @Column(name="active_indicator")
@@ -54,17 +80,44 @@ public class BatchHistoryDetail {
 		this.id = id;
 	}
 
-	public BatchFileDetail getBatchFileDetail() {
+	/*public BatchFileDetail getBatchFileDetail() {
 		return batchFileDetail;
 	}
 
 	public void setBatchFileDetail(BatchFileDetail batchFileDetail) {
 		this.batchFileDetail = batchFileDetail;
+	}*/
+	
+	
+
+	public void setBatchFileDetailList(List<BatchFileDetail> batchFileDetailList) {
+		this.batchFileDetailList = batchFileDetailList;
+	}
+	
+	public Long getAppId() {
+		return appId;
 	}
 
+	public void setAppId(Long appId) {
+		this.appId = appId;
+	}
+
+	public String getBatchId() {
+		return batchId;
+	}
+
+	public void setBatchId(String batchId) {
+		this.batchId = batchId;
+	}
+
+	public List<BatchFileDetail> getBatchFileDetailList() {
+		return batchFileDetailList;
+	}
+	
 	public String getBatchUploadMonth() {
 		return batchUploadMonth;
 	}
+
 
 	public void setBatchUploadMonth(String batchUploadMonth) {
 		this.batchUploadMonth = batchUploadMonth;
@@ -134,6 +187,8 @@ public class BatchHistoryDetail {
 		this.updatedBy = updatedBy;
 	}
 
+   
+    
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
@@ -141,8 +196,9 @@ public class BatchHistoryDetail {
         .append("[createdDate=").append(createdDate).append("]").append("[updatedDate=").append(updatedDate).append("]")
         .append("[activeIndicator=").append(activeIndicator).append("]").append("[createdBy=").append(createdBy).append("]")      
         .append("[batchUploadUserName=").append(batchUploadUserName).append("]")
+        .append("[appId=").append(appId).append("]")
         .append("[batchUploadStatus=").append(batchUploadStatus).append("]").append("[batchUploadCrDate=").append(batchUploadCrDate).append("]")
-          .append("[batchFileDetail=").append(batchFileDetail).append("]");
+          .append("[batchFileDetailList=").append(batchFileDetailList).append("]");
         return builder.toString();
     }
 

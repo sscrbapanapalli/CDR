@@ -1,6 +1,8 @@
 package com.cmacgm.cdrserver.controller;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmacgm.cdrserver.ActiveDirectory;
+import com.cmacgm.cdrserver.model.Application;
 import com.cmacgm.cdrserver.model.FrameworkUtil;
 import com.cmacgm.cdrserver.model.RetValue;
 import com.cmacgm.cdrserver.model.User;
+import com.cmacgm.cdrserver.model.UserHomeModel;
 import com.cmacgm.cdrserver.model.UserLoginModel;
 import com.cmacgm.cdrserver.model.UserModel;
 import com.cmacgm.cdrserver.repository.UserRepository;
@@ -138,6 +142,7 @@ public class LoginController {
 
 	@RequestMapping(value = "/getRole", method = RequestMethod.GET)
 	public @ResponseBody RetValue<String> GetRole() throws Exception {
+		
 		if (httpSession.getAttribute("userName") != null && httpSession.getAttribute("userToken") != null) {
 			String userName = (String) httpSession.getAttribute("userName");
 			User user = userRepository.findByUserId(userName + "@CMA-CGM.COM");
@@ -149,6 +154,32 @@ public class LoginController {
 		}
 
 		return FrameworkUtil.getResponseValue(true, HttpStatus.NOT_FOUND.toString(), null);
+
+	}
+	
+	@RequestMapping(value = "/getUserDetails1/{userToken}", method = RequestMethod.GET)
+	public UserHomeModel  getUserDetails1(@PathVariable("userToken") String userToken)
+			throws Exception {
+		User user = null;
+		UserHomeModel obj=new UserHomeModel();
+		Collection<Application> appList=new ArrayList<>();
+		if (httpSession.getAttribute("userName") != null && httpSession.getAttribute("userToken") != null
+				&& !userToken.isEmpty() && userToken.equals(httpSession.getAttribute("userToken").toString())) {
+			String userName = (String) httpSession.getAttribute("userName");
+			user = new User();
+			user=userRepository.findByUserId(userName + "@CMA-CGM.COM");
+			obj.setApplications(user.getApplications());
+			obj.setRoles(user.getRoles());
+			appList=obj.getApplications();
+			
+			for(Application obj1:appList){
+			System.out.println("application:"+obj1.getappName());}
+			
+				return obj;
+		}
+		return  null;
+
+		
 
 	}
 

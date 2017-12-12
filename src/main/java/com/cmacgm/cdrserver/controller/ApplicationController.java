@@ -4,8 +4,13 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,9 +30,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.cmacgm.cdrserver.model.Application;
 import com.cmacgm.cdrserver.model.ApplicationFileUploadConfig;
+import com.cmacgm.cdrserver.model.BatchFileDetail;
+import com.cmacgm.cdrserver.model.BatchHistoryDetail;
 import com.cmacgm.cdrserver.model.User;
 import com.cmacgm.cdrserver.repository.ApplicationFileUploadConfigRepository;
 import com.cmacgm.cdrserver.repository.ApplicationRepository;
+import com.cmacgm.cdrserver.repository.BatchHistoryDetailsRepository;
 import com.cmacgm.cdrserver.repository.UserRepository;
 
 /**
@@ -45,6 +52,8 @@ public class ApplicationController {
 	
 	@Autowired
 	ApplicationRepository applicationRepository;
+	@Autowired
+	BatchHistoryDetailsRepository batchHistoryDetailsRepository;
 	
 	@Autowired
 	UserRepository userRepository;
@@ -86,18 +95,37 @@ public class ApplicationController {
 	    return note;
 	}
 	
+	/* 
+	 * To get batch History Details
+	 */
+	
+	@GetMapping("/batchHistoryDetails/{appId}")
+	public List<BatchHistoryDetail> getBatchHistoryDetails(@PathVariable(value="appId") Long appId){
+		System.out.println("in /api/batchHistoryDetails");
+		return batchHistoryDetailsRepository.findByAppId(appId);		
+		
+	}
+	
 	@CrossOrigin(origins = "*")
 	//@CrossOrigin(origins = "http://localhost:8080/cdrclient")
 	 @RequestMapping(value = "/uploadfile", method = RequestMethod.POST , produces="application/json")
 	    public @ResponseBody String UploadscenarioFiles(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
 	    int i=0;
 	    String uploadResponse="";
-	    //String applicationName="getpaid";	 	-
+	    String userName="";
+	    String batchUploadStatus="Upload";
 	    Long applicationId=0l;
-	    applicationId=Long.parseLong(request.getParameter("applicationId"));	 
+	    applicationId=Long.parseLong(request.getParameter("applicationId"));
+	    userName=request.getParameter("userName");
 	    System.out.println("appName in server" + applicationId);
 	    Application application = applicationRepository.findById(applicationId);
-		
+	    List<BatchFileDetail> batchFileDetailList=new ArrayList<>();
+	    BatchHistoryDetail batchHistoryDetail=new BatchHistoryDetail();
+	    Date dNow = new Date();
+	       SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
+	       String batchId = ft.format(dNow);
+	    Calendar c = Calendar.getInstance();
+		   String batchUploadMonth=c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH );
 		List<ApplicationFileUploadConfig> applicationFileUploadConfig = applicationFileUploadConfigRepository.findByApplication(application);
 		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) request;
 	     
@@ -106,14 +134,43 @@ public class ApplicationController {
 	         while (fileNames.hasNext()) { // Get List of files from Multipart Request.
 	       
 	            MultipartFile fileContent = multipart.getFile(fileNames.next());
+	            
 	            String folderpath=applicationFileUploadConfig.get(i).getFileTrgtPath();
+	            File dir = new File(folderpath);
+	            if (!dir.exists())
+					dir.mkdirs();
+	            
+	            String fileTrgtPath= dir.getAbsolutePath() + File.separator + fileContent.getOriginalFilename();
+				System.out.println("file target path"+ fileTrgtPath );		
+	            BatchFileDetail batchFileDetail=new BatchFileDetail();
+	            batchFileDetail.setBatchFileName(fileContent.getOriginalFilename());
+	            batchFileDetail.setBatchFileTrgtPath(fileTrgtPath);
+	            batchFileDetail.setCreatedBy(userName);
+	            batchFileDetail.setUpdatedBy(userName);
+	            batchFileDetailList.add(batchFileDetail);
+	            
+	            
 	            System.out.println("Check Folder Path in server"+folderpath);
 	             uploadResponse=uploadMultipleFileHandler(fileContent,folderpath);
+	             
 	            i++;
 	            
 	            //uploadMultipleFileHandler(fileContent,i);
 	            System.out.println("UploadscenarioFiles ion loop uploadResponse:"+uploadResponse);
 	        }
+	         
+	         if(uploadResponse=="Files Uploaded Successfully"){
+	        	 
+	        	 batchHistoryDetail.setAppId(applicationId); 
+	        	 batchHistoryDetail.setBatchFileDetailList(batchFileDetailList);
+	        	 batchHistoryDetail.setBatchId(batchId);
+	        	 batchHistoryDetail.setBatchUploadMonth(batchUploadMonth);
+	        	 batchHistoryDetail.setBatchUploadMonth(batchUploadMonth);
+	        	 batchHistoryDetail.setBatchUploadStatus(batchUploadStatus);
+	        	 batchHistoryDetail.setBatchUploadUserName(userName);
+	        	 batchHistoryDetail.setCreatedBy(userName);
+	        	 batchHistoryDetailsRepository.save(batchHistoryDetail);
+             }
 	         System.out.println("UploadscenarioFiles uploadResponse:"+uploadResponse);
 			return uploadResponse;
 	    }
@@ -136,6 +193,7 @@ public class ApplicationController {
 				// Create the file on server
 				File serverFile = new File(dir.getAbsolutePath()
 						+ File.separator + file.getOriginalFilename());
+				System.out.println(serverFile);	
 				stream = new BufferedOutputStream(
 						new FileOutputStream(serverFile));
 				stream.write(bytes);
@@ -145,6 +203,8 @@ public class ApplicationController {
 						+ serverFile.getAbsolutePath());
 				 serverResponse="Files Uploaded Successfully";
 				 System.out.println("UploadscenarioFiles serverResponse:"+serverResponse);
+				 
+				 
 			return serverResponse;
 			} catch (Exception e) {
 				e.getMessage();

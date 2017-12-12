@@ -1,4 +1,4 @@
-/* @author Basker Ammu
+/* @author Basker Ammu, Ramesh Kumar B
  * Url Routing configuration
  * $stateProvider,$urlRouterProvider
  */
@@ -57,6 +57,51 @@ angular
 						function($scope, $state, $rootScope, $window, $q,
 								$http, NotificationFactory) {
 							$scope.homepageContent = "landing dashboard page";
+							//$scope.batchFiles={fileName:'', filePath:''};
+							$scope.batchFileslist=[];
+							$scope.checkStatus=false;
+							//$rootscope.selectedAppId=0;
+							$scope.getCurrentUser = function() {
+
+								if ($window.sessionStorage.getItem('currentUser')) {
+									return JSON.parse($window.sessionStorage
+											.getItem('currentUser'));
+								}
+							};
+							$scope.isUserTokenAvailable = function() {
+								return $window.sessionStorage.getItem('userToken');
+							}
+							$scope.inituser = function() {
+								var data = $scope.isUserTokenAvailable();
+								if (data == null || data == undefined) {
+									$rootScope.isProfilePage = false;
+									$state.go("login");
+								} else {
+									$rootScope.currentUser = $scope.getCurrentUser();
+									if ($rootScope.currentUser != undefined
+											|| $rootScope.currentUser != null) {
+										$rootScope.isProfilePage = true;
+									} else {
+										$rootScope.isProfilePage = false;
+										$state.go("login");
+									}
+
+								}
+							}
+							
+							$scope.batchFiles=function(s){
+								$scope.checkStatus=true;
+								$scope.inituser();
+								
+								console.log('in select app.js')
+								//alert(s);
+								$scope.batchFileslist=$scope.batchDetailsResult[s].batchFileDetailList;
+								/*$scope.batchFiles.fileName=$scope.batchDetailsResult[s].batchFileDetail.batchFileName;
+								$scope.batchFiles.filePath=$scope.batchDetailsResult[s].batchFileDetail.batchFileTrgtPath;
+								console.log('got selected batch details', $scope.batchFiles)
+								console.log($scope.batchFiles.fileName)
+								console.log($scope.batchFiles.filePath)*/
+							}
 
 							$scope.logout = function() {
 								var deferred = $q.defer();
@@ -88,6 +133,70 @@ angular
 												});
 
 								return deferred.promise;
+							}
+							// To get application list
+							
+							$scope.init = function() {
+								$scope.inituser();
+								$scope.userId=$rootScope.currentUser.userId;
+								$scope.user={};
+								//$rootScope.selectedAppId='';
+								console.log($scope.userId)
+								var data = new FormData();
+								/*var url = "/api/applications/"
+
+								$http.get(url).then(function(response) {
+									$scope.applications = response.data;
+									
+								}, function(response) {
+
+									$scope.applications = response.data;
+									
+									
+								});*/
+								
+								var url = "/login/getUserDetails1/" + $window.sessionStorage["userToken"];
+								
+								$http.get(url).then(function(response) {
+									
+												$scope.applications=response.data.applications;	
+												$scope.roles=response.data.applications;	
+											console.log(' userDetails' , response)
+											console.log(' applications' , $scope.applications)
+											console.log(' roles' , $scope.roles)
+										});
+							};
+							
+						
+							$scope.batchHistoryDetails = function(appId) {
+								$scope.inituser();
+								$scope.appId = appId;
+								$rootScope.selectedAppId=appId;
+								console.log('user selected app id' , $rootScope.selectedAppId)
+
+								var url="/api/batchHistoryDetails/" + $scope.appId;
+								
+								console.log(url)
+								var data = new FormData();
+
+								$http.get(url).then(function(response) {
+									$scope.batchDetailsResult = response.data;
+									console.log('full batch his details', $scope.batchDetailsResult);
+									
+								}, function(response) {
+
+									$scope.batchDetailsResult = response.data;
+									console.log($scope.batchDetailsResult)
+									
+								});
+							};
+							
+							$scope.doUpload = function() {
+								$rootScope.isProfilePage = true;
+								
+								$state.go("upload");
+								$scope.checkStatus=false;
+								
 							}
 
 						} ]);
@@ -122,6 +231,7 @@ angular
 						function($scope, $state, $rootScope, $window, $q,
 								$http, NotificationFactory) {
 							$rootScope.isProfilePage = false;
+							$scope.uploadResult='';
 							$rootScope.currentUser = {
 								roleType : '',
 								email : '',
@@ -129,12 +239,7 @@ angular
 								userName : '',
 								userToken : ''
 							};
-							
-
-							$scope.logout = function() {
-								AuthenticationService.ClearCredentials();
-								$rootScope.isProfilePage = false;
-							}
+						
 							$scope.userLogin = function() {
 
 								var username = $scope.username;
@@ -158,14 +263,17 @@ angular
 													})
 											.then(
 													function(response) {
+														//console.log(response)
 														if (!response.data) {
-
+															NotificationFactory.error("Invalid Credentials");
 															$state.go("login");
-															  NotificationFactory.clear();
+															 // NotificationFactory.clear();
 											            	  NotificationFactory.error("Invalid Credentials");
+											            	  NotificationFactory.success("Invalid Credentials");
 														} else {
 
-															if (response.data.data.userToken!=null && response.data.data.userToken!=undefined) {
+															/*if (response.data.data.userToken!=null && response.data.data.userToken!=undefined) {*/
+															if (response.data.message!="failure") {
 																$http.defaults.headers.common['userToken'] = response.data.data.userToken ? response.data.data.userToken
 																		: null;
 																$window.sessionStorage["userToken"] = response.data.data.userToken;
@@ -187,17 +295,18 @@ angular
 																		$rootScope.isProfilePage = true;
 																		
 																		$state
-																				.go("upload");
+																				.go("home");
 																		 NotificationFactory.clear();
 														            	  NotificationFactory.success("welcome! "+$rootScope.currentUser.userName);
 																	}
 																}
 
 															} else {
-																$state
-																		.go("login");
+																$state.go("login");
 																 NotificationFactory.clear();
-																 NotificationFactory.error("Invalid Credentials");
+																 //NotificationFactory.error("Invalid Credentials");
+																 $scope.uploadResult='Invalid Credentials';
+																 console.log( $scope.uploadResult)
 															}
 
 														}
@@ -334,7 +443,8 @@ angular.module('cdrApp').controller(
 
 						}
 						data.append("applicationId", $scope.appId);
-					
+						data.append("userName", $rootScope.currentUser.userName);
+					console.log('data for upload' , data)
 						if (data != undefined)
 							$scope.UploadFileIndividual(data);
 					};
@@ -363,10 +473,13 @@ angular.module('cdrApp').controller(
 
 					}
 
-					$scope.appServerFolder = function(appId) {
-						$scope.appId = appId;
+					$scope.appServerFolder = function() {
+						
+						
+						//$scope.appId = $rootScope.selectedAppId;
+						console.log("upload screen selected app id" , $scope.appId)
 
-						var url = "/api/serverfolders/" + $scope.appId;
+						var url = "/api/serverfolders/" + $rootScope.selectedAppId;
 
 						var data = new FormData();
 
@@ -376,6 +489,7 @@ angular.module('cdrApp').controller(
 						}, function(response) {
 
 							$scope.serverFoldersResult = response.data;
+							 $("#upload").show();
 						});
 					};
 					$scope.init = function() {

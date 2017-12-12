@@ -16,11 +16,19 @@ a, a:hover, a:focus {
     -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
 }
 
-h1, h2 {
+h1 {
 	margin-top: 10px;
-	font-size: 38px;
+	font-size: 28px;
     font-weight: 100;
     color: #555;
+    line-height: 50px;
+}
+
+ h2 {
+	margin-top: 10px;
+	font-size: 14px;
+    font-weight: 100;
+    color: #ece2e2;
     line-height: 50px;
 }
 
@@ -29,6 +37,15 @@ h3 {
     font-weight: 300;
     color: #555;
     line-height: 30px;
+}
+
+h4 {
+	font-size: 14px;
+    font-weight: 100;
+    color: #555;
+    line-height: 30px;
+    margin-top: 10px;
+    margin-bottom: 0px;
 }
 
 img { max-width: 100%; }
@@ -116,6 +133,8 @@ img { max-width: 100%; }
 	text-align: left;
 }
 
+
+
 .form-top-left {
 	float: left;
 	width: 75%;
@@ -124,6 +143,7 @@ img { max-width: 100%; }
 
 .form-top-left h3 { margin-top: 0; color: #fff; }
 .form-top-left p { opacity: 0.8; color: #fff; }
+.form-top-left h2 { opacity: 5; color: #e60e0e;font-size: 20px; }
 
 .form-top-right {
 	float: left;
