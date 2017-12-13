@@ -3,7 +3,7 @@
  * $stateProvider,$urlRouterProvider
  */
 'use strict';
-angular.module("cdrApp", [ "ui.router", 'toastr' ]);
+angular.module("cdrApp", [ "ui.router", 'toastr','appConfigApp' ]);
 
 'use strict';
 angular.module('cdrApp').config(
@@ -16,25 +16,25 @@ angular.module('cdrApp').config(
 					$urlRouterProvider.otherwise("/login");
 					$stateProvider.state("login", {
 						url : '/login',
-						templateUrl : '/login',
+						templateUrl : 'view/login.html',
 						controller : "loginController",
 						controllerAs : "loginController"
 
 					}).state("upload", {
 						url : '/upload',
-						templateUrl : '/upload',
+						templateUrl : 'view/upload.html',
 						controller : "uploadController",
 						controllerAs : "uploadController",
 
 					}).state("home", {
 						url : '/home',
-						templateUrl : '/home',
+						templateUrl : 'view/home.html',
 						controller : "homeController",
 						controllerAs : "homeController",
 
 					}).state("settings", {
 						url : '/settings',
-						templateUrl : '/settings',
+						templateUrl : 'view/settings.html',
 						controller : "settingsController",
 						controllerAs : "settingsController",
 
@@ -53,9 +53,9 @@ angular
 						'$window',
 						'$q',
 						'$http',
-						'NotificationFactory',
+						'NotificationFactory','appConstants',
 						function($scope, $state, $rootScope, $window, $q,
-								$http, NotificationFactory) {
+								$http, NotificationFactory,appConstants) {
 							$scope.homepageContent = "landing dashboard page";
 							//$scope.batchFiles={fileName:'', filePath:''};
 							$scope.batchFileslist=[];
@@ -105,7 +105,7 @@ angular
 
 							$scope.logout = function() {
 								var deferred = $q.defer();
-								var logoutUrl = "/login/logOut/"
+								var logoutUrl = appConstants.serverUrl+"/login/logOut/"
 										+ $window.sessionStorage["userToken"];
 								$http(
 										{
@@ -155,7 +155,7 @@ angular
 									
 								});*/
 								
-								var url = "/login/getUserDetails1/" + $window.sessionStorage["userToken"];
+								var url =  appConstants.serverUrl+"/login/getUserDetails1/" + $window.sessionStorage["userToken"];
 								
 								$http.get(url).then(function(response) {
 									
@@ -174,7 +174,7 @@ angular
 								$rootScope.selectedAppId=appId;
 								console.log('user selected app id' , $rootScope.selectedAppId)
 
-								var url="/api/batchHistoryDetails/" + $scope.appId;
+								var url= appConstants.serverUrl+"/api/batchHistoryDetails/" + $scope.appId;
 								
 								console.log(url)
 								var data = new FormData();
@@ -210,9 +210,9 @@ angular.module('cdrApp').controller(
 				'$window',
 				'$q',
 				'$http',
-				'NotificationFactory',
+				'NotificationFactory','appConstants',
 				function($scope, $state, $rootScope, $window, $q, $http,
-						NotificationFactory) {
+						NotificationFactory,appConstants) {
 					$scope.homepageContent = "settings dashboard page";
 				} ]);
 
@@ -227,9 +227,9 @@ angular
 						'$window',
 						'$q',
 						'$http',
-						'NotificationFactory',
+						'NotificationFactory','appConstants',
 						function($scope, $state, $rootScope, $window, $q,
-								$http, NotificationFactory) {
+								$http, NotificationFactory,appConstants) {
 							$rootScope.isProfilePage = false;
 							$scope.uploadResult='';
 							$rootScope.currentUser = {
@@ -250,7 +250,7 @@ angular
 
 									$http
 											.post(
-													"/login/loginUser",
+													 appConstants.serverUrl+"/login/loginUser",
 													{
 														userName : username,
 														password : password
@@ -322,7 +322,7 @@ angular
 							$scope.setCurrentUser = function() {
 								$http
 										.get(
-												'/login/getUserDetails/'
+												 appConstants.serverUrl+'/login/getUserDetails/'
 														+ $window.sessionStorage["userToken"])
 										.success(
 												function(response) {
@@ -379,9 +379,9 @@ angular.module('cdrApp').controller(
 				'$http',
 				'$window',
 				'$state',
-				'NotificationFactory',
+				'NotificationFactory','appConstants',
 				function($scope, $rootScope, $http, $window, $state,
-						NotificationFactory) {
+						NotificationFactory,appConstants) {
 
 					$rootScope.isProfilePage = false;
 					$rootScope.currentUser = {
@@ -448,10 +448,8 @@ angular.module('cdrApp').controller(
 						if (data != undefined)
 							$scope.UploadFileIndividual(data);
 					};
-					$scope.UploadFileIndividual = function(data)
+					$scope.UploadFileIndividual = function(data){
 
-					{
-						var targetRequestPath = "/api/uploadfile";
 
 						var config = {
 							transformRequest : angular.identity,
@@ -461,7 +459,7 @@ angular.module('cdrApp').controller(
 							}
 						}
 
-						$http.post(targetRequestPath, data, config).then(
+						$http.post( appConstants.serverUrl+'/api/uploadfile', data, config).then(
 								function(response) {
 								
 									$scope.uploadResult = response.data;
@@ -479,7 +477,7 @@ angular.module('cdrApp').controller(
 						//$scope.appId = $rootScope.selectedAppId;
 						console.log("upload screen selected app id" , $scope.appId)
 
-						var url = "/api/serverfolders/" + $rootScope.selectedAppId;
+						var url =  appConstants.serverUrl+"/api/serverfolders/" + $rootScope.selectedAppId;
 
 						var data = new FormData();
 
@@ -495,7 +493,7 @@ angular.module('cdrApp').controller(
 					$scope.init = function() {
 						$scope.inituser();
 
-						var url = "/api/applications/"
+						var url =  appConstants.serverUrl+"/api/applications/"
 
 						var data = new FormData();
 

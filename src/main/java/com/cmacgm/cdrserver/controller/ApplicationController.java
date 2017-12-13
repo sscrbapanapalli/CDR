@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,8 +80,7 @@ public class ApplicationController {
 		return userRepository.findByUserId(userId);
 	}
 
-	@CrossOrigin(origins = "*")
-	//@CrossOrigin(origins = "http://10.13.44.80:8080/cdrclient")
+	
 	@GetMapping("/serverfolders/{id}")
 	public List<ApplicationFileUploadConfig> getfolderByApp(@PathVariable(value = "id") Long id) {
          Application application = applicationRepository.findById(id);
@@ -106,8 +104,7 @@ public class ApplicationController {
 		
 	}
 	
-	@CrossOrigin(origins = "*")
-	//@CrossOrigin(origins = "http://localhost:8080/cdrclient")
+	
 	 @RequestMapping(value = "/uploadfile", method = RequestMethod.POST , produces="application/json")
 	    public @ResponseBody String UploadscenarioFiles(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
 	    int i=0;

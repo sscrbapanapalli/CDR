@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<html  class="no-js" ng-app="cdrApp" class="ng-cloak" >
+
+    <head>
+
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>CDR Login</title>
+
+        <!-- CSS -->
+       
+        <link rel="stylesheet" href="./app/assets/bootstrap/css/bootstrap.min.css"></link>
+        <link rel="stylesheet" href="./app/assets/font-awesome/css/font-awesome.min.css"></link>
+		<link rel="stylesheet" href="./app/assets/css/form-elements.css"></link>
+        <link rel="stylesheet" href="./app/assets/css/style.css"></link>
+	
+      	<link rel="stylesheet" type="text/css" href="./app/css/style-top.css" ></link>
+
+        <!-- Favicon and touch icons -->
+        <link rel="shortcut icon" href="./app/assets/ico/favicon.png"></link>
+        
+        <style>
+      		#footer{
+    position:fixed;
+    height:50px;
+    background-color:none;
+    bottom:0px;
+    left:0px;
+    right:0px;
+    margin-bottom:0px;
+}
+
+.bg {	
+	background: url(./app/assets/img/backgrounds/1.jpg) no-repeat 0 0;
+    background-size: cover;
+    background-position: center;
+    /* position: absolute; */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    overflow: hidden;
+    z-index: 0;
+}
+        </style>
+    </head>
+
+<body ng-class="isProfilePage==false?'bg':''" ng-cloak>
+
+	<div  ng-include="'view/header.html'" ng-show="isProfilePage" ></div>
+	<div  ng-include="'view/dummy.html'" ng-hide="isProfilePage" ></div>
+	<div >
+		<div  ui-view></div>
+		</div>
+	<div class="footer">
+		<div ng-include="'view/footer.html'"   ></div>
+	</div>
+
+
+        <!-- Javascript -->
+       
+        	<script src="./jquery/jquery-1.11.2.min.js"></script>	
+        	 <script src="./app/assets/bootstrap/js/bootstrap.min.js"></script>
+    
+	<script src="./angular/angular.js"></script>
+	<script src="./angular/angular-route.js"></script>
+	<script src="./ui-router/angular-ui-router.js"></script>
+	<script src="./angular-toastr/angular-toastr.js"></script>
+
+	 <script src="./app//js/currentdate.js"></script>
+
+          
+    <script src="./app/js/appConfig.js"></script> 
+         <script src="./app/js/app.js"></script>  
+	
+        
+        <!--[if lt IE 10]>
+            <script src="assets/js/placeholder.js"></script>
+        <![endif]-->
+
+</body>
+
+</html>
