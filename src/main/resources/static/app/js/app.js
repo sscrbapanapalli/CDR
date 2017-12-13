@@ -442,7 +442,7 @@ angular.module('cdrApp').controller(
 									$scope.fileList[i]);
 
 						}
-						data.append("applicationId", $scope.appId);
+						data.append("applicationId",$rootScope.selectedAppId);
 						data.append("userName", $rootScope.currentUser.userName);
 					console.log('data for upload' , data)
 						if (data != undefined)
@@ -483,7 +483,7 @@ angular.module('cdrApp').controller(
 
 						$http.get(url).then(function(response) {
 							$scope.serverFoldersResult = response.data;
-							
+							console.log($scope.serverFoldersResult)
 						}, function(response) {
 
 							$scope.serverFoldersResult = response.data;
