@@ -110,10 +110,14 @@ public class ApplicationController {
 	    int i=0;
 	    String uploadResponse="";
 	    String userName="";
+	    String batchUploadMonth="";
 	    String batchUploadStatus="Upload";
 	    Long applicationId=0l;
+	    
+	   // boolean activeIndicator=true;
 	    applicationId=Long.parseLong(request.getParameter("applicationId"));
 	    userName=request.getParameter("userName");
+	    batchUploadMonth=request.getParameter("selectedMonth");
 	    System.out.println("appName in server" + applicationId);
 	    Application application = applicationRepository.findById(applicationId);
 	    List<BatchFileDetail> batchFileDetailList=new ArrayList<>();
@@ -121,18 +125,20 @@ public class ApplicationController {
 	    Date dNow = new Date();
 	       SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
 	       String batchId = ft.format(dNow);
-	    Calendar c = Calendar.getInstance();
-		   String batchUploadMonth=c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH );
+	       
+	    /*Calendar c = Calendar.getInstance();
+		   String batchUploadMonth=c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH );*/
+		   
 		List<ApplicationFileUploadConfig> applicationFileUploadConfig = applicationFileUploadConfigRepository.findByApplication(application);
 		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) request;
-	     
-	    	
+
 	        Iterator<String> fileNames = multipart.getFileNames();
 	         while (fileNames.hasNext()) { // Get List of files from Multipart Request.
 	       
 	            MultipartFile fileContent = multipart.getFile(fileNames.next());
 	            
 	            String folderpath=applicationFileUploadConfig.get(i).getFileTrgtPath();
+	            String folderCaption=applicationFileUploadConfig.get(i).getFolderCaption();
 	            File dir = new File(folderpath);
 	            if (!dir.exists())
 					dir.mkdirs();
@@ -140,8 +146,10 @@ public class ApplicationController {
 	            String fileTrgtPath= dir.getAbsolutePath() + File.separator + fileContent.getOriginalFilename();
 				System.out.println("file target path"+ fileTrgtPath );		
 	            BatchFileDetail batchFileDetail=new BatchFileDetail();
+	            //batchFileDetail.setActiveIndicator(activeIndicator);
 	            batchFileDetail.setBatchFileName(fileContent.getOriginalFilename());
 	            batchFileDetail.setBatchFileTrgtPath(fileTrgtPath);
+	            batchFileDetail.setFolderCaption(folderCaption);
 	            batchFileDetail.setCreatedBy(userName);
 	            batchFileDetail.setUpdatedBy(userName);
 	            batchFileDetailList.add(batchFileDetail);
@@ -150,7 +158,7 @@ public class ApplicationController {
 	            System.out.println("Check Folder Path in server"+folderpath);
 	             uploadResponse=uploadMultipleFileHandler(fileContent,folderpath);
 	             
-	            i++;
+	           i++;
 	            
 	            //uploadMultipleFileHandler(fileContent,i);
 	            System.out.println("UploadscenarioFiles ion loop uploadResponse:"+uploadResponse);
@@ -162,7 +170,7 @@ public class ApplicationController {
 	        	 batchHistoryDetail.setBatchFileDetailList(batchFileDetailList);
 	        	 batchHistoryDetail.setBatchId(batchId);
 	        	 batchHistoryDetail.setBatchUploadMonth(batchUploadMonth);
-	        	 batchHistoryDetail.setBatchUploadMonth(batchUploadMonth);
+	        	// batchHistoryDetail.setActiveIndicator(activeIndicator);
 	        	 batchHistoryDetail.setBatchUploadStatus(batchUploadStatus);
 	        	 batchHistoryDetail.setBatchUploadUserName(userName);
 	        	 batchHistoryDetail.setCreatedBy(userName);

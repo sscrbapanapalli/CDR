@@ -8,18 +8,32 @@
 				} */
 
 
+.ui-datepicker-calendar {
+    display: none;
+    }
 
 </style>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!-- <script>
-	$(function(){
-	    $("#upload").hide();
-	    $("#GET_PAID,#OCEAN").on("click", function(){
-	    	alert('hi');
-	        $("#upload").show();
-	    });
-	})
-	</script> -->
+
+<script type="text/javascript">
+$(function() {
+    $('.date-picker').datepicker( {
+        changeMonth: true,
+        changeYear: false,
+        showButtonPanel: false,
+        dateFormat: 'MM yy',
+        onClose: function(dateText, inst) { 
+        	$(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+        	
+        }
+    });
+});
+
+function myFunction() {
+    var x = document.getElementById("startDate").value;
+   alert(x);
+}
+</script>
+
 	<div  ng-controller="uploadController" ng-init="appServerFolder()">
 	
 	<div class="overall">
@@ -35,7 +49,13 @@
        			</ul>
        </nav>
    </div>
-		
+   <div>&nbsp;</div>
+   <div>
+		 <label for="startDate">Month :</label>
+   		 <input  name="startDate" id="startDate" class="date-picker" />
+   		 
+	</div>
+	<div>&nbsp;</div>	
 	<div class="main">
 		 <form class="form-horizontal" >
 			<div class="form-group" ng-repeat="obj in serverFoldersResult">

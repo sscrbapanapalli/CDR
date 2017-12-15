@@ -12,6 +12,12 @@ table  tr:nth-child(even) {
 }
 </style>
 
+<!-- <script>
+$(document).ready(function() {
+    $('#myTable').DataTable();
+} );
+</script> -->
+
 <div  class="container" ng-controller="homeController" ng-init="init()">					
 	<div class="overall">		
        <nav class="navbar">
@@ -21,18 +27,27 @@ table  tr:nth-child(even) {
        			 <a  id="{{application.appName}}"  ng-click="batchHistoryDetails(application.id);" ng-model="application.id">{{application.appName}}</a><!-- <a  class="active" name="appName" id="getpaid" ng-model="appName" href="#" ng-click="appServerFolder($event)"><span class="icon fa fa-table"></span>GETPAID</a> -->       			
        				<span class="divider"></span>
        		 </li>
-       		 <li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_ADMIN' " ui-sref="settings" ><span class="icon fa "></span>Settings</a></li>       			
+       		 
+       		  <li><a   ui-sref="settings" ><span class="icon fa "></span>Admin Settings</a></li>
+       		  
+       		 <!-- <li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_ADMIN' " ui-sref="settings" ><span class="icon fa "></span>Settings</a></li>  -->      			
        				<span class="divider"></span>
        			</ul>
        		
        </nav>
    </div>
+   
+    <div>&nbsp;</div>
+   <div ng-hide="welcomeMsg">
+   	<h3>Welcome to CDR Application...</h3>
+   	<h3>Please select Application to get Batch History Details.</h3>
+   </div>
 
-<div  style="margin:20px auto">  
+<div  style="margin:20px auto" ng-show="welcomeMsg" >   
 
 
 	<table id="myTable" class="table table-striped table-bordered" >  
-          
+        
           <tr>  
           	<th>Select</th>
             <th>BatchId</th>
@@ -42,7 +57,7 @@ table  tr:nth-child(even) {
             <th>Month</th>
             <th>Batch Details</th> 
           </tr>  
-         
+        
            <tr ng-repeat="obj in batchDetailsResult">
  			<td><input type="checkbox" id="{{category}}" ng-true-value="{{'category'}}" ng-model="obj.category[$index]"></td>
             <td>{{obj.batchId}}</td>
@@ -52,7 +67,7 @@ table  tr:nth-child(even) {
             <td>{{obj.batchUploadMonth}}</td>
             <td><a  ng-click="batchFiles($index)">{{obj.batchId}}</a></td>
         </tr>
-        
+      
       </table>  
      
       
@@ -64,19 +79,21 @@ table  tr:nth-child(even) {
 	  </div>
 		<br>
 			 <table id="filesTable" class="table table-striped table-bordered" ng-show="checkStatus">  
-          
-          <tr>  
+         
+          <tr> 
+            <th>Folder Name</th>
           	<th>File Name</th>
             <th>File Path</th>
            
           </tr>  
-         
+        
            <tr ng-repeat="obj1 in batchFileslist">
+           <td>{{obj1.folderCaption}}
  			<td>{{obj1.batchFileName}}</td>
             <td href="">{{obj1.batchFileTrgtPath}}</td>
            
         </tr>
-        
+      
       </table> 
 </div>
 </div>

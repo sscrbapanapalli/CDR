@@ -28,6 +28,8 @@ public class BatchFileDetail {
     private String batchFileName;  
     @Column(name="batch_file_trgt_path",length = 100)
     private String batchFileTrgtPath;
+    @Column(name="folder_caption",length = 100)
+    private String folderCaption;
     
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -39,7 +41,7 @@ public class BatchFileDetail {
     private Date updatedDate;
     
     @Column(name="active_indicator")
-    private boolean activeIndicator;
+    private boolean activeIndicator=true;
     @Column(name="created_by",length = 100)
     private String createdBy;
     @Column(name="updated_by",length = 100)
@@ -56,11 +58,12 @@ public class BatchFileDetail {
     }
 
     
-    public BatchFileDetail(String batchId,String batchFileName,String batchFileTrgtPath,boolean activeIndicator){
+    public BatchFileDetail(String batchId,String batchFileName,String batchFileTrgtPath,boolean activeIndicator,String folderCaption){
     	this.batchId=batchId;
     	this.batchFileName=batchFileName;
     	this.batchFileTrgtPath=batchFileTrgtPath;
     	this.activeIndicator=activeIndicator;
+    	this.folderCaption=folderCaption;
     }
     //
 
@@ -96,6 +99,14 @@ public class BatchFileDetail {
 		this.batchFileTrgtPath = batchFileTrgtPath;
 	}
 
+	public String getFolderCaption() {
+		return folderCaption;
+	}
+
+	public void setFolderCaption(String folderCaption) {
+		this.folderCaption = folderCaption;
+	}
+
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -112,6 +123,7 @@ public class BatchFileDetail {
 		this.updatedDate = updatedDate;
 	}
 
+	
 	public boolean isActiveIndicator() {
 		return activeIndicator;
 	}
@@ -169,6 +181,7 @@ public class BatchFileDetail {
         .append("[createdDate=").append(createdDate).append("]").append("[updatedDate=").append(updatedDate).append("]")
         .append("[activeIndicator=").append(activeIndicator).append("]").append("[createdBy=").append(createdBy).append("]")      
         .append("[batchId=").append(batchId).append("]")
+        .append("[folderCaption=").append(folderCaption).append("]")
         .append("[batchFileTrgtPath=").append(batchFileTrgtPath).append("]").append("[batchFileName=").append(batchFileName).append("]")
           .append("[updatedBy=").append(updatedBy).append("]");
         return builder.toString();

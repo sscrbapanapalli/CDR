@@ -60,6 +60,7 @@ angular
 							//$scope.batchFiles={fileName:'', filePath:''};
 							$scope.batchFileslist=[];
 							$scope.checkStatus=false;
+							$scope.welcomeMsg=false;
 							//$rootscope.selectedAppId=0;
 							$scope.getCurrentUser = function() {
 
@@ -140,6 +141,7 @@ angular
 								$scope.inituser();
 								$scope.userId=$rootScope.currentUser.userId;
 								$scope.user={};
+								$scope.welcomeMsg=false;
 								//$rootScope.selectedAppId='';
 								console.log($scope.userId)
 								var data = new FormData();
@@ -155,7 +157,7 @@ angular
 									
 								});*/
 								
-								var url =  appConstants.serverUrl+"/login/getUserDetails1/" + $window.sessionStorage["userToken"];
+								var url =  appConstants.serverUrl+"/login/getUserAuthDetails/" + $window.sessionStorage["userToken"];
 								
 								$http.get(url).then(function(response) {
 									
@@ -170,6 +172,7 @@ angular
 						
 							$scope.batchHistoryDetails = function(appId) {
 								$scope.inituser();
+								$scope.welcomeMsg=true;
 								$scope.appId = appId;
 								$rootScope.selectedAppId=appId;
 								console.log('user selected app id' , $rootScope.selectedAppId)
@@ -397,6 +400,7 @@ angular.module('cdrApp').controller(
 					$scope.filePath = [];
 					$scope.serverFolders = [];
 					$scope.serverFoldersResult = [];
+					
 
 					$scope.getCurrentUser = function() {
 
@@ -434,6 +438,10 @@ angular.module('cdrApp').controller(
 					}
 
 					$scope.doUploadFile = function() {
+						
+						var selectedMonth = document.getElementById("startDate").value;
+						
+						
 						var data = new FormData();
 
 						for (var i = 0; i < $scope.fileList.length; i++) {
@@ -444,6 +452,7 @@ angular.module('cdrApp').controller(
 						}
 						data.append("applicationId",$rootScope.selectedAppId);
 						data.append("userName", $rootScope.currentUser.userName);
+						data.append("selectedMonth",selectedMonth)
 					console.log('data for upload' , data)
 						if (data != undefined)
 							$scope.UploadFileIndividual(data);

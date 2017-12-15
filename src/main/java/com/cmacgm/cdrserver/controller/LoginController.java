@@ -157,8 +157,8 @@ public class LoginController {
 
 	}
 	
-	@RequestMapping(value = "/getUserDetails1/{userToken}", method = RequestMethod.GET)
-	public UserHomeModel  getUserDetails1(@PathVariable("userToken") String userToken)
+	@RequestMapping(value = "/getUserAuthDetails/{userToken}", method = RequestMethod.GET)
+	public UserHomeModel  getUserAuthDetails(@PathVariable("userToken") String userToken)
 			throws Exception {
 		User user = null;
 		UserHomeModel obj=new UserHomeModel();

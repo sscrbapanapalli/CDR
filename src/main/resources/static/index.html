@@ -15,7 +15,8 @@
         <link rel="stylesheet" href="./app/assets/font-awesome/css/font-awesome.min.css"></link>
 		<link rel="stylesheet" href="./app/assets/css/form-elements.css"></link>
         <link rel="stylesheet" href="./app/assets/css/style.css"></link>
-	
+        
+		<link rel="stylesheet" type="text/css" media="screen" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css">
       	<link rel="stylesheet" type="text/css" href="./app/css/style-top.css" ></link>
 
         <!-- Favicon and touch icons -->
@@ -54,26 +55,32 @@
 	<div >
 		<div  ui-view></div>
 		</div>
-	<div class="footer">
-		<div ng-include="'view/footer.html'"   ></div>
+		<div  ng-include="'view/dummy.html'" ng-hide="isProfilePage" ></div>
+	<div id="footer">
+		<div ng-include="'view/footer.html'" ng-show="isProfilePage"  ></div>
 	</div>
 
 
         <!-- Javascript -->
        
-        	<script src="./jquery/jquery-1.11.2.min.js"></script>	
-        	 <script src="./app/assets/bootstrap/js/bootstrap.min.js"></script>
-    
-	<script src="./angular/angular.js"></script>
+    <script src="./jquery/jquery-1.11.2.min.js"></script>	
+    <script src="./app/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./angular/angular.js"></script>
 	<script src="./angular/angular-route.js"></script>
 	<script src="./ui-router/angular-ui-router.js"></script>
 	<script src="./angular-toastr/angular-toastr.js"></script>
+	
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 
-	 <script src="./app//js/currentdate.js"></script>
+	
+
+	 <script src="./app/js/currentdate.js"></script>
 
           
     <script src="./app/js/appConfig.js"></script> 
-         <script src="./app/js/app.js"></script>  
+    <script src="./app/js/app.js"></script>  
 	
         
         <!--[if lt IE 10]>
