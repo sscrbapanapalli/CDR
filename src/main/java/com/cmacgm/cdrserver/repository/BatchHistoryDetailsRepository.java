@@ -15,8 +15,7 @@ public interface BatchHistoryDetailsRepository extends JpaRepository<BatchHistor
 	public List<BatchHistoryDetail> findByAppId(@Param("appId") Long id);
 	
 		
-	@Query( value = "select t from BatchHistoryDetails where t.appId=:appId and t.batchUploadMonth =:batchUploadMonth and t.batchUploadStatus=:batchUploadStatus")
-	public int getByBatchId(@Param("appId") Long appId, @Param("batchUploadMonth") String batchUploadMonth,@Param("batchUploadStatus") String batchUploadStatus);
+		public BatchHistoryDetail findByAppIdAndBatchUploadMonthAndBatchUploadStatus(@Param("appId") Long appId, @Param("batchUploadMonth") String batchUploadMonth,@Param("batchUploadStatus") String batchUploadStatus);
 	
 	
 

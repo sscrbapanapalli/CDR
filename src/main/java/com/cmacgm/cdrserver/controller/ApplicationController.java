@@ -6,11 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -113,7 +113,8 @@ public class ApplicationController {
 	    String batchUploadMonth="";
 	    String batchUploadStatus="Upload";
 	    Long applicationId=0l;
-	    
+	    List<String> fileList=new ArrayList<>();
+	    boolean dupFile=true;
 	   // boolean activeIndicator=true;
 	    applicationId=Long.parseLong(request.getParameter("applicationId"));
 	    userName=request.getParameter("userName");
@@ -122,6 +123,7 @@ public class ApplicationController {
 	    Application application = applicationRepository.findById(applicationId);
 	    List<BatchFileDetail> batchFileDetailList=new ArrayList<>();
 	    BatchHistoryDetail batchHistoryDetail=new BatchHistoryDetail();
+	    BatchHistoryDetail batchuploadCheck=new BatchHistoryDetail();
 	    Date dNow = new Date();
 	       SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
 	       String batchId = ft.format(dNow);
@@ -131,13 +133,27 @@ public class ApplicationController {
 		   
 		List<ApplicationFileUploadConfig> applicationFileUploadConfig = applicationFileUploadConfigRepository.findByApplication(application);
 		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) request;
-		int batchTestId=batchHistoryDetailsRepository.getByBatchId(applicationId,batchUploadMonth,batchUploadStatus);
-		System.out.println(batchTestId);
+		batchuploadCheck=batchHistoryDetailsRepository.findByAppIdAndBatchUploadMonthAndBatchUploadStatus(applicationId,batchUploadMonth,batchUploadStatus);
+		System.out.println("batchuploadCheck:" + batchuploadCheck);
+		if(batchuploadCheck == null){ //Validation check- upload already completed for selected month or not
+			System.out.println("batchuploadCheck is null");
 	        Iterator<String> fileNames = multipart.getFileNames();
-	         while (fileNames.hasNext()) { // Get List of files from Multipart Request.
-	       
-	            MultipartFile fileContent = multipart.getFile(fileNames.next());
-	            
+	        while(fileNames.hasNext()){
+	        	MultipartFile fileContents = multipart.getFile(fileNames.next());
+	        	fileList.add(fileContents.getOriginalFilename());
+	        }
+	        
+	        Set<String> filteredSet = new HashSet<String>(fileList);
+	        
+	        System.out.println("file list size" + fileList.size());
+	        System.out.println("file list size" + filteredSet.size());
+	        if(fileList.size()==filteredSet.size()){
+	        	System.out.println("in side second while loop");
+	        	Iterator<String> uploadFileNames = multipart.getFileNames();
+	         while (uploadFileNames.hasNext()) { // Get List of files from Multipart Request.
+	        	 
+	            MultipartFile fileContent = multipart.getFile(uploadFileNames.next());
+	           
 	            String folderpath=applicationFileUploadConfig.get(i).getFileTrgtPath();
 	            String folderCaption=applicationFileUploadConfig.get(i).getFolderCaption();
 	            File dir = new File(folderpath);
@@ -164,6 +180,15 @@ public class ApplicationController {
 	            //uploadMultipleFileHandler(fileContent,i);
 	            System.out.println("UploadscenarioFiles ion loop uploadResponse:"+uploadResponse);
 	        }
+	        }
+	        else{
+	        	uploadResponse="Please remove duplicate files";
+	        }
+		}else{
+			System.out.println("batchuploadCheck is null"+ uploadResponse);
+			uploadResponse="Batch Upload for selected month: "+batchUploadMonth+" completed with batch id: "+ batchuploadCheck.getBatchId();
+			
+		}
 	         
 	         if(uploadResponse=="Files Uploaded Successfully"){
 	        	 logger.info("Upload file status to server="
