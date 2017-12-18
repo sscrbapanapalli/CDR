@@ -131,7 +131,8 @@ public class ApplicationController {
 		   
 		List<ApplicationFileUploadConfig> applicationFileUploadConfig = applicationFileUploadConfigRepository.findByApplication(application);
 		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) request;
-
+		int batchTestId=batchHistoryDetailsRepository.getByBatchId(applicationId,batchUploadMonth,batchUploadStatus);
+		System.out.println(batchTestId);
 	        Iterator<String> fileNames = multipart.getFileNames();
 	         while (fileNames.hasNext()) { // Get List of files from Multipart Request.
 	       
@@ -153,10 +154,10 @@ public class ApplicationController {
 	            batchFileDetail.setCreatedBy(userName);
 	            batchFileDetail.setUpdatedBy(userName);
 	            batchFileDetailList.add(batchFileDetail);
-	            
-	            
+	            	            
 	            System.out.println("Check Folder Path in server"+folderpath);
-	             uploadResponse=uploadMultipleFileHandler(fileContent,folderpath);
+	            
+	            uploadResponse=uploadMultipleFileHandler(fileContent,folderpath);
 	             
 	           i++;
 	            
@@ -165,6 +166,8 @@ public class ApplicationController {
 	        }
 	         
 	         if(uploadResponse=="Files Uploaded Successfully"){
+	        	 logger.info("Upload file status to server="
+							+ uploadResponse);
 	        	 
 	        	 batchHistoryDetail.setAppId(applicationId); 
 	        	 batchHistoryDetail.setBatchFileDetailList(batchFileDetailList);
@@ -174,6 +177,7 @@ public class ApplicationController {
 	        	 batchHistoryDetail.setBatchUploadStatus(batchUploadStatus);
 	        	 batchHistoryDetail.setBatchUploadUserName(userName);
 	        	 batchHistoryDetail.setCreatedBy(userName);
+	        	 batchHistoryDetail.setUpdatedBy(userName);
 	        	 batchHistoryDetailsRepository.save(batchHistoryDetail);
              }
 	         System.out.println("UploadscenarioFiles uploadResponse:"+uploadResponse);

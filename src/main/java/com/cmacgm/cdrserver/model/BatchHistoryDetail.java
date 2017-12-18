@@ -50,7 +50,9 @@ public class BatchHistoryDetail implements Serializable {
     private String batchUploadStatus;
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="batch_upload_cr_date")
+    
+    
+    @Column(name="batch_upload_cr_date", length = 100)
     private Date batchUploadCrDate;
     
     @CreationTimestamp

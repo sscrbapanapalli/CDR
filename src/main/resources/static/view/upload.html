@@ -11,6 +11,21 @@
 .ui-datepicker-calendar {
     display: none;
     }
+    
+    div.box {
+		height: 700px;
+		width: 800px;
+		border: 1px solid black;
+		align: center;
+		background: lightyellow;
+		padding: 50px 0;
+		 top: 20%;
+  		bottom: 30%;
+  		left: 10%;
+  		right: 10%;
+		 
+ 
+	}
 
 </style>
 
@@ -50,6 +65,7 @@ function myFunction() {
        </nav>
    </div>
    <div>&nbsp;</div>
+   <div class="box">
    <div>
 		 <label for="startDate">Month :</label>
    		 <input  name="startDate" id="startDate" class="date-picker" />
@@ -72,8 +88,9 @@ function myFunction() {
 			</div>
 		</form> 
 	</div>	
-		<hr/>
+		
 		<div class="col-sm-offset-2">
 			<p ng-bind="uploadResult"></p>
 		</div>
+	</div>
 	</div>

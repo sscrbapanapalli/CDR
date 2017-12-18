@@ -175,6 +175,8 @@ angular
 								$scope.welcomeMsg=true;
 								$scope.appId = appId;
 								$rootScope.selectedAppId=appId;
+								
+								
 								console.log('user selected app id' , $rootScope.selectedAppId)
 
 								var url= appConstants.serverUrl+"/api/batchHistoryDetails/" + $scope.appId;
