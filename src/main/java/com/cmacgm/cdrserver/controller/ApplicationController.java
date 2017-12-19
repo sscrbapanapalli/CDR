@@ -113,8 +113,11 @@ public class ApplicationController {
 	    String batchUploadMonth="";
 	    String batchUploadStatus="Upload";
 	    Long applicationId=0l;
+	    String etlStatus="null";
+	    String s1="null";
+	    String etlProcessed="N";
 	    List<String> fileList=new ArrayList<>();
-	    boolean dupFile=true;
+	    
 	   // boolean activeIndicator=true;
 	    applicationId=Long.parseLong(request.getParameter("applicationId"));
 	    userName=request.getParameter("userName");
@@ -124,6 +127,7 @@ public class ApplicationController {
 	    List<BatchFileDetail> batchFileDetailList=new ArrayList<>();
 	    BatchHistoryDetail batchHistoryDetail=new BatchHistoryDetail();
 	    BatchHistoryDetail batchuploadCheck=new BatchHistoryDetail();
+	    BatchHistoryDetail obj=new BatchHistoryDetail();
 	    Date dNow = new Date();
 	       SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
 	       String batchId = ft.format(dNow);
@@ -133,10 +137,15 @@ public class ApplicationController {
 		   
 		List<ApplicationFileUploadConfig> applicationFileUploadConfig = applicationFileUploadConfigRepository.findByApplication(application);
 		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) request;
-		batchuploadCheck=batchHistoryDetailsRepository.findByAppIdAndBatchUploadMonthAndBatchUploadStatus(applicationId,batchUploadMonth,batchUploadStatus);
-		System.out.println("batchuploadCheck:" + batchuploadCheck);
-		if(batchuploadCheck == null){ //Validation check- upload already completed for selected month or not
-			System.out.println("batchuploadCheck is null");
+		//batchuploadCheck=batchHistoryDetailsRepository.findByAppIdAndBatchUploadMonthAndBatchUploadStatus(applicationId,batchUploadMonth,batchUploadStatus);
+		//System.out.println("batchuploadCheck:" + batchuploadCheck);
+		System.out.println("test");
+		obj=batchHistoryDetailsRepository.findByTop(batchUploadMonth,applicationId);
+		etlStatus=obj.getEtlProcessed();
+		System.out.println("etlStatus1:" + etlStatus);
+		if(etlStatus==null || etlStatus.equals("X") ){ //Validation check- upload already completed for selected month or not
+			 
+			System.out.println("batchuploadCheck is null1");
 	        Iterator<String> fileNames = multipart.getFileNames();
 	        while(fileNames.hasNext()){
 	        	MultipartFile fileContents = multipart.getFile(fileNames.next());
@@ -147,6 +156,8 @@ public class ApplicationController {
 	        
 	        System.out.println("file list size" + fileList.size());
 	        System.out.println("file list size" + filteredSet.size());
+	        System.out.println("actu size"+ applicationFileUploadConfig.size());
+	        if(fileList.size()==applicationFileUploadConfig.size()){
 	        if(fileList.size()==filteredSet.size()){
 	        	System.out.println("in side second while loop");
 	        	Iterator<String> uploadFileNames = multipart.getFileNames();
@@ -185,8 +196,11 @@ public class ApplicationController {
 	        	uploadResponse="Please remove duplicate files";
 	        }
 		}else{
-			System.out.println("batchuploadCheck is null"+ uploadResponse);
-			uploadResponse="Batch Upload for selected month: "+batchUploadMonth+" completed with batch id: "+ batchuploadCheck.getBatchId();
+			uploadResponse="Please select all files";
+		}
+		}else{
+			System.out.println("batchuploadCheck is null sdfsdgs"+ uploadResponse);
+			uploadResponse="Batch Upload for selected month: "+batchUploadMonth+" completed with batch id: "+ obj.getBatchId();
 			
 		}
 	         
@@ -203,6 +217,7 @@ public class ApplicationController {
 	        	 batchHistoryDetail.setBatchUploadUserName(userName);
 	        	 batchHistoryDetail.setCreatedBy(userName);
 	        	 batchHistoryDetail.setUpdatedBy(userName);
+	        	 batchHistoryDetail.setEtlProcessed(etlProcessed);
 	        	 batchHistoryDetailsRepository.save(batchHistoryDetail);
              }
 	         System.out.println("UploadscenarioFiles uploadResponse:"+uploadResponse);

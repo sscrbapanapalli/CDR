@@ -48,10 +48,15 @@ public class BatchHistoryDetail implements Serializable {
     private String batchUploadUserName;
     @Column(name="batch_upload_status",length = 20)
     private String batchUploadStatus;
+    
+    @Column(name="etl_processed", length=10)
+    private String etlProcessed;
+    
+    @Column(name="etl_action_status" , length=50)
+    private String etlActionStatus;
+    
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    
-    
     @Column(name="batch_upload_cr_date", length = 100)
     private Date batchUploadCrDate;
     
@@ -140,6 +145,24 @@ public class BatchHistoryDetail implements Serializable {
 	public void setBatchUploadStatus(String batchUploadStatus) {
 		this.batchUploadStatus = batchUploadStatus;
 	}
+	
+	
+
+	public String getEtlProcessed() {
+		return etlProcessed;
+	}
+
+	public void setEtlProcessed(String etlProcessed) {
+		this.etlProcessed = etlProcessed;
+	}
+
+	public String getEtlActionStatus() {
+		return etlActionStatus;
+	}
+
+	public void setEtlActionStatus(String etlActionStatus) {
+		this.etlActionStatus = etlActionStatus;
+	}
 
 	public Date getCreatedDate() {
 		return createdDate;
@@ -199,6 +222,8 @@ public class BatchHistoryDetail implements Serializable {
         .append("[activeIndicator=").append(activeIndicator).append("]").append("[createdBy=").append(createdBy).append("]")      
         .append("[batchUploadUserName=").append(batchUploadUserName).append("]")
         .append("[appId=").append(appId).append("]")
+        .append("[etlProcessed=").append(etlProcessed).append("]")
+        .append("[etlActionStatus=").append(etlActionStatus).append("]")
         .append("[batchUploadStatus=").append(batchUploadStatus).append("]").append("[batchUploadCrDate=").append(batchUploadCrDate).append("]")
           .append("[batchFileDetailList=").append(batchFileDetailList).append("]");
         return builder.toString();
