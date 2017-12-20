@@ -115,12 +115,11 @@ public class LoginController {
 
 	}
 
-	@RequestMapping(value = "/getUserDetails/{userToken}", method = RequestMethod.GET)
-	public @ResponseBody RetValue<UserModel> getUserDetails(@PathVariable("userToken") String userToken)
+	@RequestMapping(value = "/getUserDetails", method = RequestMethod.GET)
+	public @ResponseBody RetValue<UserModel> getUserDetails()
 			throws Exception {
 		UserModel userModel = null;
-		if (httpSession.getAttribute("userName") != null && httpSession.getAttribute("userToken") != null
-				&& !userToken.isEmpty() && userToken.equals(httpSession.getAttribute("userToken").toString())) {
+		if (httpSession.getAttribute("userName") != null && httpSession.getAttribute("userToken") != null) {
 			String userName = (String) httpSession.getAttribute("userName");
 			User user = userRepository.findByUserId(userName + "@CMA-CGM.COM");
 			if (user != null) {

@@ -2,41 +2,47 @@
  * Url Routing configuration
  * $stateProvider,$urlRouterProvider
  */
+/* @author Basker Ammu, Ramesh Kumar B
+ * Url Routing configuration
+ * $stateProvider,$urlRouterProvider
+ */
 'use strict';
-angular.module("cdrApp", [ "ui.router", 'toastr','appConfigApp' ]);
+angular.module("cdrApp", [ "ui.router", 'toastr','appConfigApp' ,'commonServiceApp']);
 
 'use strict';
 angular.module('cdrApp').config(
 		[ '$stateProvider', '$urlRouterProvider',
 				function($stateProvider, $urlRouterProvider) {
-					var roles = {
-						ROLE_ADMIN : 0,
-						ROLE_USER : 1
-					};
+				
 					$urlRouterProvider.otherwise("/login");
 					$stateProvider.state("login", {
 						url : '/login',
 						templateUrl : 'view/login.html',
 						controller : "loginController",
-						controllerAs : "loginController"
+						controllerAs : "loginController",
+						data:{requireLogin:true}
 
 					}).state("upload", {
 						url : '/upload',
 						templateUrl : 'view/upload.html',
 						controller : "uploadController",
 						controllerAs : "uploadController",
+						
+						data:{requireLogin:true}
 
 					}).state("home", {
 						url : '/home',
 						templateUrl : 'view/home.html',
 						controller : "homeController",
 						controllerAs : "homeController",
+						data:{requireLogin:true}
 
 					}).state("settings", {
 						url : '/settings',
 						templateUrl : 'view/settings.html',
 						controller : "settingsController",
 						controllerAs : "settingsController",
+						data:{requireLogin:true}
 
 					});
 
@@ -53,32 +59,23 @@ angular
 						'$window',
 						'$q',
 						'$http',
-						'NotificationFactory','appConstants',
+						'NotificationFactory','appConstants','userService','globalServices','AuthenticationService',
 						function($scope, $state, $rootScope, $window, $q,
-								$http, NotificationFactory,appConstants) {
+								$http, NotificationFactory,appConstants,userService,globalServices,AuthenticationService) {
 							$scope.homepageContent = "landing dashboard page";
 							//$scope.batchFiles={fileName:'', filePath:''};
 							$scope.batchFileslist=[];
 							$scope.checkStatus=false;
 							$scope.welcomeMsg=false;
+							$scope.userId=0;
 							//$rootscope.selectedAppId=0;
-							$scope.getCurrentUser = function() {
-
-								if ($window.sessionStorage.getItem('currentUser')) {
-									return JSON.parse($window.sessionStorage
-											.getItem('currentUser'));
-								}
-							};
-							$scope.isUserTokenAvailable = function() {
-								return $window.sessionStorage.getItem('userToken');
-							}
 							$scope.inituser = function() {
-								var data = $scope.isUserTokenAvailable();
+								var data = globalServices.isUserTokenAvailable();
 								if (data == null || data == undefined) {
 									$rootScope.isProfilePage = false;
 									$state.go("login");
 								} else {
-									$rootScope.currentUser = $scope.getCurrentUser();
+									$rootScope.currentUser = userService.getCurrentUser();
 									if ($rootScope.currentUser != undefined
 											|| $rootScope.currentUser != null) {
 										$rootScope.isProfilePage = true;
@@ -89,6 +86,10 @@ angular
 
 								}
 							}
+							$scope.logout = function () {		
+								   AuthenticationService.ClearCredentials();  
+								   $rootScope.isProfilePage=false;
+							   }
 							
 							$scope.batchFiles=function(s){
 								$scope.checkStatus=true;
@@ -104,42 +105,15 @@ angular
 								console.log($scope.batchFiles.filePath)*/
 							}
 
-							$scope.logout = function() {
-								var deferred = $q.defer();
-								var logoutUrl = appConstants.serverUrl+"/login/logOut/"
-										+ $window.sessionStorage["userToken"];
-								$http(
-										{
-											method : "POST",
-											url : logoutUrl,
-											headers : {
-												"userToken" : $window.sessionStorage["userToken"]
-											}
-										})
-										.then(
-												function(result) {
-													$window.sessionStorage["currentUser"] = null;
-													$http.defaults.headers.common['userToken'] = null;
-													$rootScope.currentUser = {
-														roleType : '',
-														email : '',
-														userId : '',
-														userName : '',
-														userToken : ''
-													};
-													$state.go("login");
-													deferred.resolve(result);
-												}, function(error) {
-													deferred.reject(error);
-												});
-
-								return deferred.promise;
-							}
+					
 							// To get application list
 							
 							$scope.init = function() {
 								$scope.inituser();
+								if ($rootScope.currentUser.userId != undefined
+										||$rootScope.currentUser.userId != null) {
 								$scope.userId=$rootScope.currentUser.userId;
+								}
 								$scope.user={};
 								$scope.welcomeMsg=false;
 								//$rootScope.selectedAppId='';
@@ -157,7 +131,7 @@ angular
 									
 								});*/
 								
-								var url =  appConstants.serverUrl+"/login/getUserAuthDetails/" + $window.sessionStorage["userToken"];
+								var url =  appConstants.serverUrl+"/login/getUserAuthDetails/" + $window.sessionStorage.getItem('userToken');
 								
 								$http.get(url).then(function(response) {
 									
@@ -175,9 +149,10 @@ angular
 								$scope.welcomeMsg=true;
 								$scope.appId = appId;
 								$rootScope.selectedAppId=appId;
+								if ($scope.appId  != undefined
+										||$scope.appId  != null) {
 								
-								
-								console.log('user selected app id' , $rootScope.selectedAppId)
+								//console.log('user selected app id' , $rootScope.selectedAppId)
 
 								var url= appConstants.serverUrl+"/api/batchHistoryDetails/" + $scope.appId;
 								
@@ -194,6 +169,7 @@ angular
 									console.log($scope.batchDetailsResult)
 									
 								});
+								}
 							};
 							
 							$scope.doUpload = function() {
@@ -206,6 +182,85 @@ angular
 
 						} ]);
 
+angular.module('cdrApp')
+.factory('AuthenticationService',
+	    [ '$http', '$state',"$window",'$rootScope','appConstants','globalServices','NotificationFactory',
+	    function ($http, $state,$window,$rootScope,appConstants,globalServices,NotificationFactory) {
+	    	
+	        var service = {};
+
+	        service.Login = function (userName, password, callback) {     
+	             //Use this for real authentication
+
+	            $http.post(appConstants.serverUrl+"/login/loginUser", {userName:userName,password:password},
+						{
+					headers : {
+						'Accept' : 'application/json',
+						'Content-Type' : 'application/json'
+					}})
+	                .success(function (response) {  
+	                
+							if(response.message!='failure' && response.data.authStatus){							
+								service.SetCredentials(response);								 
+	                	        callback(response);	
+							} 
+						
+	                   
+	                });		
+
+	        };
+	 
+	        service.SetCredentials = function (response) {        	
+	                 $window.sessionStorage.setItem('userToken',response.data.userToken); 
+	                 $http.defaults.headers.common['userToken'] =response.data.userToken;	           
+	        };
+	 
+	        service.ClearCredentials = function () {
+	        	$rootScope.username="";
+	        	if(globalServices.isUserTokenAvailable()!=null&&globalServices.isUserTokenAvailable()!=undefined){	
+	        		var logoutUrl = appConstants.serverUrl+"/login/logOut/"
+					+ globalServices.isUserTokenAvailable()
+			$http(
+					{
+						method : "POST",
+						url : logoutUrl,
+						headers : {
+							"userToken" : globalServices.isUserTokenAvailable()
+						}
+					})	        	
+	             .success(function (response) {                	
+							if(response){
+								if($rootScope.currentUser.userName!=undefined && $rootScope.currentUser.userName!=null)
+									$rootScope.username=$rootScope.currentUser.userName
+								   NotificationFactory.success($rootScope.username+": Log out Successfully"); 	
+								    $rootScope.isProfilePage=false;
+								    $rootScope.currentUser={};	
+								    $rootScope.username="";
+								 $window.sessionStorage.removeItem('userToken');
+								 $window.sessionStorage.removeItem('currentUser');								 
+								  $http.defaults.headers.common['userToken']==null;
+								 				 
+								  $rootScope.isProfilePage=false;
+								  $state.go("login");
+								  		
+							}else{
+								  NotificationFactory.error($rootScope.username+": Log out Error"); 	
+							}
+								
+						
+	             	       	
+	                
+	             });
+	        	}
+	           
+	        };       
+	      
+	 
+	        return service;
+	    }]);
+
+
+
 angular.module('cdrApp').controller(
 		'settingsController',
 		[
@@ -215,26 +270,48 @@ angular.module('cdrApp').controller(
 				'$window',
 				'$q',
 				'$http',
-				'NotificationFactory','appConstants',
+				'NotificationFactory','appConstants','userService','globalServices','AuthenticationService',
 				function($scope, $state, $rootScope, $window, $q, $http,
-						NotificationFactory,appConstants) {
+						NotificationFactory,appConstants,userService,globalServices,AuthenticationService) {
 					$scope.homepageContent = "settings dashboard page";
+					$scope.inituser = function() {
+						var data = globalServices.isUserTokenAvailable();
+						if (data == null || data == undefined) {
+							$rootScope.isProfilePage = false;
+							$state.go("login");
+						} else {
+							$rootScope.currentUser = userService.getCurrentUser();
+							if ($rootScope.currentUser != undefined
+									|| $rootScope.currentUser != null) {
+								$rootScope.isProfilePage = true;
+							} else {
+								$rootScope.isProfilePage = false;
+								$state.go("login");
+							}
+
+						}
+					}
+					$scope.logout = function () {		
+						   AuthenticationService.ClearCredentials();  
+						   $rootScope.isProfilePage=false;
+					   }
+					$scope.inituser();
 				} ]);
 
 angular
-		.module('cdrApp')
-		.controller(
-				'loginController',
-				[
-						'$scope',
-						'$state',
-						'$rootScope',
-						'$window',
-						'$q',
-						'$http',
-						'NotificationFactory','appConstants',
-						function($scope, $state, $rootScope, $window, $q,
-								$http, NotificationFactory,appConstants) {
+.module('cdrApp')
+.controller(
+		'loginController',
+		[
+				'$scope',
+				'$state',
+				'$rootScope',
+				'$window',
+				'$q',
+				'$http',
+				'NotificationFactory','appConstants','AuthenticationService','userService',
+				function($scope, $state, $rootScope, $window, $q,
+						$http, NotificationFactory,appConstants,AuthenticationService,userService) {
 							$rootScope.isProfilePage = false;
 							$scope.uploadResult='';
 							$rootScope.currentUser = {
@@ -252,127 +329,38 @@ angular
 
 								if ((username != '' && username != null && username != undefined)
 										&& (password != '' && password != null && password != undefined)) {
-
-									$http
-											.post(
-													 appConstants.serverUrl+"/login/loginUser",
-													{
-														userName : username,
-														password : password
-													},
-													{
-														headers : {
-															'Accept' : 'application/json',
-															'Content-Type' : 'application/json'
-														}
-													})
-											.then(
-													function(response) {
-														//console.log(response)
-														if (!response.data) {
-															NotificationFactory.error("Invalid Credentials");
-															$state.go("login");
-															 // NotificationFactory.clear();
-											            	  NotificationFactory.error("Invalid Credentials");
-											            	  NotificationFactory.success("Invalid Credentials");
-														} else {
-
-															/*if (response.data.data.userToken!=null && response.data.data.userToken!=undefined) {*/
-															if (response.data.message!="failure") {
-																$http.defaults.headers.common['userToken'] = response.data.data.userToken ? response.data.data.userToken
-																		: null;
-																$window.sessionStorage["userToken"] = response.data.data.userToken;
-																var data = $scope
-																		.isUserTokenAvailable();
-																if (data == null
-																		|| data == undefined) {
-																	$rootScope.isProfilePage = false;
-																	$state
-																			.go("login");
-																	 NotificationFactory.error("Invalid Credentials");
-																} else {
-																	$scope
-																			.setCurrentUser();
-																	$rootScope.currentUser = $scope
-																			.getCurrentUser();
-															if ($rootScope.currentUser != undefined
-																			|| $rootScope.currentUser != null) {
-																		$rootScope.isProfilePage = true;
-																		
-																		$state
-																				.go("home");
-																		 NotificationFactory.clear();
-														            	  NotificationFactory.success("welcome! "+$rootScope.currentUser.userName);
-																	}
-																}
-
-															} else {
-																$state.go("login");
-																 NotificationFactory.clear();
-																 //NotificationFactory.error("Invalid Credentials");
-																 $scope.uploadResult='Invalid Credentials';
-																 console.log( $scope.uploadResult)
-															}
-
-														}
-													},
-													function(errResponse) {
-														return 'Error while get All';
-													})
-								}
-								;
-
-							};
-
-							$scope.setCurrentUser = function() {
-								$http
-										.get(
-												 appConstants.serverUrl+'/login/getUserDetails/'
-														+ $window.sessionStorage["userToken"])
-										.success(
-												function(response) {
-													if (response.data) {
-														var currentUser = {
+									 AuthenticationService.Login($scope.username, $scope.password, function(response) {
+										    
+										 if(response.message!='failure' && response.data.authStatus){	
+							            	 $http.get(appConstants.serverUrl+'/login/getUserDetails')
+									         .success(function (response) {           	
+									        
+									        		var currentUser = {
 															userId : response.data.userId,
 															email : response.data.email,
 															userName : response.data.userName,
 															roleType : response.data.roleType,
 															userToken : response.data.userToken
 														};
-
-														$rootScope.currentUser = {
-															roleType : currentUser.roleType,
-															email : currentUser.email,
-															userId : currentUser.userId,
-															userName : currentUser.userName,
-															userToken : currentUser.userToken
-														};
-														$window.sessionStorage
-																.setItem(
-																		'currentUser',
-																		JSON
-																				.stringify(currentUser));
-														$rootScope.currentUser = currentUser;
-														if (!$rootScope.$$phase)
-															$rootScope.$apply();
-													}
-
-												});
-
-							}
-							$scope.getCurrentUser = function() {
-
-								if ($window.sessionStorage
-										.getItem('currentUser')) {
-									return JSON.parse($window.sessionStorage
-											.getItem('currentUser'));
+									        	 AuthenticationService.SetCredentials(response);
+									        	 $window.sessionStorage.setItem('currentUser', JSON.stringify(currentUser));				        	
+									        	 $rootScope.currentUser=userService.getCurrentUser();				        	
+										            $rootScope.isProfilePage=true; 
+										            $state.go("home");
+										            NotificationFactory.clear();
+									            	NotificationFactory.success("welcome! "+$rootScope.currentUser.userName);
+									         });          	
+							            	 
+							             } else {     
+							            	 NotificationFactory.clear();
+											 NotificationFactory.error("Invalid Credentials");
+							             }
+							         });
+					
 								}
-							};
+								;
 
-							$scope.isUserTokenAvailable = function() {
-								return $window.sessionStorage
-										.getItem('userToken');
-							}
+							};						
 
 						} ]);
 
@@ -384,9 +372,9 @@ angular.module('cdrApp').controller(
 				'$http',
 				'$window',
 				'$state',
-				'NotificationFactory','appConstants',
+				'NotificationFactory','appConstants','userService','globalServices','AuthenticationService',
 				function($scope, $rootScope, $http, $window, $state,
-						NotificationFactory,appConstants) {
+						NotificationFactory,appConstants,userService,globalServices,AuthenticationService) {
 
 					$rootScope.isProfilePage = false;
 					$rootScope.currentUser = {
@@ -403,24 +391,13 @@ angular.module('cdrApp').controller(
 					$scope.serverFolders = [];
 					$scope.serverFoldersResult = [];
 					
-
-					$scope.getCurrentUser = function() {
-
-						if ($window.sessionStorage.getItem('currentUser')) {
-							return JSON.parse($window.sessionStorage
-									.getItem('currentUser'));
-						}
-					};
-					$scope.isUserTokenAvailable = function() {
-						return $window.sessionStorage.getItem('userToken');
-					}
 					$scope.inituser = function() {
-						var data = $scope.isUserTokenAvailable();
+						var data = globalServices.isUserTokenAvailable();
 						if (data == null || data == undefined) {
 							$rootScope.isProfilePage = false;
 							$state.go("login");
 						} else {
-							$rootScope.currentUser = $scope.getCurrentUser();
+							$rootScope.currentUser = userService.getCurrentUser();
 							if ($rootScope.currentUser != undefined
 									|| $rootScope.currentUser != null) {
 								$rootScope.isProfilePage = true;
@@ -431,6 +408,10 @@ angular.module('cdrApp').controller(
 
 						}
 					}
+					$scope.logout = function () {		
+						   AuthenticationService.ClearCredentials();  
+						   $rootScope.isProfilePage=false;
+					   }
 
 					$scope.setFile = function(file, index) {
 						
@@ -487,7 +468,8 @@ angular.module('cdrApp').controller(
 						
 						//$scope.appId = $rootScope.selectedAppId;
 						console.log("upload screen selected app id" , $scope.appId)
-
+if ($rootScope.selectedAppId != undefined
+									|| $rootScope.selectedAppId != null) {
 						var url =  appConstants.serverUrl+"/api/serverfolders/" + $rootScope.selectedAppId;
 
 						var data = new FormData();
@@ -500,6 +482,7 @@ angular.module('cdrApp').controller(
 							$scope.serverFoldersResult = response.data;
 							 $("#upload").show();
 						});
+}
 					};
 					$scope.init = function() {
 						$scope.inituser();
@@ -553,3 +536,24 @@ angular.module('cdrApp').factory('NotificationFactory', function(toastr) {
 		}
 	};
 });
+
+'use strict';
+angular.module('cdrApp').run([
+			'$state','$http','$rootScope','globalServices','userService',function ( $state,$http,$rootScope,globalServices,userService) {
+				
+	   $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams) {	
+	    var requireLogin = toState.data.requireLogin;
+	    $rootScope.currentUser=userService.getCurrentUser();	
+			
+	    if ((requireLogin && typeof $rootScope.currentUser === 'undefined')|| (typeof globalServices.isUserTokenAvailable()=== 'undefined'))
+		 {	 
+	    	$rootScope.isProfilePage=false;
+	        return $state.go('login');	        
+	    }else{	    	
+	    	$rootScope.isProfilePage=true;
+	    }	  
+	    
+	  });
+	   
+
+	}]);
