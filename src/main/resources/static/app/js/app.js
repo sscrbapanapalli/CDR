@@ -110,7 +110,8 @@ angular
 							
 							$scope.init = function() {
 								$scope.inituser();
-								if ($rootScope.currentUser.userId != undefined
+								if ($rootScope.currentUser!=undefined )
+									if($rootScope.currentUser.userId != undefined
 										||$rootScope.currentUser.userId != null) {
 								$scope.userId=$rootScope.currentUser.userId;
 								}
@@ -190,9 +191,7 @@ angular.module('cdrApp')
 	        var service = {};
 
 	        service.Login = function (userName, password, callback) {     
-	             //Use this for real authentication
-
-	            $http.post(appConstants.serverUrl+"/login/loginUser", {userName:userName,password:password},
+	           $http.post(appConstants.serverUrl+"/login/loginUser", {userName:userName,password:encryptString (password)},
 						{
 					headers : {
 						'Accept' : 'application/json',
@@ -332,7 +331,7 @@ angular
 									 AuthenticationService.Login($scope.username, $scope.password, function(response) {
 										    
 										 if(response.message!='failure' && response.data.authStatus){	
-							            	 $http.get(appConstants.serverUrl+'/login/getUserDetails')
+							            	 $http.get(appConstants.serverUrl+'/login/getUserDetails/'+$window.sessionStorage.getItem('userToken'))
 									         .success(function (response) {           	
 									        
 									        		var currentUser = {

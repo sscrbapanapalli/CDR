@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,8 @@ import com.cmacgm.cdrserver.model.UserHomeModel;
 import com.cmacgm.cdrserver.model.UserLoginModel;
 import com.cmacgm.cdrserver.model.UserModel;
 import com.cmacgm.cdrserver.repository.UserRepository;
+import com.security.SecurityInfo;
+import com.security.SecurityUtil;
 
 /**
  * @filename LoginController.java(To Validate user login credentials across
@@ -59,15 +62,14 @@ public class LoginController {
 		try {
 			if (user.getUserName() != null && user.getPassword() != null
 					|| user.getUserName().trim() != "" && user.getPassword().trim() != "") {
-				String username = user.getUserName();
-				String password = user.getPassword();
+				String username = user.getUserName();			
 				String[] words = username.split("@");
 				if (words[0] != null)
 					username = words[0];
 				username = username.toUpperCase();
 				// System.out.println(" in cdr server login controller"+username
 				// + "-" + password );
-				authStatus = ActiveDirectory.getActiveDirectoryAuthentication(username, password);
+				authStatus = ActiveDirectory.getActiveDirectoryAuthentication(username, decrypt(user.getPassword()));
           
 			     if(authStatus){
 						String token = generateToken(username);
@@ -87,6 +89,80 @@ public class LoginController {
 			return FrameworkUtil.getResponseValue(true, "failure", null);
 		}
 	}
+	
+	
+	 /**
+     * Parameter input will be in format of string that will be prepared by
+     * concatenating parameters - cipherText, iv, salt, passPhrase, keySize,
+     * iterationCount in a random order. And at last indices will also be part
+     * of this string where 3 random indices will be converted to corresponding
+     * alphabet. e.g. 0-represents a , 1-represents b and so on..
+     *
+     * At 0th position there will always be CipherText At 1st position -> IV At
+     * 2nd position -> SALT At 3rd position -> PassPhrase At 4th position ->
+     * IterationCount At 5th position -> KeySize At 6th position -> Indices [ in
+     * which above six are randomized]
+     *
+     * @param input ciphered
+     * @return String
+     */
+    public static String decrypt( String input ) {
+
+        String DL = "__bcdef567kop48__";
+
+        String[] values = input.split( DL );
+        // last element indicates indices
+        String indices = values[values.length - 1];
+        int[] indexes = convert( indices );
+        SecurityInfo securityInfo = new SecurityInfo( values, indexes );
+        SecurityUtil aesUtil = new SecurityUtil( securityInfo.getKeySize(), securityInfo.getIterationCount() );
+
+        return aesUtil.decrypt( securityInfo.getSalt(), securityInfo.getIv(), securityInfo.getPassPhrase(), securityInfo.getCipherText() );
+
+    }
+
+    public static boolean hasValue( String value ) {
+        return !StringUtils.isEmpty( value );
+    }
+
+    public static int getInt( String s ) {
+
+        if ( StringUtils.isNumeric(s) && hasValue( s ) ) {
+            return Integer.parseInt( s );
+        }
+
+        return 0;
+    }
+
+    private static int[] convert( String indices ) {
+        String[] indexes = indices.split( "," );
+
+        int[] ints = new int[indexes.length];
+
+        for ( int i = 0; i < indexes.length; i++ ) {
+            String s = getNum( indexes[i] );
+            ints[i] = getInt( s );
+        }
+        return ints;
+    }
+
+    private static String getNum( String s ) {
+        switch ( s ) {
+            case "a":
+                return "0";
+            case "b":
+                return "1";
+            case "c":
+                return "2";
+            case "d":
+                return "3";
+            case "e":
+                return "4";
+            case "f":
+                return "5";
+        }
+        return s;
+    }
 
 	public String generateToken(String username) throws Exception {
 		String combination = String.valueOf(username) + new Date() + HASH_SECRET_KEY;
@@ -115,8 +191,8 @@ public class LoginController {
 
 	}
 
-	@RequestMapping(value = "/getUserDetails", method = RequestMethod.GET)
-	public @ResponseBody RetValue<UserModel> getUserDetails()
+	@RequestMapping(value = "/getUserDetails/{userToken}", method = RequestMethod.GET)
+	public @ResponseBody RetValue<UserModel> getUserDetails(@PathVariable("userToken") String userToken)
 			throws Exception {
 		UserModel userModel = null;
 		if (httpSession.getAttribute("userName") != null && httpSession.getAttribute("userToken") != null) {
