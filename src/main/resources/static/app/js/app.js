@@ -180,6 +180,34 @@ angular
 								$scope.checkStatus=false;
 								
 							}
+							$scope.doReverse = function(){
+								console.log('in  do reverese')
+								
+								var config = {
+										transformRequest : angular.identity,
+										transformResponse : angular.identity,
+										headers : {
+											'Content-Type' : undefined
+										}
+									}
+								if($rootScope.currentUser!=undefined){
+								var url=appConstants.serverUrl+"/api/reverseUpload/";
+								var data = new FormData();
+								data.append("applicationId" , $scope.appId);
+								data.append("userName", $rootScope.currentUser.userName);
+								console.log(data)
+								$http.post(url,data,config).then(
+										function(response){
+											
+											$scope.reverseResult=response.data;
+										},function(response){
+											
+											$scope.reverseResult=response.data;
+										});
+								console.log('reverse response :', $scope.reverseResult)
+								}
+							
+							}
 
 						} ]);
 

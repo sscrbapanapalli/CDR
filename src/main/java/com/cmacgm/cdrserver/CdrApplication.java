@@ -18,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableJpaRepositories
 public class CdrApplication  extends SpringBootServletInitializer  {
 
+	
 	   protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 	        return application.sources(CdrApplication.class);
 	    }

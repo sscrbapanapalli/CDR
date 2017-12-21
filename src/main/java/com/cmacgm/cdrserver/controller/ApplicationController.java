@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,18 +117,19 @@ public class ApplicationController {
 	    String etlStatus="null";
 	    String s1="null";
 	    String etlProcessed="N";
-	    List<String> fileList=new ArrayList<>();
-	    
-	   // boolean activeIndicator=true;
-	    applicationId=Long.parseLong(request.getParameter("applicationId"));
-	    userName=request.getParameter("userName");
-	    batchUploadMonth=request.getParameter("selectedMonth");
-	    System.out.println("appName in server" + applicationId);
-	    Application application = applicationRepository.findById(applicationId);
 	    List<BatchFileDetail> batchFileDetailList=new ArrayList<>();
 	    BatchHistoryDetail batchHistoryDetail=new BatchHistoryDetail();
 	    BatchHistoryDetail batchuploadCheck=new BatchHistoryDetail();
 	    BatchHistoryDetail obj=new BatchHistoryDetail();
+	    List<String> fileList=new ArrayList<>();
+	   // boolean activeIndicator=true;
+	    applicationId=Long.parseLong(request.getParameter("applicationId"));
+	    userName=request.getParameter("userName");
+	    batchUploadMonth=request.getParameter("selectedMonth");
+	    //System.out.println("appName in server" + applicationId);
+	    
+	    Application application = applicationRepository.findById(applicationId);
+	    List<ApplicationFileUploadConfig> applicationFileUploadConfig = applicationFileUploadConfigRepository.findByApplication(application);
 	    Date dNow = new Date();
 	       SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
 	       String batchId = ft.format(dNow);
@@ -135,17 +137,21 @@ public class ApplicationController {
 	    /*Calendar c = Calendar.getInstance();
 		   String batchUploadMonth=c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH );*/
 		   
-		List<ApplicationFileUploadConfig> applicationFileUploadConfig = applicationFileUploadConfigRepository.findByApplication(application);
+		
 		MultipartHttpServletRequest multipart = (MultipartHttpServletRequest) request;
 		//batchuploadCheck=batchHistoryDetailsRepository.findByAppIdAndBatchUploadMonthAndBatchUploadStatus(applicationId,batchUploadMonth,batchUploadStatus);
 		//System.out.println("batchuploadCheck:" + batchuploadCheck);
-		System.out.println("test");
+		System.out.println("null check" + batchUploadMonth +  ":"+ +applicationId);
 		obj=batchHistoryDetailsRepository.findByTop(batchUploadMonth,applicationId);
+		/*if (obj==null){
+		System.out.println("ramarmarmar" + obj);
+		etlStatus=null;
+		}*/
 		etlStatus=obj.getEtlProcessed();
-		System.out.println("etlStatus1:" + etlStatus);
-		if(etlStatus==null || etlStatus.equals("X") ){ //Validation check- upload already completed for selected month or not
+		System.out.println("etlStatus:" + etlStatus);
+		if(obj==null || etlStatus==null || etlStatus.equals("X") ){ //Validation check- upload already completed for selected month or not
 			 
-			System.out.println("batchuploadCheck is null1");
+			//System.out.println("batchuploadCheck is null1");
 	        Iterator<String> fileNames = multipart.getFileNames();
 	        while(fileNames.hasNext()){
 	        	MultipartFile fileContents = multipart.getFile(fileNames.next());
@@ -154,9 +160,9 @@ public class ApplicationController {
 	        
 	        Set<String> filteredSet = new HashSet<String>(fileList);
 	        
-	        System.out.println("file list size" + fileList.size());
+	        /*System.out.println("file list size" + fileList.size());
 	        System.out.println("file list size" + filteredSet.size());
-	        System.out.println("actu size"+ applicationFileUploadConfig.size());
+	        System.out.println("actu size"+ applicationFileUploadConfig.size());*/
 	        if(fileList.size()==applicationFileUploadConfig.size()){
 	        if(fileList.size()==filteredSet.size()){
 	        	System.out.println("in side second while loop");
@@ -164,18 +170,19 @@ public class ApplicationController {
 	         while (uploadFileNames.hasNext()) { // Get List of files from Multipart Request.
 	        	 
 	            MultipartFile fileContent = multipart.getFile(uploadFileNames.next());
-	           
-	            String folderpath=applicationFileUploadConfig.get(i).getFileTrgtPath();
 	            String folderCaption=applicationFileUploadConfig.get(i).getFolderCaption();
+	            String folderpath=applicationFileUploadConfig.get(i).getFileTrgtPath()+folderCaption;
+	            String fileName=applicationFileUploadConfig.get(i).getFileNamePrefix();
+	            System.out.println("check file anme format" +fileName);
 	            File dir = new File(folderpath);
 	            if (!dir.exists())
 					dir.mkdirs();
 	            
-	            String fileTrgtPath= dir.getAbsolutePath() + File.separator + fileContent.getOriginalFilename();
+	            String fileTrgtPath= dir.getAbsolutePath() + File.separator + fileName;
 				System.out.println("file target path"+ fileTrgtPath );		
 	            BatchFileDetail batchFileDetail=new BatchFileDetail();
 	            //batchFileDetail.setActiveIndicator(activeIndicator);
-	            batchFileDetail.setBatchFileName(fileContent.getOriginalFilename());
+	            batchFileDetail.setBatchFileName(fileName);
 	            batchFileDetail.setBatchFileTrgtPath(fileTrgtPath);
 	            batchFileDetail.setFolderCaption(folderCaption);
 	            batchFileDetail.setCreatedBy(userName);
@@ -184,7 +191,7 @@ public class ApplicationController {
 	            	            
 	            System.out.println("Check Folder Path in server"+folderpath);
 	            
-	            uploadResponse=uploadMultipleFileHandler(fileContent,folderpath);
+	            uploadResponse=uploadMultipleFileHandler(fileContent,folderpath,fileName);
 	             
 	           i++;
 	            
@@ -200,7 +207,7 @@ public class ApplicationController {
 		}
 		}else{
 			System.out.println("batchuploadCheck is null sdfsdgs"+ uploadResponse);
-			uploadResponse="Batch Upload for selected month: "+batchUploadMonth+" completed with batch id: "+ obj.getBatchId();
+			uploadResponse="Batch Upload failed as selected month batch already uploaded with batch id: "+ obj.getBatchId();
 			
 		}
 	         
@@ -225,7 +232,7 @@ public class ApplicationController {
 	    }
 	    
  
-	    private String uploadMultipleFileHandler( MultipartFile file,String folderPath) throws IOException {
+	    private String uploadMultipleFileHandler( MultipartFile file,String folderPath,String fileName) throws IOException {
 	    	String serverResponse="";
 	    	BufferedOutputStream stream=null;
 			
@@ -241,7 +248,7 @@ public class ApplicationController {
 
 				// Create the file on server
 				File serverFile = new File(dir.getAbsolutePath()
-						+ File.separator + file.getOriginalFilename());
+						+ File.separator + fileName);
 				System.out.println(serverFile);	
 				stream = new BufferedOutputStream(
 						new FileOutputStream(serverFile));
@@ -256,6 +263,7 @@ public class ApplicationController {
 				 
 			return serverResponse;
 			} catch (Exception e) {
+				System.out.println(e);
 				e.getMessage();
 				 serverResponse="Files Upload Failure";
 					return serverResponse; 
@@ -267,4 +275,94 @@ public class ApplicationController {
 		}
 		
 	}
+	    
+	    
+	    @RequestMapping(value = "/reverseUpload", method = RequestMethod.POST , produces="application/json")
+	    public @ResponseBody String reverseUpload(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
+	    	System.out.println("In Do Reverse Method"); 
+	    	String serverResponse="";
+	    	String batchUploadStatus="Upload";
+	    	String batchUploadStatusModified="Reverse";
+	    	String etlProcessed="N";
+	    	String etlModified="X";
+	    	String source="";
+	    	String destination="";
+	    	String userName=request.getParameter("userName");
+	    	Long appId=Long.parseLong(request.getParameter("applicationId"));
+	    	 Date dNow = new Date();
+		       SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
+		       String batchId = ft.format(dNow);
+	    	
+	    	BatchHistoryDetail batchUpdate= new BatchHistoryDetail();
+	    	
+	    	batchUpdate=batchHistoryDetailsRepository.findByEtlProcessed(batchUploadStatus,appId,etlProcessed);
+	    	System.out.println("hjsbjfhg" + batchUpdate);
+	    	if(batchUpdate!=null){
+	    	batchUpdate.setEtlProcessed(etlModified);
+	    	batchUpdate.setUpdatedBy(userName);
+	    	batchHistoryDetailsRepository.save(batchUpdate);
+	    	
+	    	//To move files from destination to archive path
+	    	 Application application = applicationRepository.findById(appId);
+	 	    List<ApplicationFileUploadConfig> applicationFileUploadConfig = applicationFileUploadConfigRepository.findByApplication(application);
+	    	
+	 	   source=applicationFileUploadConfig.get(1).getFileTrgtPath();
+	 	   destination=applicationFileUploadConfig.get(1).getFileAckPath()+batchId;
+	 	   File destDir = new File(destination);
+           File srcDir = new File(source);
+	 	   /* for(ApplicationFileUploadConfig archiveProcess:applicationFileUploadConfig){
+	    		 source=archiveProcess.getFileTrgtPath();
+	    		 destination=archiveProcess.getFileAckPath()+batchId;
+	    		File destDir = new File(destination);
+	            File srcDir = new File(source);
+	            String ArchiveResult=archiveFiles(destDir,srcDir);
+	    	}*/
+	    	//String ArchiveResult=archiveFiles(destDir,srcDir);
+	    	
+	    	
+	    	// To insert new record for Reverse process
+	    	BatchHistoryDetail batchReverse= new BatchHistoryDetail();
+	    	batchReverse.setAppId(batchUpdate.getAppId()); 
+	    	//batchReverse.setBatchFileDetailList(batchUpdate.getBatchFileDetailList());
+	    	batchReverse.setBatchId(batchId);
+	    	batchReverse.setBatchUploadMonth(batchUpdate.getBatchUploadMonth());
+       	// batchHistoryDetail.setActiveIndicator(activeIndicator);
+	    	batchReverse.setBatchUploadStatus(batchUploadStatusModified);
+	    	batchReverse.setBatchUploadUserName(batchUpdate.getBatchUploadUserName());
+	    	batchReverse.setCreatedBy(userName);
+	    	batchReverse.setUpdatedBy(userName);
+	    	batchReverse.setEtlProcessed(batchUpdate.getEtlProcessed());
+	    	System.out.println(batchReverse);
+	    	batchHistoryDetailsRepository.save(batchReverse);
+	    	
+	    	serverResponse="Reverse for batch id: "+batchUpdate.getBatchId()+" for uploaded month "+batchUpdate.getBatchUploadMonth()+" completed";
+	    	
+	    	System.out.println(" reverseResponse:"+serverResponse);
+	    	}else{
+	    		serverResponse="No batch found to reverse"; 
+	    		System.out.println("reverseResponse:"+serverResponse);
+	    	}
+	    	logger.info(serverResponse);
+	    	
+	    	return serverResponse;
+	    }
+	    
+	    public String archiveFiles(File srcDir,File arcDir){
+	    	String archiveResult="";
+	    	 try {
+	             // Move the source directory to the destination directory.
+	             // The destination directory must not exists prior to the
+	             // move process.
+	             FileUtils.moveDirectory(srcDir, arcDir);
+	              archiveResult= "Files moved to Archive Folder";
+	         } catch (IOException e) {
+	             e.printStackTrace();
+	              archiveResult="Failed to move files to archive folder";
+	         }
+	    	 logger.info(archiveResult);
+	    	return archiveResult;
+	    }
+	    
 }
+
+
