@@ -227,10 +227,11 @@ angular.module('cdrApp')
 					}})
 	                .success(function (response) {  
 	                
-							if(response.message!='failure' && response.data.authStatus){							
-								service.SetCredentials(response);								 
-	                	        callback(response);	
+							if(response.message!='failure' && response.data.authStatus){
+								console.log('app.js 231', response)
+								service.SetCredentials(response);		                	       
 							} 
+							 callback(response);	
 						
 	                   
 	                });		
@@ -348,6 +349,7 @@ angular
 								userName : '',
 								userToken : ''
 							};
+							$scope.uploadResult='';
 						
 							$scope.userLogin = function() {
 
@@ -357,10 +359,11 @@ angular
 								if ((username != '' && username != null && username != undefined)
 										&& (password != '' && password != null && password != undefined)) {
 									 AuthenticationService.Login($scope.username, $scope.password, function(response) {
-										    
+										    console.log(response.message)
 										 if(response.message!='failure' && response.data.authStatus){	
 							            	 $http.get(appConstants.serverUrl+'/login/getUserDetails/'+$window.sessionStorage.getItem('userToken'))
-									         .success(function (response) {           	
+									         .success(function (response) {   
+									        	 console.log('login response' , response)
 									        
 									        		var currentUser = {
 															userId : response.data.userId,
@@ -374,13 +377,14 @@ angular
 									        	 $rootScope.currentUser=userService.getCurrentUser();				        	
 										            $rootScope.isProfilePage=true; 
 										            $state.go("home");
-										            NotificationFactory.clear();
-									            	NotificationFactory.success("welcome! "+$rootScope.currentUser.userName);
+										            NotificationFactory.clear();										           
+									            	//NotificationFactory.success("welcome! "+$rootScope.currentUser.userName);
 									         });          	
 							            	 
 							             } else {     
 							            	 NotificationFactory.clear();
 											 NotificationFactory.error("Invalid Credentials");
+											 $scope.uploadResult='Invalid Credentials';											
 							             }
 							         });
 					
@@ -463,6 +467,7 @@ angular.module('cdrApp').controller(
 						data.append("applicationId",$rootScope.selectedAppId);
 						data.append("userName", $rootScope.currentUser.userName);
 						data.append("selectedMonth",selectedMonth)
+						console.log('selectedMonth' , selectedMonth)
 					console.log('data for upload' , data)
 						if (data != undefined)
 							$scope.UploadFileIndividual(data);

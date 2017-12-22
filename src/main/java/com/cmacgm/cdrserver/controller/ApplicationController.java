@@ -143,13 +143,14 @@ public class ApplicationController {
 		//System.out.println("batchuploadCheck:" + batchuploadCheck);
 		System.out.println("null check" + batchUploadMonth +  ":"+ +applicationId);
 		obj=batchHistoryDetailsRepository.findByTop(batchUploadMonth,applicationId);
+		System.out.println("test" + obj);
 		/*if (obj==null){
 		System.out.println("ramarmarmar" + obj);
 		etlStatus=null;
 		}*/
-		etlStatus=obj.getEtlProcessed();
-		System.out.println("etlStatus:" + etlStatus);
-		if(obj==null || etlStatus==null || etlStatus.equals("X") ){ //Validation check- upload already completed for selected month or not
+		//etlStatus=obj.getEtlProcessed();
+		//System.out.println("etlStatus:" + etlStatus);
+		if(obj==null || obj.getEtlProcessed()==null || obj.getEtlProcessed().equals("X") ){ //Validation check- upload already completed for selected month or not
 			 
 			//System.out.println("batchuploadCheck is null1");
 	        Iterator<String> fileNames = multipart.getFileNames();

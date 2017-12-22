@@ -42,7 +42,7 @@ public class BatchHistoryDetail implements Serializable {
     
     @Column(name="batch_id")
     private String batchId;
-    @Column(name="batch_upload_month",length = 10)
+    @Column(name="batch_upload_month",length = 100)
     private String batchUploadMonth;  
     @Column(name="batch_upload_user_name",length = 100)
     private String batchUploadUserName;

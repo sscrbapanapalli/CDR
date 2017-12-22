@@ -26,7 +26,7 @@ public class BatchFileDetail {
     private String batchId;
     @Column(name="batch_file_name",length = 100)
     private String batchFileName;  
-    @Column(name="batch_file_trgt_path",length = 100)
+    @Column(name="batch_file_trgt_path",length = 150)
     private String batchFileTrgtPath;
     @Column(name="folder_caption",length = 100)
     private String folderCaption;
