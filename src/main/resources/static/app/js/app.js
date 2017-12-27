@@ -152,10 +152,14 @@ angular
 								$rootScope.selectedAppId=appId;
 								if ($scope.appId  != undefined
 										||$scope.appId  != null) {
+									
+									$window.sessionStorage.setItem('appId',appId); 
+					                 $http.defaults.headers.common['appId'] =appId;
 								
-								//console.log('user selected app id' , $rootScope.selectedAppId)
+								console.log('user selected app id' , $rootScope.selectedAppId)
+								console.log('user selected app id in session' , $window.sessionStorage.getItem('appId'))
 
-								var url= appConstants.serverUrl+"/api/batchHistoryDetails/" + $scope.appId;
+								var url= appConstants.serverUrl+"/api/batchHistoryDetails/" + $window.sessionStorage.getItem('appId');
 								
 								console.log(url)
 								var data = new FormData();
@@ -228,7 +232,6 @@ angular.module('cdrApp')
 	                .success(function (response) {  
 	                
 							if(response.message!='failure' && response.data.authStatus){
-								console.log('app.js 231', response)
 								service.SetCredentials(response);		                	       
 							} 
 							 callback(response);	
@@ -260,12 +263,14 @@ angular.module('cdrApp')
 							if(response){
 								if($rootScope.currentUser.userName!=undefined && $rootScope.currentUser.userName!=null)
 									$rootScope.username=$rootScope.currentUser.userName
-								   NotificationFactory.success($rootScope.username+": Log out Successfully"); 	
+								   //NotificationFactory.success($rootScope.username+": Log out Successfully"); 	
 								    $rootScope.isProfilePage=false;
 								    $rootScope.currentUser={};	
 								    $rootScope.username="";
 								 $window.sessionStorage.removeItem('userToken');
-								 $window.sessionStorage.removeItem('currentUser');								 
+								 $window.sessionStorage.removeItem('currentUser');		
+								 $window.sessionStorage.removeItem('appId');
+								
 								  $http.defaults.headers.common['userToken']==null;
 								 				 
 								  $rootScope.isProfilePage=false;
@@ -421,6 +426,7 @@ angular.module('cdrApp').controller(
 					$scope.filePath = [];
 					$scope.serverFolders = [];
 					$scope.serverFoldersResult = [];
+					$scope.sessionAppId=$window.sessionStorage.getItem('appId');
 					
 					$scope.inituser = function() {
 						var data = globalServices.isUserTokenAvailable();
@@ -497,13 +503,15 @@ angular.module('cdrApp').controller(
 
 					$scope.appServerFolder = function() {
 						
-						
+						$scope.sessionApp=$window.sessionStorage.getItem('appId');
 						//$scope.appId = $rootScope.selectedAppId;
-						console.log("upload screen selected app id" , $scope.appId)
-if ($rootScope.selectedAppId != undefined
-									|| $rootScope.selectedAppId != null) {
-						var url =  appConstants.serverUrl+"/api/serverfolders/" + $rootScope.selectedAppId;
-
+						console.log('upload screen sessionApp app id' , $window.sessionStorage.getItem('appId'))
+						console.log('upload screen sessionApp' , $scope.sessionApp)
+						console.log('upload screen $rootScope.selectedAppId' , $rootScope.selectedAppId)
+if ($scope.sessionApp != undefined
+									|| $scope.sessionApp != null) {
+						var url =  appConstants.serverUrl+"/api/serverfolders/" + $scope.sessionApp;
+						console.log('app server folder url:' , url)
 						var data = new FormData();
 
 						$http.get(url).then(function(response) {

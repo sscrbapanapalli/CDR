@@ -172,8 +172,10 @@ public class ApplicationController {
 	        	 
 	            MultipartFile fileContent = multipart.getFile(uploadFileNames.next());
 	            String folderCaption=applicationFileUploadConfig.get(i).getFolderCaption();
-	            String folderpath=applicationFileUploadConfig.get(i).getFileTrgtPath()+folderCaption;
-	            String fileName=applicationFileUploadConfig.get(i).getFileNamePrefix();
+	            //String folderpath=applicationFileUploadConfig.get(i).getFileTrgtPath()+folderCaption;
+	            String folderpath=applicationFileUploadConfig.get(i).getFileTrgtPath();
+	           // String fileName=applicationFileUploadConfig.get(i).getFileNamePrefix();
+	            String fileName=fileContent.getOriginalFilename();
 	            System.out.println("check file anme format" +fileName);
 	            File dir = new File(folderpath);
 	            if (!dir.exists())

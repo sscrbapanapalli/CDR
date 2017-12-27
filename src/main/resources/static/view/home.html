@@ -26,16 +26,17 @@ $(document).ready(function() {
 	<div class="overall">		
        <nav class="navbar">
        
-       <ul > <li><a ui-sref="home" ><span class="icon fa fa-home"></span>Home</a></li>       			
+       <ul > <li><a ui-sref="home" ><span class="icon fa fa-home"></span>Home</a> 
+       <span class="divider"></span> </li>     			
        		 <li ng-repeat="application in applications">
-       			 <a  id="{{application.appName}}"  ng-click="batchHistoryDetails(application.id);" ng-model="application.id">{{application.appName}}</a><!-- <a  class="active" name="appName" id="getpaid" ng-model="appName" href="#" ng-click="appServerFolder($event)"><span class="icon fa fa-table"></span>GETPAID</a> -->       			
+       			 <a  id="{{application.appName}}"  ng-click="batchHistoryDetails(application.id);" ng-model="application.id">{{application.appName}}</a>       			
        				<span class="divider"></span>
        		 </li>
        		 
        		  <!-- <li><a   ui-sref="settings" ><span class="icon fa "></span>Admin Settings</a></li> -->
        		  
        		 <!-- <li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_ADMIN' " ui-sref="settings" ><span class="icon fa "></span>Settings</a></li>  -->      			
-       				<span class="divider"></span>
+       				 <!-- <span class="divider"></span> --> 
        			</ul>
        		
        </nav>
