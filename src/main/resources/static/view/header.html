@@ -1,14 +1,17 @@
 	<div id="main" ng-controller="homeController">
-	       	 <div id="header-left"></div>
+	       	 <div id="header-left">
+	       	 <div align="left">
+					<img style="width:150px;height:60px;padding-top:5px;" alt="logo" src="./app/images/Logo_CMACGM.png" />
+				</div>
+	       	 </div>
 	       	 <div id="header-middle">
 				<div align="center">
 					<img style="width:150px;height:60px" alt="logo" src="./app/images/Logo_CDR.png" />
 				</div>
 			</div> 
 	        <div id="header-right">
-				
-				<a  style="float:right;padding-top:20px; padding-right:35px;color:white;font-size: 15px;" ng-click="logout()">Log Out</a>
-				 <div style="float:left;padding-top:20px;padding-left:35px;color:white;font-size: 15px;">User Name : {{currentUser.userName}}</div>
+				<div><a  style="float:right;padding-top:20px; padding-right:35px;color:white;font-size: 15px;" ng-click="logout()">Log Out</a></div>
+				 <div style="float:left;margin-left: 50px;padding-top:20px;padding-left:35px;color:white;font-size: 15px;">User Name : {{currentUser.userName}}</div>
 				<div style="float:left;padding-top:20px;padding-right:10px;padding-left:35px;color:white;font-size: 15px;">
 					<div id="currentdate"></div>
 					<div id="currenttime"></div>

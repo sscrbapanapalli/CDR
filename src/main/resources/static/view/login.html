@@ -61,6 +61,7 @@ body {margin:0;}
 			                        	<input type="password" name="form-password" ng-model="password" placeholder="Password..." class="form-password form-control" id="form-password"/>
 			                        </div>
 			                        <button type="submit" class="btn" ng-click = "userLogin()">Sign in!</button>
+			                         <div ng-include="'view/loading.html'" ng-show="dataLoading">
 			                        
 			                    </form>
 		                    </div>

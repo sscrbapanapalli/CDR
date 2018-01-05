@@ -1,0 +1,89 @@
+
+.sort-icon {
+    font-size: 9px;
+    margin-left: 5px;
+}
+
+th {
+	cursor:pointer;
+	background-color:#0055a4;
+}
+
+#tablenodata{
+  text-align:center;	
+    font-size: 15px;
+ background: #4b5a6f; 
+ font-style: color:red   
+   
+}
+.mrt10 {
+	margin-bottom: 20px;
+}
+#ui-datepicker-div { display: none; }
+	.table{
+		width:100%; 
+		border-collapse:collapse; 
+		padding:7px; border:#4e95f4 1px solid;
+		
+	}
+		
+   table, th, td {
+			padding:7px; border:#4e95f4 1px solid;
+		}
+		.selected {
+			background-color: lightgreen;
+		}
+		
+		.odd {
+		  background-color: #FFF;
+		}
+		
+		.even {
+		  background-color: #CCC;
+		}
+
+		
+		/* The Modal (background) */
+.modal {
+ 
+    position: fixed; /* Stay in place */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+ 
+   
+}
+
+
+input.reset { color: #c09; font-size: 110%; font-weight: bold;
+  font-family : Arial, Helvetica, sans-serif;
+  background : #ccf none;}
+
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #4CAF50;
+   
+}
+
+.modal-header {
+    min-height: 16.43px;
+    padding: 15px;
+   border-bottom:none;
+}
+/* The Close Button */
+.close {
+    color: #ff0000;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

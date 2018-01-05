@@ -1,98 +1,118 @@
 <!DOCTYPE html>
 
-<html  class="no-js" ng-app="cdrApp" class="ng-cloak" >
+<html class="no-js" ng-app="cdrApp" class="ng-cloak">
 
-    <head>
+<head>
 
-        <meta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <title>CDR Login</title>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CDR Login</title>
 
-        <!-- CSS -->
-       
-        <link rel="stylesheet" href="./app/assets/bootstrap/css/bootstrap.min.css"></link>
-        <link rel="stylesheet" href="./app/assets/font-awesome/css/font-awesome.min.css"></link>
-		<link rel="stylesheet" href="./app/assets/css/form-elements.css"></link>
-        <link rel="stylesheet" href="./app/assets/css/style.css"></link>
-        
-		<link rel="stylesheet" type="text/css" media="screen" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css">
-      	<link rel="stylesheet" type="text/css" href="./app/css/style-top.css" ></link>
+<!-- CSS -->
 
-        <!-- Favicon and touch icons -->
-        <link rel="shortcut icon" href="./app/assets/ico/favicon.png"></link>
-        
-        <style>
-      		#footer{
-    position:fixed;
-    height:50px;
-    background-color:none;
-    bottom:0px;
-    left:0px;
-    right:0px;
-    margin-bottom:0px;
+<link rel="stylesheet"
+	href="./app/assets/bootstrap/css/bootstrap.min.css"></link>
+<link rel="stylesheet" type="text/css"
+	href="./app/pagination/css/bootstrap-theme.min.css">
+<link rel="stylesheet" type="text/css"
+	href="./app/pagination/css/styles.css">
+<link rel="stylesheet" type="text/css"
+	href="./app/pagination/css/loading-bar.css">
+<link rel="stylesheet" type="text/css"
+	href="./app/pagination/css/Spinner.css">
+<link rel="stylesheet"
+	href="./app/assets/font-awesome/css/font-awesome.min.css"></link>
+<!-- <link rel="stylesheet" href="./app/assets/css/form-elements.css"></link> -->
+<link rel="stylesheet" href="./app/assets/css/style.css"></link>
+<link href="./app/css/toaster.css" rel="stylesheet" />
+
+
+<link rel="stylesheet" type="text/css" media="screen"
+	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="./app/css/style-top.css"></link>
+
+<!-- Favicon and touch icons -->
+<link rel="shortcut icon" href="./app/assets/ico/favicon.png"></link>
+
+<style>
+#footer {
+	position: fixed;
+	height: 35px;
+	background-color: #888;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	margin-bottom: 0px;
 }
 
-
-.bg {	
+.bg {
 	background: url(./app/assets/img/backgrounds/1.jpg) no-repeat 0 0;
-    background-size: cover;
-    background-position: center;
-    /* position: absolute; */
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    overflow: hidden;
-    z-index: 0;
+	background-size: cover;
+	background-position: center;
+	/* position: absolute; */
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	overflow: hidden;
+	z-index: 0;
 }
-        </style>
-    </head>
+</style>
+</head>
 
-<body ng-class="isProfilePage==false?'bg':''" ng-cloak>
-
-	<div  ng-include="'view/header.html'" ng-show="isProfilePage" ></div>
-	<div  ng-include="'view/dummy.html'" ng-hide="isProfilePage" ></div>
-	<div  >
-		<div  ui-view></div>
-		</div>
+<body ng-class="isProfilePage==false?'bg':''" class="ng-cloak">
+	<div id="">
+		<header ng-include="'view/header.html'" ng-show="isProfilePage"></header>
 		<div  ng-include="'view/dummy.html'" ng-hide="isProfilePage" ></div>
-	<div id="footer">
-		<div ng-include="'view/footer.html'" ng-show="isProfilePage"  ></div>
-	</div> 
+	</div>
+	<div class="">
+		<div class="col-md-2 col-md-offset-5">
+			<div
+				ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }"
+				ng-if="flash" ng-bind="flash.message"></div>
+		</div>
+		<div ui-view></div>
+	</div>
+	<div  ng-include="'view/dummy.html'" ng-hide="isProfilePage" ></div>
+	<div class="mrt10"></div>
+	<div id="">
+		<footer ng-include="'view/footer.html'" ng-show="isProfilePage"></footer>
+	</div>
 
 
-        <!-- Javascript -->
-       
-    <script src="./jquery/jquery-1.11.2.min.js"></script>	
-    <script src="./app/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="./angular/angular.js"></script>
+	<modal  visible="showModal"> </modal>
+	<!-- Javascript -->
 
-<script type="text/javascript" src="./angular/security/aes.js"></script>
-<script type="text/javascript" src="./angular/security/pbkdf2.js"></script>
-<script type="text/javascript" src="./angular/security/AesUtil.js"></script>
-<script type="text/javascript" src="./angular/security/common.js"></script>
+	<script src="./jquery/jquery-1.11.2.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+
+	<script src="./app/assets/bootstrap/js/bootstrap.min.js"></script>
+	<script src="./angular/angular.js"></script>
+	<script src="./app/pagination/lib/dirPagination.js"></script>
+	<script type="text/javascript" src="./angular/security/aes.js"></script>
+	<script type="text/javascript" src="./angular/security/pbkdf2.js"></script>
+	<script type="text/javascript" src="./angular/security/AesUtil.js"></script>
+	<script type="text/javascript" src="./angular/security/common.js"></script>
 	<script src="./angular/angular-route.js"></script>
 	<script src="./ui-router/angular-ui-router.js"></script>
 	<script src="./angular-toastr/angular-toastr.js"></script>
-	
-	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.js"></script>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 
 
 
 
-	 <script src="./app/js/currentdate.js"></script>
 
-  <script src="./app/js/appConfig.js"></script> 
-    <script src="./app/js/globalServices.js"></script> 
-    
-    <script src="./app/js/app.js"></script>  
-	   <script src="./app/js/userService.js"></script> 
-	
-        
-        <!--[if lt IE 10]>
+
+	<script src="./app/js/currentdate.js"></script>
+
+	<script src="./app/js/appConfig.js"></script>
+	<script src="./app/js/globalServices.js"></script>
+
+	<script src="./app/js/app.js"></script>
+	<script src="./app/js/userService.js"></script>
+
+	<!--[if lt IE 10]>
             <script src="assets/js/placeholder.js"></script>
         <![endif]-->
 

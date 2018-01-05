@@ -27,7 +27,7 @@
  
 	} */
 	
-	 p.ex1 {
+	 p.ext {
     margin-left: 2cm;
 }
     div.box {
@@ -54,6 +54,12 @@
 			font-size: 15px;
 	
 	}
+	p.success{
+			float:left;
+			color:green;
+			font-size: 15px;
+	
+	}
 
 </style>
 
@@ -77,6 +83,13 @@ function myFunction() {
     var x = document.getElementById("startDate").value;
    alert(x);
 }
+
+/* function fnReset()
+{
+alert("ehere");
+window.form1.reset();
+
+} */
 </script>
 
 	<div  ng-controller="uploadController" ng-init="appServerFolder()">
@@ -85,7 +98,7 @@ function myFunction() {
 	
 		
        <nav class="navbar">
-       		<ul > <li><a ui-sref="home" ><span class="icon fa fa-home"></span>Home</a></li>       			
+       		<ul > <li><a ui-sref="home" ui-sref-opts="{reload:true}" ><span class="icon fa fa-home"></span>Home</a></li>       			
        				
        				<!-- <li ng-repeat="application in applications">
        			 <a  id="{{application.appName}}"  ng-click="appServerFolder(application.id);" ng-model="application.id">{{application.appName}}</a><a  class="active" name="appName" id="getpaid" ng-model="appName" href="#" ng-click="appServerFolder($event)"><span class="icon fa fa-table"></span>GETPAID</a>       			
@@ -94,38 +107,41 @@ function myFunction() {
        			</ul>
        </nav>
    </div>
-    <p  class="ex1">Application - Upload Files</p>
-   <div class="box">
-   <div class="col-sm-offset-2" >
-			<p class="error" ng-bind="uploadResult"></p>
-		</div>
+    <p  class="ext">Application - Upload Files</p>
+   <div class="box" >
+  
 		<div>&nbsp</div>
-   <div>
-		 <label for="startDate">Month :</label>
-   		 <input  name="startDate" id="startDate" class="date-picker" />
-   		 
-	</div>
-	<div>&nbsp;</div>	
-	<div class="main">
+  	
+	<div class="main" >
 		 <form class="form-horizontal" >
-			<div class="form-group" ng-repeat="obj in serverFoldersResult">
+		 <div >
+			 <label for="startDate">Month :</label>
+   			 <input  name="startDate" id="startDate" ng-model="filetest" class="date-picker" />
+   		 </div>
+		 <div>&nbsp;</div>
+		 <div class="form-group" ng-repeat="obj in serverFoldersResult">
 				<label class="control-label col-sm-4" for="uploadfile">{{obj.folderCaption}}</label>
 				<div class="col-sm-5">
-					<input type="file" accept="{{obj.validationType}}" id="file{{$index+1}}" name="file{{$index+1}}" onchange="angular.element(this).scope().setFile(this.files, angular.element(this).scope().$index+1)"  class="btn btn-warning" />
+					<input type="file" accept="{{obj.validationType}}" id="file{{$index+1}}" ng-model="filetest" name="file{{$index+1}}" onchange="angular.element(this).scope().setFile(this.files, angular.element(this).scope().$index+1)"  class="btn btn-warning" />
 
 				</div>
 			</div>
 			<div class="form-group" id="upload"> 
-			    <!-- <div class="col-sm-offset-5 col-sm-10"> -->
+			    <!-- <div class="col-sm-offset-5 col-sm-10"> btn btn-default  -->
 			    <div class="col-sm-offset-4 ">
-			      <button type="submit" class="btn btn-default" ng-click = "doUploadFile()">Upload</button>
+			    <button ng-click="angular.copy(filetest)" class="btn btn-primary" type="reset">Reset</button>
+			    <!-- <button type="submit" class="btn btn-default" ng-click = "reset()">Reset</button> -->
+			      <button type="submit" class="btn btn-success" ng-click = "doUploadFile()">Upload</button>
 			    </div>
+			     <div ng-include="'view/loading.html'" ng-show="dataLoading">
 			</div>
 		</form> 
+		
 	</div>	
 		
-		<!-- <div class="col-sm-offset-2">
-			<p ng-bind="uploadResult"></p>
-		</div> -->
+		<div class="col-sm-offset-2">
+			<p class="error" ng-bind="uploadError"></p>
+			<p class="success" ng-bind="uploadSuccess"></p>
+		</div>
 	</div>
 	</div>

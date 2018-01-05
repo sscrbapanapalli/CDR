@@ -123,6 +123,8 @@ public class ApplicationController {
 	    BatchHistoryDetail obj=new BatchHistoryDetail();
 	    List<String> fileList=new ArrayList<>();
 	   // boolean activeIndicator=true;
+	    
+	    System.out.println("server side appID:" + request.getParameter("applicationId"));
 	    applicationId=Long.parseLong(request.getParameter("applicationId"));
 	    userName=request.getParameter("userName");
 	    batchUploadMonth=request.getParameter("selectedMonth");
@@ -174,8 +176,8 @@ public class ApplicationController {
 	            String folderCaption=applicationFileUploadConfig.get(i).getFolderCaption();
 	            //String folderpath=applicationFileUploadConfig.get(i).getFileTrgtPath()+folderCaption;
 	            String folderpath=applicationFileUploadConfig.get(i).getFileTrgtPath();
-	           // String fileName=applicationFileUploadConfig.get(i).getFileNamePrefix();
-	            String fileName=fileContent.getOriginalFilename();
+	            String fileName=applicationFileUploadConfig.get(i).getFileNamePrefix();
+	            String orgFileName=fileContent.getOriginalFilename();
 	            System.out.println("check file anme format" +fileName);
 	            File dir = new File(folderpath);
 	            if (!dir.exists())
@@ -185,7 +187,7 @@ public class ApplicationController {
 				System.out.println("file target path"+ fileTrgtPath );		
 	            BatchFileDetail batchFileDetail=new BatchFileDetail();
 	            //batchFileDetail.setActiveIndicator(activeIndicator);
-	            batchFileDetail.setBatchFileName(fileName);
+	            batchFileDetail.setBatchFileName(orgFileName);
 	            batchFileDetail.setBatchFileTrgtPath(fileTrgtPath);
 	            batchFileDetail.setFolderCaption(folderCaption);
 	            batchFileDetail.setCreatedBy(userName);
