@@ -125,9 +125,11 @@ public class ApplicationController {
 	   // boolean activeIndicator=true;
 	    
 	    System.out.println("server side appID:" + request.getParameter("applicationId"));
+	    
 	    applicationId=Long.parseLong(request.getParameter("applicationId"));
 	    userName=request.getParameter("userName");
 	    batchUploadMonth=request.getParameter("selectedMonth");
+	    System.out.println("Selected month" + batchUploadMonth); 
 	    //System.out.println("appName in server" + applicationId);
 	    
 	    Application application = applicationRepository.findById(applicationId);
@@ -166,11 +168,14 @@ public class ApplicationController {
 	        /*System.out.println("file list size" + fileList.size());
 	        System.out.println("file list size" + filteredSet.size());
 	        System.out.println("actu size"+ applicationFileUploadConfig.size());*/
+	        if(batchUploadMonth!=null && batchUploadMonth.length()!=0)	{
+	        	System.out.println("test month:" +  batchUploadMonth);
 	        if(fileList.size()==applicationFileUploadConfig.size()){
 	        if(fileList.size()==filteredSet.size()){
+	        
 	        	System.out.println("in side second while loop");
 	        	Iterator<String> uploadFileNames = multipart.getFileNames();
-	         while (uploadFileNames.hasNext()) { // Get List of files from Multipart Request.
+	        	while (uploadFileNames.hasNext()) { // Get List of files from Multipart Request.
 	        	 
 	            MultipartFile fileContent = multipart.getFile(uploadFileNames.next());
 	            String folderCaption=applicationFileUploadConfig.get(i).getFolderCaption();
@@ -204,11 +209,15 @@ public class ApplicationController {
 	            System.out.println("UploadscenarioFiles ion loop uploadResponse:"+uploadResponse);
 	        }
 	        }
+	        	else{
+	        		uploadResponse="Please remove duplicate files ";
+	        	}
+	        }
 	        else{
-	        	uploadResponse="Please remove duplicate files";
+	        	uploadResponse="Please select all files ";
 	        }
 		}else{
-			uploadResponse="Please select all files";
+			uploadResponse="Please select upload month";
 		}
 		}else{
 			System.out.println("batchuploadCheck is null sdfsdgs"+ uploadResponse);
@@ -301,7 +310,7 @@ public class ApplicationController {
 	    	BatchHistoryDetail batchUpdate= new BatchHistoryDetail();
 	    	
 	    	batchUpdate=batchHistoryDetailsRepository.findByEtlProcessed(batchUploadStatus,appId,etlProcessed);
-	    	System.out.println("hjsbjfhg" + batchUpdate);
+	    	System.out.println("test" + batchUpdate);
 	    	if(batchUpdate!=null){
 	    	batchUpdate.setEtlProcessed(etlModified);
 	    	batchUpdate.setUpdatedBy(userName);

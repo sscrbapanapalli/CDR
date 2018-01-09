@@ -5,7 +5,6 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.naming.Context;
-import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 

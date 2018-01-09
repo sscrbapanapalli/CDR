@@ -11,8 +11,13 @@
 
 <!-- CSS -->
 
+
 <link rel="stylesheet"
 	href="./app/assets/bootstrap/css/bootstrap.min.css"></link>
+
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/TableExport/3.2.5/css/tableexport.min.css">
+
 <link rel="stylesheet" type="text/css"
 	href="./app/pagination/css/bootstrap-theme.min.css">
 <link rel="stylesheet" type="text/css"
@@ -34,20 +39,9 @@
 
 <!-- Favicon and touch icons -->
 <link rel="shortcut icon" href="./app/assets/ico/favicon.png"></link>
-
 <style>
-#footer {
-	position: fixed;
-	height: 35px;
-	background-color: #888;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
-	margin-bottom: 0px;
-}
-
 .bg {
-	background: url(./app/assets/img/backgrounds/1.jpg) no-repeat 0 0;
+	background: url(./app/assets/img/backgrounds/5.jpg) no-repeat 0 0;
 	background-size: cover;
 	background-position: center;
 	/* position: absolute; */
@@ -57,35 +51,34 @@
 	top: 0;
 	overflow: hidden;
 	z-index: 0;
-}
-</style>
+}</style>
 </head>
 
 <body ng-class="isProfilePage==false?'bg':''" class="ng-cloak">
-	<div id="">
-		<header ng-include="'view/header.html'" ng-show="isProfilePage"></header>
-		<div  ng-include="'view/dummy.html'" ng-hide="isProfilePage" ></div>
+	<div id="header" ng-show="isProfilePage">
+		<header ng-include="'view/header.html'" ></header>
 	</div>
-	<div class="">
-		<div class="col-md-2 col-md-offset-5">
-			<div
-				ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }"
-				ng-if="flash" ng-bind="flash.message"></div>
-		</div>
+	<div class="container">
 		<div ui-view></div>
 	</div>
-	<div  ng-include="'view/dummy.html'" ng-hide="isProfilePage" ></div>
-	<div class="mrt10"></div>
-	<div id="">
-		<footer ng-include="'view/footer.html'" ng-show="isProfilePage"></footer>
+	<div id="footer" ng-show="isProfilePage">
+		<footer ng-include="'view/footer.html'" ></footer>
 	</div>
 
-
-	<modal  visible="showModal"> </modal>
+	<modal visible="showModal"> </modal>
 	<!-- Javascript -->
 
 	<script src="./jquery/jquery-1.11.2.min.js"></script>
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script
+		src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+	<script type="text/javascript" src="./export/tableExport.js"></script>
+	<script type="text/javascript" src="./export/jquery.base64.js"></script>
+	<script type="text/javascript" src="./export/html2canvas.js"></script>
+	<script type="text/javascript" src="./export/sprintf.js"></script>
+	<script type="text/javascript" src="./export/jspdf.js"></script>
+	<script type="text/javascript" src="./export/base64.js"></script>
+
 	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 
 	<script src="./app/assets/bootstrap/js/bootstrap.min.js"></script>
@@ -97,13 +90,6 @@
 	<script type="text/javascript" src="./angular/security/common.js"></script>
 	<script src="./angular/angular-route.js"></script>
 	<script src="./ui-router/angular-ui-router.js"></script>
-	<script src="./angular-toastr/angular-toastr.js"></script>
-
-
-
-
-
-
 	<script src="./app/js/currentdate.js"></script>
 
 	<script src="./app/js/appConfig.js"></script>
@@ -111,10 +97,6 @@
 
 	<script src="./app/js/app.js"></script>
 	<script src="./app/js/userService.js"></script>
-
-	<!--[if lt IE 10]>
-            <script src="assets/js/placeholder.js"></script>
-        <![endif]-->
 
 </body>
 

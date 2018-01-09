@@ -1,11 +1,12 @@
 
 body {
-    font-family: 'Roboto', sans-serif;
+  
     font-size: 16px;
-    font-weight: 300;
-    color: #888;
+    font-weight: 300;    
     line-height: 30px;
     text-align: center;
+    min-height: 0px;
+    height: 0px;
 }
 
 strong { font-weight: 500; }
@@ -16,6 +17,12 @@ a, a:hover, a:focus {
     -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; -ms-transition: all .3s; transition: all .3s;
 }
 
+
+thead,
+th {
+  color: white;
+  border: 1px solid black;
+}
 h1 {
 	margin-top: 10px;
 	font-size: 28px;

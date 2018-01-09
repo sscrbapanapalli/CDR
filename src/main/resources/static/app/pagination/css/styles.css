@@ -9,6 +9,22 @@ th {
 	background-color:#0055a4;
 }
 
+
+.form-submit-button {
+background: #0066A2;
+color: white;
+border-style: outset;
+border-color: #0066A2;
+
+height: 30px;
+
+width: 100px;
+
+font: bold 15px arial, sans-serif;
+
+text-shadow:none;
+
+}
 #tablenodata{
   text-align:center;	
     font-size: 15px;
@@ -16,9 +32,20 @@ th {
  font-style: color:red   
    
 }
-.mrt10 {
-	margin-bottom: 20px;
+#footer {
+  background-color: #efefef;
+  height:30px;
+  margin-top: auto;
 }
+.container{
+	 min-height:530px;
+}
+.customRow {
+  
+	padding: 10px;
+
+    }
+    
 #ui-datepicker-div { display: none; }
 	.table{
 		width:100%; 
@@ -26,12 +53,19 @@ th {
 		padding:7px; border:#4e95f4 1px solid;
 		
 	}
+		body {
+    font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 15px;
+    line-height: 1.42857143;
+    color: #2c3e50;
+    background-color: #ffffff;
+}
 		
    table, th, td {
 			padding:7px; border:#4e95f4 1px solid;
 		}
 		.selected {
-			background-color: lightgreen;
+			background-color: #fbf2b7;
 		}
 		
 		.odd {
@@ -56,17 +90,11 @@ th {
    
 }
 
-
-input.reset { color: #c09; font-size: 110%; font-weight: bold;
-  font-family : Arial, Helvetica, sans-serif;
-  background : #ccf none;}
-
-
 /* Modal Content/Box */
-.modal-content {
+/* .modal-content {
     background-color: #4CAF50;
    
-}
+} */
 
 .modal-header {
     min-height: 16.43px;

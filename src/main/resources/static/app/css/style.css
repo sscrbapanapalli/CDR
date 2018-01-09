@@ -1,9 +1,9 @@
 @charset "utf-8";
 /* CSS Document */
 
-body{font-family:Verdana, Geneva, sans-serif, Arial, Helvetica, sans-serif; font-size:11px; line-height:20px; margin:1%; float:left; min-height: 625px; border:none; padding:0 15px;width:95.5%; background: url(../images/bg.jpg) repeat; }
+/* body{font-family:Verdana, Geneva, sans-serif, Arial, Helvetica, sans-serif; font-size:11px; line-height:20px; margin:1%; float:left; min-height: 625px; border:none; padding:0 15px;width:95.5%; background: url(../images/bg.jpg) repeat; }
 body a{color:#00F; font-weight:bold;}
-
+ */
 h1{font-size:30px; color:#960; line-height:30px;}
 h1 a{font-size:30px; color:#960; line-height:30px; text-decoration:underline;}
 h2{font-size:22px; color:#930; line-height:30px;}
@@ -19,6 +19,7 @@ img { border:0; }
 	overflow-x: scroll;
 	width:99.7%;
 }
+
 
 .dataTables_wrapper {
     float: left;

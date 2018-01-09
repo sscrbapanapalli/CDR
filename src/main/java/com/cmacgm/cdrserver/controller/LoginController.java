@@ -1,8 +1,6 @@
 package com.cmacgm.cdrserver.controller;
 
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmacgm.cdrserver.ActiveDirectory;
-import com.cmacgm.cdrserver.model.Application;
 import com.cmacgm.cdrserver.model.FrameworkUtil;
 import com.cmacgm.cdrserver.model.RetValue;
 import com.cmacgm.cdrserver.model.User;
@@ -237,19 +234,17 @@ public class LoginController {
 			throws Exception {
 		User user = null;
 		UserHomeModel obj=new UserHomeModel();
-		Collection<Application> appList=new ArrayList<>();
+	/*	Collection<Application> appList=new ArrayList<>();*/
 		if (httpSession.getAttribute("userName") != null && httpSession.getAttribute("userToken") != null
 				&& !userToken.isEmpty() && userToken.equals(httpSession.getAttribute("userToken").toString())) {
 			String userName = (String) httpSession.getAttribute("userName");
 			user = new User();
 			user=userRepository.findByUserId(userName + "@CMA-CGM.COM");
+			if(user!=null){
 			obj.setApplications(user.getApplications());
 			obj.setRoles(user.getRoles());
-			appList=obj.getApplications();
-			
-			for(Application obj1:appList){
-			System.out.println("application:"+obj1.getappName());}
-			
+			}
+				
 				return obj;
 		}
 		return  null;

@@ -4,7 +4,7 @@
  */
 
 'use strict';
-angular.module("cdrApp", [ "ui.router", 'toastr','appConfigApp' ,'commonServiceApp','angularUtils.directives.dirPagination']);
+angular.module("cdrApp", [ "ui.router",'appConfigApp' ,'commonServiceApp','angularUtils.directives.dirPagination']);
 
 'use strict';
 angular.module('cdrApp').config(
@@ -66,27 +66,31 @@ angular
 							$scope.welcomeMsg=false;
 							$scope.userId=0;
 							 $scope.currentPage = 1;
-							  $scope.pageSize = 5;
+							  $scope.pageSize = 6;
 							  $scope.currentPagetest = 1;
-							  $scope.pageSizetest = 5;
-							
-							  
+							  $scope.pageSizetest = 6;
+								$scope.showChild=false;						
+									
 							  $scope.selectedId = undefined;
 							  $scope.selectedIdChild = undefined;
-							$scope.resetParent=function(){
-								  $scope.search=""
-									  if ( $window.sessionStorage.getItem('appId')  != undefined
-												|| $window.sessionStorage.getItem('appId')  != null) {						
-							            	
-									  $scope.batchHistoryDetails( $window.sessionStorage.getItem('appId'));
-									  }
-							}
-							$scope.resetChild=function(){
-								  $scope.searchBatch=""
-									  
-							}
-							  
-															
+							  $scope.resetParent=function(){
+									 $scope.currentPage = 1;
+									  $scope.pageSize = 6;
+									
+									  $scope.search=""
+										  if ( $window.sessionStorage.getItem('appId')  != undefined
+													|| $window.sessionStorage.getItem('appId')  != null) {						
+								            	
+										  $scope.batchHistoryDetails( $window.sessionStorage.getItem('appId'));
+										  }
+								}
+								$scope.resetChild=function(){
+									  $scope.searchBatch=""
+										  $scope.currentPagetest = 1;
+									  $scope.pageSizetest = 6;
+										  
+								}
+								
 								$scope.ClassOdd = function(id)
 								{
 									if(id === $scope.selectedId)
@@ -144,15 +148,20 @@ angular
 								   
 							   }
 							
-							$scope.batchFiles=function(row){
+							$scope.batchFiles=function(row,batchId){
 								 $scope.selectedIdChild = undefined;
 								$scope.selectedId = row;
 								$scope.checkStatus=true;
 								$scope.inituser();
 								
-								console.log('in select app.js')
+							
 								//alert(s);
-								$scope.batchFileslist=$scope.batchDetailsResult[row].batchFileDetailList;
+							  	   $scope.batchFileslist=[];								
+								  for(var i=0; i<$scope.batchDetailsResult.length; i++) {									
+								   if(batchId==$scope.batchDetailsResult[i].batchId){
+								   $scope.batchFileslist=$scope.batchDetailsResult[i].batchFileDetailList;							
+								   }
+								  }
 								/*$scope.batchFiles.fileName=$scope.batchDetailsResult[s].batchFileDetail.batchFileName;
 								$scope.batchFiles.filePath=$scope.batchDetailsResult[s].batchFileDetail.batchFileTrgtPath;
 								console.log('got selected batch details', $scope.batchFiles)
@@ -206,7 +215,7 @@ angular
 							$scope.batchHistoryDetails = function(appId) {
 								  $scope.selectedId = undefined;
 								  $scope.selectedIdChild = undefined;
-								
+								  $scope.checkStatus=false;
 								$scope.batchDetailsResult=[];
 								$scope.batchFileslist=[];
 								$scope.inituser();
@@ -224,6 +233,7 @@ angular
 
 								$http.get(url).then(function(response) {
 									$scope.batchDetailsResult = response.data;
+
 									console.log('full batch his details', $scope.batchDetailsResult);
 									
 								}, function(response) {
@@ -235,6 +245,10 @@ angular
 								}
 								}
 							};
+							
+							$scope.hideChildTable=function(){
+								 $scope.checkStatus=false;
+							}
 							
 							$scope.sort = function(keyname){
 								$scope.sortParent = keyname;   //set the sortKey to the param passed
@@ -276,13 +290,17 @@ angular
 								console.log(data)
 								$http.post(url,data,config).then(
 										function(response){
+											  $rootScope.buttonClicked = response.data;
+												$rootScope.showModal = !$rootScope.showModal;
+												  $rootScope.contentColor = "#78b266";
 											
-											$scope.reverseResult=response.data;
 										},function(response){
 											
-											$scope.reverseResult=response.data;
+											 $rootScope.buttonClicked = response.data;
+												$rootScope.showModal = !$rootScope.showModal;
+												  $rootScope.contentColor = "#dd4b39";
 										});
-								console.log('reverse response :', $scope.reverseResult)
+								
 								}
 							
 							}
@@ -291,8 +309,8 @@ angular
 
 angular.module('cdrApp')
 .factory('AuthenticationService',
-	    [ '$http', '$state',"$window",'$rootScope','appConstants','globalServices','FlashService',
-	    function ($http, $state,$window,$rootScope,appConstants,globalServices,FlashService) {
+	    [ '$http', '$state',"$window",'$rootScope','appConstants','globalServices',
+	    function ($http, $state,$window,$rootScope,appConstants,globalServices) {
 	    	
 	        var service = {};	     
 	        service.Login = function (userName, password, callback) {     
@@ -346,8 +364,9 @@ angular.module('cdrApp')
 								 $window.sessionStorage.removeItem('appId');
 								
 								  $http.defaults.headers.common['userToken']==null;
-								  $rootScope.buttonClicked = "LogOut Successfully";
+								  $rootScope.buttonClicked = "Logout Successfully";
 									$rootScope.showModal = !$rootScope.showModal;
+									  $rootScope.contentColor = "#78b266";
 				 
 								  $rootScope.isProfilePage=false;
 								  $state.go("login");
@@ -355,6 +374,7 @@ angular.module('cdrApp')
 							}else{
 								  $rootScope.buttonClicked = "LogOut Error";
 									$rootScope.showModal = !$rootScope.showModal;
+									  $rootScope.contentColor = "#dd4b39";
 							}
 								
 						
@@ -421,9 +441,9 @@ angular
 				'$window',
 				'$q',
 				'$http'
-				,'appConstants','AuthenticationService','userService','FlashService',
+				,'appConstants','AuthenticationService','userService',
 				function($scope, $state, $rootScope, $window, $q,
-						$http,appConstants,AuthenticationService,userService,FlashService) {
+						$http,appConstants,AuthenticationService,userService) {
 							$rootScope.isProfilePage = false;
 							 $scope.dataLoading = false;						
 							$rootScope.currentUser = {
@@ -463,6 +483,7 @@ angular
 										            $rootScope.isProfilePage=true; 
 										            $rootScope.buttonClicked ="welcome! "+$rootScope.currentUser.userName;
 										            $rootScope.showModal = !$rootScope.showModal;
+										            $rootScope.contentColor = "#78b266";
 										           						           	
 										            $state.go("home", {}, {reload: true}); 
 										           
@@ -474,6 +495,7 @@ angular
 							                    $scope.dataLoading = false;
 							                    $rootScope.buttonClicked ="Invalid Credentials";
 								            	$rootScope.showModal = !$rootScope.showModal;
+								            	  $rootScope.contentColor = "#dd4b39";
 							            								
 							             }
 							         });
@@ -484,6 +506,7 @@ angular
 										
 										$rootScope.buttonClicked ="Enter Credentials";
 										$rootScope.showModal = !$rootScope.showModal;
+										$rootScope.contentColor = "#dd4b39";
 									
 								}
 								;
@@ -496,10 +519,10 @@ angular.module('cdrApp').directive('modal', ['$timeout', function ($timeout) {
     return {
       template: '<div class="modal fade">' + 
           '<div class="modal-dialog">' + 
-            '<div class="modal-content">' + 
+            '<div class="modal-content" style="background-color:{{contentColor}}">' + 
               '<div class="modal-header">' + 
                 '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 
-                '<h4 class="modal-title">{{ buttonClicked }}!!</h4>' + 
+                '<h4 class="modal-title" style="color: #FFFFFF;">{{ buttonClicked }}!!</h4>' + 
               '</div>' + 
               '</div>' + 
           '</div>' + 
@@ -546,9 +569,9 @@ angular.module('cdrApp').controller(
 				'$http',
 				'$window',
 				'$state',
-				'appConstants','userService','globalServices','AuthenticationService','FlashService',
+				'appConstants','userService','globalServices','AuthenticationService',
 				function($scope, $rootScope, $http, $window, $state,
-						appConstants,userService,globalServices,AuthenticationService,FlashService) {
+						appConstants,userService,globalServices,AuthenticationService) {
 
 					$rootScope.isProfilePage = false;
 					$rootScope.currentUser = {
@@ -635,10 +658,12 @@ angular.module('cdrApp').controller(
 								function(response) {
 									$scope.dataLoading = false;
 									  $rootScope.buttonClicked =response.data;
-							          $rootScope.showModal = !$rootScope.showModal;								
+							          $rootScope.showModal = !$rootScope.showModal;	
+							          $rootScope.contentColor = "#78b266";
 								}, function(response) {
 									 $rootScope.buttonClicked =response.data;
 							         $rootScope.showModal = !$rootScope.showModal;
+							         $rootScope.contentColor = "#dd4b39";
 								});
 
 					}
@@ -692,62 +717,6 @@ if ($scope.sessionApp != undefined
 
 
 
-'use strict';
-angular
-.module('cdrApp')
-.factory('FlashService', FlashService);
-
-FlashService.$inject = ['$rootScope','$timeout'];
-function FlashService($rootScope,$timeout) {
-	  var service = {};
-
-      service.Success = Success;
-      service.Error = Error;
-
-      initService();
-
-      return service;
-
-      function initService() {
-          $rootScope.$on('$locationChangeStart', function () {
-              clearFlashMessage();
-          });
-
-          function clearFlashMessage() {
-              var flash = $rootScope.flash;
-              if (flash) {
-                  if (!flash.keepAfterLocationChange) {
-                      delete $rootScope.flash;
-                  } else {
-                      // only keep for a single location change
-                      flash.keepAfterLocationChange = false;
-                  }
-              }
-          }
-      }
-
-      function Success(message, keepAfterLocationChange) {
-          $rootScope.flash = {
-              message: message,
-              type: 'success', 
-              keepAfterLocationChange: keepAfterLocationChange
-          };
-          $timeout(function(){
-        	  $rootScope.flash={};
-          }, 3000);
-      }
-
-      function Error(message, keepAfterLocationChange) {
-          $rootScope.flash = {
-              message: message,
-              type: 'error',
-              keepAfterLocationChange: keepAfterLocationChange
-          };
-          $timeout(function(){
-        	  $rootScope.flash={};
-          }, 3000);
-      }
-}
 
 'use strict';
 angular.module('cdrApp').run([
