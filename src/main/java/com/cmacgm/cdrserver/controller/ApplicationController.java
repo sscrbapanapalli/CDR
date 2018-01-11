@@ -136,7 +136,7 @@ public class ApplicationController {
 	    List<ApplicationFileUploadConfig> applicationFileUploadConfig = applicationFileUploadConfigRepository.findByApplication(application);
 	    Date dNow = new Date();
 	       SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
-	       String batchId = ft.format(dNow);
+	       String batchId = applicationId+ft.format(dNow);
 	       
 	    /*Calendar c = Calendar.getInstance();
 		   String batchUploadMonth=c.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.ENGLISH );*/
@@ -148,13 +148,9 @@ public class ApplicationController {
 		System.out.println("null check" + batchUploadMonth +  ":"+ +applicationId);
 		obj=batchHistoryDetailsRepository.findByTop(batchUploadMonth,applicationId);
 		System.out.println("test" + obj);
-		/*if (obj==null){
-		System.out.println("ramarmarmar" + obj);
-		etlStatus=null;
-		}*/
-		//etlStatus=obj.getEtlProcessed();
-		//System.out.println("etlStatus:" + etlStatus);
-		if(obj==null || obj.getEtlProcessed()==null || obj.getEtlProcessed().equals("X") ){ //Validation check- upload already completed for selected month or not
+		
+		/*if(obj==null || obj.getEtlProcessed()==null || obj.getEtlProcessed().equals("X") ){ //Validation check- upload already completed for selected month or not
+*/		if(obj==null || obj.getEtlProcessed()==null || obj.getBatchUploadStatus().equals("Reverse") ){ //Validation check- upload already completed for selected month or not
 			 
 			//System.out.println("batchuploadCheck is null1");
 	        Iterator<String> fileNames = multipart.getFileNames();
@@ -279,7 +275,7 @@ public class ApplicationController {
 			} catch (Exception e) {
 				System.out.println(e);
 				e.getMessage();
-				 serverResponse="Files Upload Failure";
+				 serverResponse="Files Upload Failure,Please contact Application Support Team";
 					return serverResponse; 
 			}
 		finally{
@@ -290,6 +286,43 @@ public class ApplicationController {
 		
 	}
 	    
+	    @GetMapping("/currentUploadDetails/{appId}")
+		public BatchHistoryDetail getCurrentUpload(@PathVariable(value="appId") Long appId){
+			System.out.println("in /api/batchHistoryDetails");
+			String batchUploadStatus="Upload";
+			String batchReverseStatus="Reverse";
+			String etlProcessedNew="N";
+	    	String etlProcessedCompleted="Y";
+	    	List<BatchHistoryDetail> reverseBatchdetailsList;
+	    	reverseBatchdetailsList=batchHistoryDetailsRepository.getReverseBatchDetails(appId,batchReverseStatus);
+	    	for(BatchHistoryDetail list:reverseBatchdetailsList){
+	    		System.out.println(" reverse ID" +list.getId());
+	    	}
+	    	System.out.println("size" + reverseBatchdetailsList.size());
+	    	/*if(test=="true"){
+	    	BatchHistoryDetail test1=batchHistoryDetailsRepository.findByEtlProcessed(batchUploadStatus,appId,etlProcessedNew,etlProcessedCompleted);
+	    	return test1;
+	    	}else{
+	    		return null;
+	    		
+	    	}*/
+	    	if(reverseBatchdetailsList.size()!=0){
+	    		
+			 	return batchHistoryDetailsRepository.findByEtlProcessed(batchUploadStatus,appId,etlProcessedNew,etlProcessedCompleted);	
+	    	}else
+	    		return null;
+			
+		}
+	    
+	    
+	  /*  @RequestMapping(value = "/getCurrentUpload", method = RequestMethod.POST , produces="application/json")
+	    public BatchHistoryDetail getCurrentUpload(String batchUploadStatus,Long appId,String etlProcessedNew,String etlProcessedCompleted){
+	    	BatchHistoryDetail batchUpdate= new BatchHistoryDetail();
+	    	
+	    	batchUpdate=batchHistoryDetailsRepository.findByEtlProcessed(batchUploadStatus,appId,etlProcessedNew,etlProcessedCompleted);
+	    	return batchUpdate;
+	    }*/
+	    
 	    
 	    @RequestMapping(value = "/reverseUpload", method = RequestMethod.POST , produces="application/json")
 	    public @ResponseBody String reverseUpload(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
@@ -297,56 +330,69 @@ public class ApplicationController {
 	    	String serverResponse="";
 	    	String batchUploadStatus="Upload";
 	    	String batchUploadStatusModified="Reverse";
-	    	String etlProcessed="N";
+	    	String etlStatusBeforereverse="";
+	    	String etlProcessedNew="N";
+	    	String etlProcessedCompleted="Y";
 	    	String etlModified="X";
 	    	String source="";
 	    	String destination="";
 	    	String userName=request.getParameter("userName");
 	    	Long appId=Long.parseLong(request.getParameter("applicationId"));
-	    	 Date dNow = new Date();
+	    	Long selectedBatchUniqueId=Long.parseLong(request.getParameter("selectedBatchUniqueId"));
+	    	/* Date dNow = new Date();
 		       SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
-		       String batchId = ft.format(dNow);
-	    	
+		       String batchId = appId+ft.format(dNow);
+	    	System.out.println("new format batch id" + batchId);*/
 	    	BatchHistoryDetail batchUpdate= new BatchHistoryDetail();
 	    	
-	    	batchUpdate=batchHistoryDetailsRepository.findByEtlProcessed(batchUploadStatus,appId,etlProcessed);
+	    	batchUpdate=batchHistoryDetailsRepository.findById(selectedBatchUniqueId);
 	    	System.out.println("test" + batchUpdate);
 	    	if(batchUpdate!=null){
-	    	batchUpdate.setEtlProcessed(etlModified);
+	    		etlStatusBeforereverse=batchUpdate.getEtlProcessed();	
+	    	batchUpdate.setEtlProcessed(etlModified);		
 	    	batchUpdate.setUpdatedBy(userName);
 	    	batchHistoryDetailsRepository.save(batchUpdate);
+	    	System.out.println("Reverse batch updated entry" + batchUpdate);
 	    	
 	    	//To move files from destination to archive path
 	    	 Application application = applicationRepository.findById(appId);
 	 	    List<ApplicationFileUploadConfig> applicationFileUploadConfig = applicationFileUploadConfigRepository.findByApplication(application);
 	    	
 	 	   source=applicationFileUploadConfig.get(1).getFileTrgtPath();
-	 	   destination=applicationFileUploadConfig.get(1).getFileAckPath()+batchId;
+	 	   destination=applicationFileUploadConfig.get(1).getFileAckPath();
 	 	   File destDir = new File(destination);
            File srcDir = new File(source);
-	 	   /* for(ApplicationFileUploadConfig archiveProcess:applicationFileUploadConfig){
-	    		 source=archiveProcess.getFileTrgtPath();
-	    		 destination=archiveProcess.getFileAckPath()+batchId;
-	    		File destDir = new File(destination);
-	            File srcDir = new File(source);
-	            String ArchiveResult=archiveFiles(destDir,srcDir);
-	    	}*/
-	    	//String ArchiveResult=archiveFiles(destDir,srcDir);
+           /* for(ApplicationFileUploadConfig archiveProcess:applicationFileUploadConfig){
+  		 source=archiveProcess.getFileTrgtPath();
+  		 destination=archiveProcess.getFileAckPath()+batchId;
+  		File destDir = new File(destination);
+          File srcDir = new File(source);
+          String ArchiveResult=archiveFiles(destDir,srcDir);
+  	}*/
+  	//String ArchiveResult=archiveFiles(destDir,srcDir);
 	    	
 	    	
 	    	// To insert new record for Reverse process
 	    	BatchHistoryDetail batchReverse= new BatchHistoryDetail();
 	    	batchReverse.setAppId(batchUpdate.getAppId()); 
 	    	//batchReverse.setBatchFileDetailList(batchUpdate.getBatchFileDetailList());
-	    	batchReverse.setBatchId(batchId);
+	    	batchReverse.setBatchId(batchUpdate.getBatchId());
 	    	batchReverse.setBatchUploadMonth(batchUpdate.getBatchUploadMonth());
        	// batchHistoryDetail.setActiveIndicator(activeIndicator);
 	    	batchReverse.setBatchUploadStatus(batchUploadStatusModified);
 	    	batchReverse.setBatchUploadUserName(batchUpdate.getBatchUploadUserName());
 	    	batchReverse.setCreatedBy(userName);
 	    	batchReverse.setUpdatedBy(userName);
-	    	batchReverse.setEtlProcessed(batchUpdate.getEtlProcessed());
-	    	System.out.println(batchReverse);
+	    	
+	    	if(etlStatusBeforereverse.equals(etlProcessedNew)){
+			System.out.println("in update record before "+ etlStatusBeforereverse);
+			batchReverse.setEtlProcessed(etlModified);
+			System.out.println("in update record after"+ batchUpdate.getEtlProcessed());
+		}else if(etlStatusBeforereverse.equals(etlProcessedCompleted)){
+			batchReverse.setEtlProcessed(etlProcessedNew);
+		}	 
+		/*batchReverse.setEtlProcessed(batchUpdate.getEtlProcessed());*/
+	    	System.out.println("Reverse batch new enrty" + batchReverse);
 	    	batchHistoryDetailsRepository.save(batchReverse);
 	    	
 	    	serverResponse="Reverse for batch id: "+batchUpdate.getBatchId()+" for uploaded month "+batchUpdate.getBatchUploadMonth()+" completed";
@@ -360,6 +406,8 @@ public class ApplicationController {
 	    	
 	    	return serverResponse;
 	    }
+	    
+	   
 	    
 	    public String archiveFiles(File srcDir,File arcDir){
 	    	String archiveResult="";

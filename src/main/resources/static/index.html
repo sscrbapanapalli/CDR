@@ -15,8 +15,7 @@
 <link rel="stylesheet"
 	href="./app/assets/bootstrap/css/bootstrap.min.css"></link>
 
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/TableExport/3.2.5/css/tableexport.min.css">
+<link rel="stylesheet" href="./export/tableexport.min.css">
 
 <link rel="stylesheet" type="text/css"
 	href="./app/pagination/css/bootstrap-theme.min.css">
@@ -34,7 +33,7 @@
 
 
 <link rel="stylesheet" type="text/css" media="screen"
-	href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css">
+	href="./app/css/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="./app/css/style-top.css"></link>
 
 <!-- Favicon and touch icons -->
@@ -51,36 +50,35 @@
 	top: 0;
 	overflow: hidden;
 	z-index: 0;
-}</style>
+}
+</style>
 </head>
 
 <body ng-class="isProfilePage==false?'bg':''" class="ng-cloak">
 	<div id="header" ng-show="isProfilePage">
-		<header ng-include="'view/header.html'" ></header>
+		<header ng-include="'view/header.html'"></header>
 	</div>
-	<div class="container">
+	<div id="scrollArea" class="container">
 		<div ui-view></div>
 	</div>
 	<div id="footer" ng-show="isProfilePage">
-		<footer ng-include="'view/footer.html'" ></footer>
+		<footer ng-include="'view/footer.html'"></footer>
 	</div>
-
+	<a id="bottom"></a>
 	<modal visible="showModal"> </modal>
 	<!-- Javascript -->
 
 	<script src="./jquery/jquery-1.11.2.min.js"></script>
-	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="./app/js/jquery-1.9.1.js"></script>
 	<script
-		src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		src="./app/js/jquery.min.js"></script>
 	<script type="text/javascript" src="./export/tableExport.js"></script>
 	<script type="text/javascript" src="./export/jquery.base64.js"></script>
 	<script type="text/javascript" src="./export/html2canvas.js"></script>
 	<script type="text/javascript" src="./export/sprintf.js"></script>
-	<script type="text/javascript" src="./export/jspdf.js"></script>
 	<script type="text/javascript" src="./export/base64.js"></script>
 
-	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
-
+	<script src="./app/js/jquery-ui.js"></script>
 	<script src="./app/assets/bootstrap/js/bootstrap.min.js"></script>
 	<script src="./angular/angular.js"></script>
 	<script src="./app/pagination/lib/dirPagination.js"></script>
@@ -91,13 +89,67 @@
 	<script src="./angular/angular-route.js"></script>
 	<script src="./ui-router/angular-ui-router.js"></script>
 	<script src="./app/js/currentdate.js"></script>
-
+	<script src="./export/jspdf.js"></script>
 	<script src="./app/js/appConfig.js"></script>
 	<script src="./app/js/globalServices.js"></script>
-
 	<script src="./app/js/app.js"></script>
 	<script src="./app/js/userService.js"></script>
+	<script type="text/javascript">
+function autoHeight() {
+	   $('.container').css('min-height', 0);
+	   $('.container').css('min-height', (
+	     $(document).height() 
+	     - $('#header').height() 
+	     - $('#footer').height()
+	   ));
+	 }
 
+	 // onDocumentReady function bind
+	 $(document).ready(function() {
+	   autoHeight();
+	   
+	 });
+
+	 // onResize bind of the function
+	 $(window).resize(function() {
+	   autoHeight();
+	 });
+	 $(function(){
+	      // if text box value is not null, then darken reset icon
+	      $(".slinput input").keyup(function(){
+	        var val = $(this).val();   
+	        if(val.length > 0) {
+	           $(this).parent().find(".right-icon").css('color','#555');
+	        } else {
+	          $(this).parent().find(".right-icon").css('color','#ccc');
+	        }
+	      });
+	      
+	      // if user click on reset icon, clear text field
+	      $(".slinput .right-icon").click(function(){
+	        $(this).parent().find("input").val('');
+	        $(this).css('color','#ccc');
+	      });
+	      $(".slinputtext input").keyup(function(){
+		        var val = $(this).val();   
+		        if(val.length > 0) {
+		           $(this).parent().find(".right-icon").css('color','#555');
+		        } else {
+		          $(this).parent().find(".right-icon").css('color','#ccc');
+		        }
+		      });
+		      
+		      // if user click on reset icon, clear text field
+		      $(".slinputtext .right-icon").click(function(){
+		        $(this).parent().find("input").val('');
+		        $(this).css('color','#ccc');
+		      });
+	});
+	
+
+	  
+	
+</script>
 </body>
 
 </html>

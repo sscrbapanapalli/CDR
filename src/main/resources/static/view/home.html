@@ -1,15 +1,12 @@
 
-<div ng-controller="homeController" ng-init="init()">
-	<div class="overall">
+
+<div ng-controller="loginController" ng-init="init()"><div class="overall" >
 		<nav class="navbar">
 
 			<ul>
 				<li><a ui-sref="home" ui-sref-opts="{reload:true}"><span
 						class="icon fa fa-home"></span>Home</a> <span class="divider"></span></li>
-				<li ng-repeat="application in applications"><a
-					id="{{application.appName}}"
-					ng-click="batchHistoryDetails(application.id);"
-					ng-model="application.id">{{application.appName}}</a> <span
+				<li ng-repeat="application in applications"><a ui-sref="app({appId: application.id})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a> <span
 					class="divider"></span></li>
 
 				<!-- <li><a   ui-sref="settings" ><span class="icon fa "></span>Admin Settings</a></li> -->
@@ -19,15 +16,19 @@
 			</ul>
 
 		</nav>
-	</div>
-
+	</div></div>	
+<div ng-controller="homeController" ng-init="init()">
+	
+	<div ng-hide="welcomeMsg" >
+	
 	<div>&nbsp;</div>
-	<div ng-hide="welcomeMsg">
 		<!-- <h3>Welcome to CDR Application...</h3> -->
-		<h3>Please select Application to get Batch History Details.</h3>
+			<div >
+<h1 class="" style="font-size:22px; color:#960;">Please select the application to get Batch History Details.</h1></div></br>
+		
 	</div>
 
-	<div style="margin: 20px auto" ng-show="welcomeMsg">
+	<div ng-show="welcomeMsg">
 
 		<div>
 			<div class="bs-component">
@@ -35,15 +36,16 @@
 <h1 class="pull-left" style="font-size:22px; color:#960;">Batch History</h1></div></br>
 					<form name='myform'>
 						<div>
-						<div class="col-xs-4 pull-left">
-							  <span class="icon pull-left"><i class="fa fa-search"></i></span><input type="text"
-								required ng-model="search" ng-change="hideChildTable()" class="pull-left" placeholder="Search"> <a
-								class="clear pull-left" href="" ng-click="resetParent()">X</a>
-						</div>
+						<div class="slinputtext ">
+    <i class="fa fa-search left-icon"></i> 
+    <input class="pull-left textbox" required ng-model="search" placeholder="Enter search term"  ng-change="hideChildTable()"/> 
+    <i class="fa fa-close right-icon" ng-click="resetParent()"></i>
+</div>
+					
 						
 							<div class="col-xs-4 pull-right">
-								<label for="search">Record per page</label> <input type="number"
-									min="1" max="100" ng-model="pageSize">
+								<label for="search">Record(s) per page</label> <input type="number"
+									min="1" max="100" class="textboxNumber" ng-model="pageSize">
 								<button class="btn btn-warning btn-sm dropdown-toggle"
 									data-toggle="dropdown">
 									<i class="fa fa-bars"></i> Export Table Data
@@ -51,7 +53,7 @@
 								<ul class="dropdown-menu " role="menu">
 									<li class="divider"></li>
 									<li><a uisref="{{'.'}}"
-										onClick="$('#parentId').tableExport({tableName:'BatchHistory',type:'pdf'}); return false;">
+										onClick="generatePdf('parentId');">
 											<img src='./export/images/pdf.png' width='24px'> PDF
 									</a></li>
 									<li><a uisref="{{'.'}}"
@@ -77,8 +79,7 @@
 
 				</div>
 			</div>
-			<!-- <div class="mrt10"></div> -->
-
+		
 			<table class="table" id="parentId">
 				<thead>
 					<tr>
@@ -109,13 +110,17 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-click='batchFiles($index,obj.batchId)'
+					<tr 
                       ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
 						dir-paginate="obj in filtered =(batchDetailsResult|filter:search)|orderBy:sortParent:reverse|itemsPerPage: pageSize"
 						current-page="currentPage" pagination-id="original" >
-						<td>{{obj.batchId}}</td>
-						<td>{{obj.batchUploadCrDate| date : 'medium'}}</td>
-						<td>{{obj.batchUploadStatus}} <a ng-if="{{obj.batchId}}=='180105094111111'">Reverse</a></td>
+						<td> <a scroll-on-click class="button-link" ui-sref="."
+      ng-click='batchFiles($index,obj.id)'>{{obj.batchId}}</a></td>
+      <td title="{{obj.batchUploadCrDate|date:'yyyy-MM-dd HH:mm:ss'}}" >{{obj.batchUploadCrDate|date:'yyyy-MM-dd HH:mm:ss'}}</td>      	
+		
+					<td>{{ obj.batchUploadStatus }}<a ng-if="obj.id==currentUploadDetailsResult.id"  ng-click="doReverse(obj.id)">
+						<img style="width: 25px; height: 25px" alt="logo"	src="./app/images/reverse.png" /> 
+    </a></td>
 						<td>{{obj.etlProcessed}}</td>
 						<td>{{obj.batchUploadUserName}}</td>
 						<td>{{obj.batchUploadMonth}}</td>						
@@ -135,13 +140,13 @@
 
 		</div>
 		<div ng-show="batchDetailsResult !='undefined' && batchDetailsResult.length>=0" class="pull-right">Filtered : ({{ filtered.length }})
-			records out of ({{batchDetailsResult.length }}) entries</div>
+			record(s) out of ({{batchDetailsResult.length }}) entries</div>
 
 		<div class="customRow"></div>
 		<div class="form-group" id="upload" ng-show="batchDetailsResult !='undefined' && batchDetailsResult.length>=0">
 			<div class="col-sm-offset-2 col-sm-10">
-				<button type="submit" class="btn btn-primary ng-binding"
-					ng-click="doReverse()">Reverse</button>
+			<!-- 	<button type="submit" class="btn btn-primary ng-binding"
+					ng-click="doReverse()">Reverse</button> -->
 				<button type="submit" class="btn btn-success" ng-click="doUpload()">Upload</button>
 			</div>
 			<div>ETL Possible Status [ 
@@ -163,17 +168,21 @@
 
 				<form name='myformChild'>
 					<div>
-
-						<div class="col-xs-4 pull-left">
+<div class="slinput">
+    <i class="fa fa-search left-icon"></i> 
+    <input class="pull-left textbox" required ng-model="searchBatch" placeholder="Enter search term"  /> 
+    <i class="fa fa-close right-icon" ng-click="resetChild()"></i>
+</div>				<!-- <div class="col-xs-4 pull-left">
 							  <span class="icon pull-left"><i class="fa fa-search"></i></span><input type="text"
-								required ng-model="searchBatch" class="pull-left" placeholder="Search"> <a
-								class="clear pull-left" href="" ng-click="resetChild()">X</a>
-						</div>
+								required ng-model="searchBatch" class="pull-left textbox" placeholder="Enter search term"> <a
+								class="pull-left close-icon" href=""  ng-click="resetChild()">X</a>
+							
+						</div> -->
 
 
 						<div class="col-xs-4 pull-right">
-							<label for="search">Record per page</label> <input type="number"
-								min="1" max="100" ng-model="pageSizetest">
+							<label for="search">Record(s) per page</label> <input type="number"
+								min="1" max="100" class="textboxNumber" ng-model="pageSizetest">
 							<button class="btn btn-warning btn-sm dropdown-toggle"
 								data-toggle="dropdown">
 								<i class="fa fa-bars"></i> Export Table Data
@@ -181,7 +190,7 @@
 							<ul class="dropdown-menu " role="menu">
 								<li class="divider"></li>
 								<li><a uisref="{{'.'}}"
-									onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'pdf'}); return false;">
+									onClick="generatePdf('childTable');">
 										<img src='./export/images/pdf.png' width='24px'> PDF
 								</a></li>
 								<li><a uisref="{{'.'}}"
@@ -246,8 +255,19 @@
 
 			</div>
 			<div ng-show="batchFileslist !='undefined' && batchFileslist.length>=0"  class="pull-right">Filtered : ({{ filteredChild.length }})
-				records out of ({{batchFileslist.length }}) entries</div>
+				record(s) out of ({{batchFileslist.length }}) entries</div>
 
 		</div>
 
 	</div>
+	<script>  function generatePdf(tableId) {
+        var doc = new jsPDF('l', 'pt', 'a4');
+        // doc.text("From HTML", 40, 50);
+         //doc.text( 40, 50);
+         var res = doc.autoTableHtmlToJson(document.getElementById(tableId));
+         doc.autoTable(res.columns, res.data, {
+           startY: 60
+         });
+          doc.save();
+    }
+</script>

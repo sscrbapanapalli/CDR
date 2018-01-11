@@ -34,6 +34,18 @@ angular.module('cdrApp').config(
 						controllerAs : "homeController",
 						data:{requireLogin:true}
 
+					}).state("app", {
+						url : '/app?',
+						templateUrl : 'view/home.html',
+						controller : "homeController",
+						controllerAs : "homeController",
+						
+					    params: { 
+					    	appId: null,   // can initialise to default value
+					      
+					    },
+						data:{requireLogin:true}
+
 					}).state("settings", {
 						url : '/settings',
 						templateUrl : 'view/settings.html',
@@ -44,6 +56,7 @@ angular.module('cdrApp').config(
 					});
 
 				} ]);
+
 
 angular
 		.module('cdrApp')
@@ -56,9 +69,9 @@ angular
 						'$window',
 						'$q',
 						'$http',
-						'appConstants','userService','globalServices','AuthenticationService',
+						'appConstants','userService','globalServices','AuthenticationService','$stateParams','anchorSmoothScroll','$location','$filter',
 						function($scope, $state, $rootScope, $window, $q,
-								$http,appConstants,userService,globalServices,AuthenticationService) {
+								$http,appConstants,userService,globalServices,AuthenticationService,$stateParams,anchorSmoothScroll,$location,$filter) {
 							$scope.homepageContent = "landing dashboard page";
 							//$scope.batchFiles={fileName:'', filePath:''};
 							$scope.batchFileslist=[];
@@ -69,8 +82,8 @@ angular
 							  $scope.pageSize = 6;
 							  $scope.currentPagetest = 1;
 							  $scope.pageSizetest = 6;
-								$scope.showChild=false;						
-									
+								$scope.showChild=false;		
+								$scope.currentUploadDetailsResult={};							
 							  $scope.selectedId = undefined;
 							  $scope.selectedIdChild = undefined;
 							  $scope.resetParent=function(){
@@ -124,6 +137,9 @@ angular
 										return "even";
 								
 								};
+								
+								
+								
 							//$rootscope.selectedAppId=0;
 							$scope.inituser = function() {
 								var data = globalServices.isUserTokenAvailable();
@@ -148,7 +164,7 @@ angular
 								   
 							   }
 							
-							$scope.batchFiles=function(row,batchId){
+							$scope.batchFiles=function(row,id){
 								 $scope.selectedIdChild = undefined;
 								$scope.selectedId = row;
 								$scope.checkStatus=true;
@@ -158,8 +174,11 @@ angular
 								//alert(s);
 							  	   $scope.batchFileslist=[];								
 								  for(var i=0; i<$scope.batchDetailsResult.length; i++) {									
-								   if(batchId==$scope.batchDetailsResult[i].batchId){
-								   $scope.batchFileslist=$scope.batchDetailsResult[i].batchFileDetailList;							
+								   if(id==$scope.batchDetailsResult[i].id){
+								   $scope.batchFileslist=$scope.batchDetailsResult[i].batchFileDetailList;		
+								  						   
+								      // call $anchorScroll()
+								      anchorSmoothScroll.scrollTo('bottom');
 								   }
 								  }
 								/*$scope.batchFiles.fileName=$scope.batchDetailsResult[s].batchFileDetail.batchFileName;
@@ -179,6 +198,7 @@ angular
 										||$rootScope.currentUser.userId != null) {
 								$scope.userId=$rootScope.currentUser.userId;
 								}
+								
 								$scope.user={};
 								$scope.welcomeMsg=false;
 								//$rootScope.selectedAppId='';
@@ -205,7 +225,13 @@ angular
 											console.log(' userDetails' , response)
 											console.log(' applications' , $scope.applications)
 											console.log(' roles' , $scope.roles)
+											
 										});
+								
+								 var appId = $stateParams.appId
+									if(appId!=undefined )
+									$scope.batchHistoryDetails(appId);
+								
 							};
 							
 							$scope.selectRecordRow=function(row) {
@@ -225,27 +251,47 @@ angular
 										||$scope.appId  != null) {									
 									$window.sessionStorage.setItem('appId',appId); 
 					            	console.log('user selected app id in session' , $window.sessionStorage.getItem('appId'))
-                                if($window.sessionStorage.getItem('appId')!=undefined){
-								var url= appConstants.serverUrl+"/api/batchHistoryDetails/" + $window.sessionStorage.getItem('appId');
-								
-								console.log(url)
-								var data = new FormData();
+					            	   if($window.sessionStorage.getItem('appId')!=undefined){
+			                                var url1=appConstants.serverUrl+"/api/currentUploadDetails/"+ $window.sessionStorage.getItem('appId');
+											var url= appConstants.serverUrl+"/api/batchHistoryDetails/" + $window.sessionStorage.getItem('appId');
+											
+											
+											console.log(url)
+											var data = new FormData();
+											
+											$http.get(url1).then(function(response) {
+												$scope.currentUploadDetailsResult = response.data;
 
-								$http.get(url).then(function(response) {
-									$scope.batchDetailsResult = response.data;
+												console.log('currentUploadDetailsResult', $scope.currentUploadDetailsResult);
+												
+											}, function(response) {
+												$rootScope.buttonClicked = response.data;
+												$rootScope.showModal = !$rootScope.showModal;
+												$rootScope.contentColor = "#dd4b39";
+												
+												
+											});
 
-									console.log('full batch his details', $scope.batchDetailsResult);
-									
-								}, function(response) {
-
-									$scope.batchDetailsResult = response.data;
-									console.log($scope.batchDetailsResult)
-									
-								});
-								}
-								}
+											$http.get(url).then(function(response) {
+												$scope.batchDetailsResult = response.data;
+												 angular.forEach($scope.batchDetailsResult, function(batchDetailsResult){
+													   batchDetailsResult.formattedDate = $filter('date')(batchDetailsResult['batchUploadCrDate'],'yyyy-MM-dd HH:mm:ss');
+												      }) ;
+												      
+												       $scope.batchDetailsResult =  $scope.batchDetailsResult;
+												console.log('full batch his details', $scope.batchDetailsResult);
+												
+											}, function(response) {
+												   $rootScope.buttonClicked = response.data;
+													$rootScope.showModal = !$rootScope.showModal;
+													  $rootScope.contentColor = "#dd4b39";
+												
+												
+											});
+											}
+					
 							};
-							
+							}
 							$scope.hideChildTable=function(){
 								 $scope.checkStatus=false;
 							}
@@ -304,9 +350,64 @@ angular
 								}
 							
 							}
-
+			
 						} ]);
 
+
+
+angular.module('cdrApp').service('anchorSmoothScroll', function(){
+    
+    this.scrollTo = function(eID) {
+
+        // This scrolling function 
+        // is from http://www.itnewb.com/tutorial/Creating-the-Smooth-Scroll-Effect-with-JavaScript
+        
+        var startY = currentYPosition();
+        var stopY = elmYPosition(eID);
+        var distance = stopY > startY ? stopY - startY : startY - stopY;
+        if (distance < 100) {
+            scrollTo(0, stopY); return;
+        }
+        var speed = Math.round(distance / 100);
+        if (speed >= 20) speed = 20;
+        var step = Math.round(distance / 25);
+        var leapY = stopY > startY ? startY + step : startY - step;
+        var timer = 0;
+        if (stopY > startY) {
+            for ( var i=startY; i<stopY; i+=step ) {
+                setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+                leapY += step; if (leapY > stopY) leapY = stopY; timer++;
+            } return;
+        }
+        for ( var i=startY; i>stopY; i-=step ) {
+            setTimeout("window.scrollTo(0, "+leapY+")", timer * speed);
+            leapY -= step; if (leapY < stopY) leapY = stopY; timer++;
+        }
+        
+        function currentYPosition() {
+            // Firefox, Chrome, Opera, Safari
+            if (self.pageYOffset) return self.pageYOffset;
+            // Internet Explorer 6 - standards mode
+            if (document.documentElement && document.documentElement.scrollTop)
+                return document.documentElement.scrollTop;
+            // Internet Explorer 6, 7 and 8
+            if (document.body.scrollTop) return document.body.scrollTop;
+            return 0;
+        }
+        
+        function elmYPosition(eID) {
+            var elm = document.getElementById(eID);
+            var y = elm.offsetTop;
+            var node = elm;
+            while (node.offsetParent && node.offsetParent != document.body) {
+                node = node.offsetParent;
+                y += node.offsetTop;
+            } return y;
+        }
+
+    };
+    
+});
 angular.module('cdrApp')
 .factory('AuthenticationService',
 	    [ '$http', '$state',"$window",'$rootScope','appConstants','globalServices',
@@ -453,6 +554,7 @@ angular
 								userName : '',
 								userToken : ''
 							};
+							$scope.applications =[];
 							
 							
 							$scope.userLogin = function() {
@@ -476,7 +578,7 @@ angular
 															userName : response.data.userName,
 															roleType : response.data.roleType,
 															userToken : response.data.userToken
-														};
+														};									        	
 									        	 AuthenticationService.SetCredentials(response);
 									        	 $window.sessionStorage.setItem('currentUser', JSON.stringify(currentUser));				        	
 									        	 $rootScope.currentUser=userService.getCurrentUser();				        	
@@ -511,14 +613,27 @@ angular
 								}
 								;
 
-							};						
-
+							};	
+							$scope.init=function(){
+	                          var url =  appConstants.serverUrl+"/login/getUserAuthDetails/"+$window.sessionStorage.getItem('userToken');
+								
+								$http.get(url).then(function(response) {
+									
+												$scope.applications=response.data.applications;	
+												$scope.roles=response.data.applications;	
+											console.log(' userDetails' , response)
+											console.log(' applications' , $scope.applications)
+											console.log(' roles' , $scope.roles)
+											
+										});
+							}
+						
 						} ]);
 
 angular.module('cdrApp').directive('modal', ['$timeout', function ($timeout) {
     return {
       template: '<div class="modal fade">' + 
-          '<div class="modal-dialog">' + 
+          '<div class="modal-dialog" style="width: 750px; margin: auto;">' + 
             '<div class="modal-content" style="background-color:{{contentColor}}">' + 
               '<div class="modal-header">' + 
                 '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' + 

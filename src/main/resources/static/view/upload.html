@@ -1,37 +1,15 @@
 
 <style>
-/* #footer {
-   					 position: absolute;
-   					 top:300px;
-  					 bottom: 30px;
-   					 width: 100%;
-				} */
-
 
 .ui-datepicker-calendar {
     display: none;
     }
-    
-/*     div.box {
-		height: 700px;
-		width: 800px;
-		border: 1px solid black;
-		align: center;
-		background: lightyellow;
-		padding: 50px 0;
-		 top: 20%;
-  		bottom: 30%;
-  		left: 10%;
-  		right: 10%;
-		 
- 
-	} */
-	
+
 	 p.ext {
     margin-left: 2cm;
 }
-    div.box {
-		min-height: 100px;
+     div.box {
+		height: 700px;
 		width: 800px;
 		border: 1px  ;
 		align: center;
@@ -41,10 +19,10 @@
   		bottom: 30%;
   		left: 15%;
   		right: 10%;
-  		margin-left: 160px;
+  		margin-left: 250px;
   		margin-right: 250px;
   		overflow-x: hidden;
-  		overflow-y: auto;
+  		overflow-y: scroll;
   		
 		 
  
@@ -80,35 +58,29 @@ $(function() {
     });
 });
 
-function myFunction() {
-    var x = document.getElementById("startDate").value;
-   alert(x);
-}
 
-/* function fnReset()
-{
-alert("ehere");
-window.form1.reset();
-
-} */
 </script>
 
+<div ng-controller="loginController" ng-init="init()"><div class="overall" >
+		<nav class="navbar">
+
+			<ul>
+				<li><a ui-sref="home" ui-sref-opts="{reload:true}"><span
+						class="icon fa fa-home"></span>Home</a> <span class="divider"></span></li>
+				<li ng-repeat="application in applications"><a ui-sref="app({appId: application.id})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a> <span
+					class="divider"></span></li>
+
+				<!-- <li><a   ui-sref="settings" ><span class="icon fa "></span>Admin Settings</a></li> -->
+
+				<!-- <li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_ADMIN' " ui-sref="settings" ><span class="icon fa "></span>Settings</a></li>  -->
+				<!-- <span class="divider"></span> -->
+			</ul>
+
+		</nav>
+	</div></div>
 	<div  ng-controller="uploadController" ng-init="appServerFolder()">
-	
-	<div class="overall">
-	
-		
-       <nav class="navbar">
-       		<ul > <li><a ui-sref="home" ui-sref-opts="{reload:true}" ><span class="icon fa fa-home"></span>Home</a></li>       			
-       				
-       				<!-- <li ng-repeat="application in applications">
-       			 <a  id="{{application.appName}}"  ng-click="appServerFolder(application.id);" ng-model="application.id">{{application.appName}}</a><a  class="active" name="appName" id="getpaid" ng-model="appName" href="#" ng-click="appServerFolder($event)"><span class="icon fa fa-table"></span>GETPAID</a>       			
-       				<span class="divider"></span>
-       			</li> -->
-       			</ul>
-       </nav>
-   </div>
-    <p  class="ext" style="font-size:22px; color:#960;">Application - Upload Files</p>
+   
+    <div> <h1  style="font-size:22px; color:#960;">Application - Upload Files</h1></div></br>
    <div class="box" >
   
 		<div>&nbsp</div>
@@ -117,7 +89,7 @@ window.form1.reset();
 		 <form class="form-horizontal" >
 		 <div >
 			 <label for="startDate">Month :</label>
-   			 <input  name="startDate" id="startDate" ng-model="filetest" class="date-picker" />
+   			 <input  name="startDate" id="startDate" ng-model="filetest" class="date-picker textbox" />
    		 </div>
 		 <div>&nbsp;</div>
 		 <div class="form-group" ng-repeat="obj in serverFoldersResult">
@@ -127,7 +99,7 @@ window.form1.reset();
 
 				</div>
 			</div>
-			<div class="form-group" id="upload"> 
+			<div class="form-group " id="upload"> 
 			    <!-- <div class="col-sm-offset-5 col-sm-10"> btn btn-default  -->
 			    <div class="pull-middle">
 			    <button ng-click="angular.copy(filetest)" class="btn btn-primary" type="reset">Reset</button>
@@ -140,5 +112,9 @@ window.form1.reset();
 		
 	</div>	
 		
+		<div class="col-sm-offset-2">
+			<p class="error" ng-bind="uploadError"></p>
+			<p class="success" ng-bind="uploadSuccess"></p>
+		</div>
 	</div>
 	</div>

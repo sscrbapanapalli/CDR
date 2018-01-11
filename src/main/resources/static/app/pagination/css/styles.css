@@ -8,8 +8,45 @@ th {
 	cursor:pointer;
 	background-color:#0055a4;
 }
+.button-link{
+  background: none;
+}
+.button-link:hover {
+    background: #c0c0c0;  
+    text-decoration: none;
+}
 
+.textbox {
+    height: 35px;
+    border: 1px solid #00ffff;
+    border-radius: 5px;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    width: 200px;
+}
+ .textbox:focus {
+    border-color: #BBB;
+    outline: none;
+}
 
+.textboxNumber {
+    height: 35px;
+    border: 1px solid #00ffff;
+    border-radius: 5px;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    width: 50px;
+}
+ .textboxNumber:focus {
+    border-color: #BBB;
+    outline: none;
+}
 .form-submit-button {
 background: #0066A2;
 color: white;
@@ -25,21 +62,131 @@ font: bold 15px arial, sans-serif;
 text-shadow:none;
 
 }
+/* 
+
+
+.close-icon {
+    background: #9E9E9E;  
+	width: 23px;
+	height: 28px;
+	margin-left:1%;
+	float:left;
+	text-align: center;	
+	font-weight: normal;
+	font-size: 16px;
+	box-shadow: 0 0 2px #8080ff;
+	cursor: pointer;
+} */
+
+.slinputtext input {
+  padding:0px;
+  width:75%;
+  padding-left:31px;
+  padding-right:30px;
+  color:black;
+  font-family: arial,sans-serif;
+  font-size: 16px;
+}
+
+/* Remove IE10's “clear field” X button */
+.slinputtext input::-ms-clear {
+    display: none;
+}
+.slinputtext input:focus {
+  border:1px solid #4d90fe;
+}
+
+/* left side icon style (search icon) */
+.slinputtext .left-icon {
+  position:absolute;
+  left:5px;
+  top:100px;
+}
+.slinputtext .fa {
+  color:#444;
+  font-size: 16px;
+}
+.slinputtext .fa-close {
+  color:#ccc;
+}
+
+/* right side icon style (search icon) */
+.slinputtext .right-icon {
+  position:absolute;
+  left:230px;
+  top:100px;
+  cursor:pointer;
+}
+.slinputtext {
+  position:relative;
+  width:30%;
+}
+
+
+/* padding left and right is for search and reset icons */
+.slinput input {
+  padding:0px;
+  width:75%;
+  padding-left:31px;
+  padding-right:30px;
+  color:black;
+  font-family: arial,sans-serif;
+  font-size: 16px;
+}
+
+/* Remove IE10's “clear field” X button */
+.slinput input::-ms-clear {
+    display: none;
+}
+.slinput input:focus {
+  border:1px solid #4d90fe;
+}
+
+/* left side icon style (search icon) */
+.slinput .left-icon {
+  position:absolute;
+  left:5px;
+  top:52px;
+}
+.slinput .fa {
+  color:#444;
+  font-size: 16px;
+}
+.slinput .fa-close {
+  color:#ccc;
+}
+
+/* right side icon style (search icon) */
+.slinput .right-icon {
+  position:absolute;
+  left:230px;
+  top:52px;
+  cursor:pointer;
+}
+.slinput {
+  position:relative;
+  width:30%;
+}
+
+
+#bottom {
+    display: block;
+  }
+#scrollArea {
+    height: 100%;
+    overflow: auto;
+  }
 #tablenodata{
   text-align:center;	
     font-size: 15px;
- background: #4b5a6f; 
- font-style: color:red   
-   
+ background: #b2b3a6; 
+  
 }
-#footer {
+ #footer {
   background-color: #efefef;
-  height:30px;
-  margin-top: auto;
+ 
 }
-.container{
-	 min-height:530px;
-}
+
 .customRow {
   
 	padding: 10px;

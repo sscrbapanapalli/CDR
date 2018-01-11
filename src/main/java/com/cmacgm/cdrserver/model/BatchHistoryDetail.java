@@ -34,7 +34,7 @@ public class BatchHistoryDetail implements Serializable {
     
     
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
-    @JoinColumn( name = "batch_id" , referencedColumnName = "batch_id")
+    @JoinColumn( name = "batch_history_id" , referencedColumnName = "id")
     private List<BatchFileDetail> batchFileDetailList=new ArrayList<>();
     
     @Column(name="app_id")
