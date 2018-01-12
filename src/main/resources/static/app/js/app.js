@@ -318,7 +318,7 @@ angular
 								$scope.checkStatus=false;
 								
 							}
-							$scope.doReverse = function(){
+							$scope.doReverse = function(id){
 								console.log('in  do reverese')
 								
 								var config = {
@@ -333,6 +333,7 @@ angular
 								var data = new FormData();
 								data.append("applicationId" , $scope.appId);
 								data.append("userName", $rootScope.currentUser.userName);
+								data.append("selectedBatchUniqueId", id);
 								console.log(data)
 								$http.post(url,data,config).then(
 										function(response){

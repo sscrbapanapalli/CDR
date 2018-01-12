@@ -95,7 +95,7 @@ public class ApplicationController {
 	}
 	
 	/* 
-	 * To get batch History Details
+	 * To R
 	 */
 	
 	@GetMapping("/batchHistoryDetails/{appId}")
@@ -299,14 +299,8 @@ public class ApplicationController {
 	    		System.out.println(" reverse ID" +list.getId());
 	    	}
 	    	System.out.println("size" + reverseBatchdetailsList.size());
-	    	/*if(test=="true"){
-	    	BatchHistoryDetail test1=batchHistoryDetailsRepository.findByEtlProcessed(batchUploadStatus,appId,etlProcessedNew,etlProcessedCompleted);
-	    	return test1;
-	    	}else{
-	    		return null;
-	    		
-	    	}*/
-	    	if(reverseBatchdetailsList.size()!=0){
+	    	
+	    	if(reverseBatchdetailsList.size()==0){
 	    		
 			 	return batchHistoryDetailsRepository.findByEtlProcessed(batchUploadStatus,appId,etlProcessedNew,etlProcessedCompleted);	
 	    	}else
@@ -336,20 +330,23 @@ public class ApplicationController {
 	    	String etlModified="X";
 	    	String source="";
 	    	String destination="";
+	    	BatchHistoryDetail batchUpdate= new BatchHistoryDetail();
+	    	List<BatchHistoryDetail> reverseBatchdetailsList;
+	    		    	
 	    	String userName=request.getParameter("userName");
 	    	Long appId=Long.parseLong(request.getParameter("applicationId"));
 	    	Long selectedBatchUniqueId=Long.parseLong(request.getParameter("selectedBatchUniqueId"));
-	    	/* Date dNow = new Date();
-		       SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
-		       String batchId = appId+ft.format(dNow);
-	    	System.out.println("new format batch id" + batchId);*/
-	    	BatchHistoryDetail batchUpdate= new BatchHistoryDetail();
 	    	
+	    	reverseBatchdetailsList=batchHistoryDetailsRepository.getReverseBatchDetails(appId,batchUploadStatusModified);	    	    	
 	    	batchUpdate=batchHistoryDetailsRepository.findById(selectedBatchUniqueId);
 	    	System.out.println("test" + batchUpdate);
-	    	if(batchUpdate!=null){
-	    		etlStatusBeforereverse=batchUpdate.getEtlProcessed();	
-	    	batchUpdate.setEtlProcessed(etlModified);		
+	    	etlStatusBeforereverse=batchUpdate.getEtlProcessed();
+	    	if(batchUpdate!=null && reverseBatchdetailsList.size()==0){
+	    		if(batchUpdate.getEtlProcessed().equals(etlProcessedNew)){
+	    			System.out.println("in batchUpdate record before "+ etlStatusBeforereverse);
+	    			batchUpdate.setEtlProcessed(etlModified);
+	    			System.out.println("in batchUpdate record after"+ batchUpdate.getEtlProcessed());
+	    		}
 	    	batchUpdate.setUpdatedBy(userName);
 	    	batchHistoryDetailsRepository.save(batchUpdate);
 	    	System.out.println("Reverse batch updated entry" + batchUpdate);
@@ -369,7 +366,8 @@ public class ApplicationController {
           File srcDir = new File(source);
           String ArchiveResult=archiveFiles(destDir,srcDir);
   	}*/
-  	//String ArchiveResult=archiveFiles(destDir,srcDir);
+  	String ArchiveResult=archiveFiles(destDir,srcDir);
+  	System.out.println("ArchiveResult" + ArchiveResult);
 	    	
 	    	
 	    	// To insert new record for Reverse process
@@ -388,9 +386,9 @@ public class ApplicationController {
 			System.out.println("in update record before "+ etlStatusBeforereverse);
 			batchReverse.setEtlProcessed(etlModified);
 			System.out.println("in update record after"+ batchUpdate.getEtlProcessed());
-		}else if(etlStatusBeforereverse.equals(etlProcessedCompleted)){
-			batchReverse.setEtlProcessed(etlProcessedNew);
-		}	 
+	    	}else if(etlStatusBeforereverse.equals(etlProcessedCompleted)){
+	    		batchReverse.setEtlProcessed(etlProcessedNew);
+	    	 }	 
 		/*batchReverse.setEtlProcessed(batchUpdate.getEtlProcessed());*/
 	    	System.out.println("Reverse batch new enrty" + batchReverse);
 	    	batchHistoryDetailsRepository.save(batchReverse);
@@ -399,7 +397,7 @@ public class ApplicationController {
 	    	
 	    	System.out.println(" reverseResponse:"+serverResponse);
 	    	}else{
-	    		serverResponse="No batch found to reverse"; 
+	    		serverResponse="Batch Reverse failed as Batch Reversal for current month completed"; 
 	    		System.out.println("reverseResponse:"+serverResponse);
 	    	}
 	    	logger.info(serverResponse);
