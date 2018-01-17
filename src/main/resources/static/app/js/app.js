@@ -340,6 +340,7 @@ angular
 											  $rootScope.buttonClicked = response.data;
 												$rootScope.showModal = !$rootScope.showModal;
 												  $rootScope.contentColor = "#78b266";
+												  $state.go("app", {appId:$window.sessionStorage.getItem('appId')}, {reload: true}); 
 											
 										},function(response){
 											
@@ -705,7 +706,7 @@ angular.module('cdrApp').controller(
 					$scope.serverFoldersResult = [];
 					$scope.sessionAppId=$window.sessionStorage.getItem('appId');
 					$scope.dataLoading = false;
-					
+					$scope.duplicateUpload=false;
 					$scope.inituser = function() {
 						var data = globalServices.isUserTokenAvailable();
 						if (data == null || data == undefined) {
@@ -730,9 +731,23 @@ angular.module('cdrApp').controller(
 					   }
 
 					$scope.setFile = function(file, index) {
-						
-
+						$scope.duplicateUpload=false;
+						if ($scope.fileList!=undefined && $scope.fileList.length>0) {	
+							
+						 for (var i = 1; i < $scope.fileList.length; i++) {
+							if ($scope.fileList[i].name == file[0].name) {	       
+								
+								 $scope.duplicateUpload=true;
+								 $rootScope.$apply(function() {	
+								 $rootScope.buttonClicked ="Remove the duplicate file already selected with the name: "+$scope.fileList[i].name +  "";
+						         $rootScope.showModal = !$rootScope.showModal;
+						         $rootScope.contentColor = "#dd4b39";									
+								});								   
+								}
+						 }
+						}
 						$scope.fileList[index] = file[0];
+						
 
 					}
 
@@ -756,8 +771,15 @@ angular.module('cdrApp').controller(
 						data.append("selectedMonth",selectedMonth)
 						console.log('selectedMonth' , selectedMonth)
 					console.log('data for upload' , data)
-						if (data != undefined)
+						if (data != undefined && !$scope.duplicateUpload)
 							$scope.UploadFileIndividual(data);
+						else if($scope.duplicateUpload){
+							 $scope.dataLoading = false;
+							 $rootScope.buttonClicked ="Remove the duplicate files already selected";
+					         $rootScope.showModal = !$rootScope.showModal;
+					         $rootScope.contentColor = "#dd4b39";	
+							
+						}
 					};
 					$scope.UploadFileIndividual = function(data){
 
@@ -773,9 +795,21 @@ angular.module('cdrApp').controller(
 						$http.post( appConstants.serverUrl+'/api/uploadfile', data, config).then(
 								function(response) {
 									$scope.dataLoading = false;
-									  $rootScope.buttonClicked =response.data;
-							          $rootScope.showModal = !$rootScope.showModal;	
-							          $rootScope.contentColor = "#78b266";
+									if(response.data!="Files Uploaded Successfully"){
+										  $rootScope.contentColor = "#dd4b39";
+										  $rootScope.buttonClicked =response.data;
+								          $rootScope.showModal = !$rootScope.showModal;	
+									}
+									else{							
+										  $state.go("app", {appId:$window.sessionStorage.getItem('appId')}, {reload: true}); 
+										  $rootScope.contentColor = "#78b266";
+										  $rootScope.buttonClicked =response.data;
+								          $rootScope.showModal = !$rootScope.showModal;	
+									}
+									
+									
+	  						           	
+							           
 								}, function(response) {
 									 $rootScope.buttonClicked =response.data;
 							         $rootScope.showModal = !$rootScope.showModal;
