@@ -61,7 +61,8 @@ $(function() {
 
 </script>
 
-<div ng-controller="loginController" ng-init="init()"><div class="overall" >
+<div ng-controller="loginController" ng-init="init()">
+	<div class="overall" >
 		<nav class="navbar">
 
 			<ul>
@@ -72,12 +73,21 @@ $(function() {
 
 				<!-- <li><a   ui-sref="settings" ><span class="icon fa "></span>Admin Settings</a></li> -->
 
-				<!-- <li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_ADMIN' " ui-sref="settings" ><span class="icon fa "></span>Settings</a></li>  -->
-				<!-- <span class="divider"></span> -->
+				<li ng-repeat="role in roles">
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="settings" >Settings</a> 
+					
+				</li>
+				<li><span  class="divider"></span></li>
+				<!-- <li ng-repeat="role in roles">
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="settings" >Application Folder Settings</a> 
+					
+				</li>
+				<li><span  class="divider"></span></li> -->
 			</ul>
 
 		</nav>
-	</div></div>
+	</div>
+</div>
 	<div  ng-controller="uploadController" ng-init="appServerFolder()">
    
     <div> <h1  style="font-size:22px; color:#960;">Application - Upload Files</h1></div></br>

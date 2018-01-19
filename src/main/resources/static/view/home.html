@@ -4,15 +4,27 @@
 		<nav class="navbar">
 
 			<ul>
-				<li><a ui-sref="home" ui-sref-opts="{reload:true}"><span
-						class="icon fa fa-home"></span>Home</a> <span class="divider"></span></li>
-				<li ng-repeat="application in applications"><a ui-sref="app({appId: application.id})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a> <span
-					class="divider"></span></li>
-
+				<li><a ui-sref="home" ui-sref-opts="{reload:true}">
+					<span class="icon fa fa-home"></span>Home</a>
+					<span class="divider"></span>
+				</li>
+				<li ng-repeat="application in applications">
+					<a ui-sref="app({appId: application.id})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a>
+					<span class="divider"></span>
+				</li>
+				
 				<!-- <li><a   ui-sref="settings" ><span class="icon fa "></span>Admin Settings</a></li> -->
 
-				<!-- <li><a  ng-if="isProfilePage && currentUser.roleType=='ROLE_ADMIN' " ui-sref="settings" ><span class="icon fa "></span>Settings</a></li>  -->
-				<!-- <span class="divider"></span> -->
+				<li ng-repeat="role in roles">
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="settings" >Settings</a> 
+					
+				</li>
+				<li><span  class="divider"></span></li>
+				<!-- <li ng-repeat="role in roles">
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="settings" >Application Folder Settings</a> 
+					
+				</li>
+				<li><span  class="divider"></span></li> -->
 			</ul>
 
 		</nav>

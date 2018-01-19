@@ -221,7 +221,7 @@ angular
 								$http.get(url).then(function(response) {
 									
 												$scope.applications=response.data.applications;	
-												$scope.roles=response.data.applications;	
+												$scope.roles=response.data.roles;	
 											console.log(' userDetails' , response)
 											console.log(' applications' , $scope.applications)
 											console.log(' roles' , $scope.roles)
@@ -525,12 +525,73 @@ angular.module('cdrApp').controller(
 
 						}
 					}
-					$scope.logout = function () {		
-						   AuthenticationService.ClearCredentials();  
-						   $rootScope.isProfilePage=false;
-						  
-					   }
-					$scope.inituser();
+					
+					$scope.init=function(){
+                        var url =  appConstants.serverUrl+"/login/getUserAuthDetails/"+$window.sessionStorage.getItem('userToken');
+                        var masterAppUrl =  appConstants.serverUrl+"/admin/getAllApplications/";	
+                        var masterRoleUrl =  appConstants.serverUrl+"/admin/getAllRoles/";
+                        
+                        $http.get(url).then(function(response) {
+								
+											$scope.applications=response.data.applications;	
+											$scope.roles=response.data.roles;	
+										console.log(' settings userDetails' , response)
+										console.log(' applications' , $scope.applications)
+										console.log(' roles' , $scope.roles)
+										
+									});
+                        
+                        $http.get(masterAppUrl).then(function(response) {
+                        	console.log(' allApplications ' , response)
+                        	$scope.allApplications=response.data;	
+                        	
+                        	
+                        });
+                        $http.get(masterRoleUrl).then(function(response) {
+                        	console.log(' allRoles ' , response)
+                        	$scope.allRoles=response.data;	
+                        	
+                        	
+                        });
+							$scope.inituser();
+						}
+					$scope.appConfig=function(){
+						var userName=$scope.userName;
+						var roleId=$scope.userRole;
+						var selectedAppId=$scope.selectedAppId;
+						 /*$rootScope.currentUser=userService.getCurrentUser();*/
+						var createdBy=$rootScope.currentUser.userName;
+						console.log(userName , roleId , selectedAppId , createdBy)
+						var appCongigUrl=appConstants.serverUrl+"/admin/setUserConfiguration/";
+						var data=new FormData();
+						data.append("userName", userName);
+						data.append("roleId", roleId);
+						data.append("selectedAppId", selectedAppId);
+						data.append("createdBy", createdBy);
+						
+						var config = {
+								transformRequest : angular.identity,
+								transformResponse : angular.identity,
+								headers : {
+									'Content-Type' : undefined
+								}
+							}
+						$http.post(appCongigUrl,data,config).then(
+								function(response){
+									  $rootScope.buttonClicked = response.data;
+										$rootScope.showModal = !$rootScope.showModal;
+										  $rootScope.contentColor = "#78b266";
+										  
+									
+								},function(response){
+									
+									 $rootScope.buttonClicked = response.data;
+										$rootScope.showModal = !$rootScope.showModal;
+										  $rootScope.contentColor = "#dd4b39";
+								});
+						
+						
+					}
 				} ]);
 
 angular
@@ -557,6 +618,7 @@ angular
 								userToken : ''
 							};
 							$scope.applications =[];
+							/*$scope.roles =[];*/
 							
 							
 							$scope.userLogin = function() {
@@ -622,7 +684,7 @@ angular
 								$http.get(url).then(function(response) {
 									
 												$scope.applications=response.data.applications;	
-												$scope.roles=response.data.applications;	
+												$scope.roles=response.data.roles;	
 											console.log(' userDetails' , response)
 											console.log(' applications' , $scope.applications)
 											console.log(' roles' , $scope.roles)
@@ -735,12 +797,12 @@ angular.module('cdrApp').controller(
 						if ($scope.fileList!=undefined && $scope.fileList.length>0) {	
 							
 						 for (var i = 1; i < $scope.fileList.length; i++) {
-							if ($scope.fileList[i].name == file[0].name) {	       
-								
+							if ($scope.fileList[i].name == file[0].name) {	  
+															
 								 $scope.duplicateUpload=true;
 								 $rootScope.$apply(function() {	
 								 $rootScope.buttonClicked ="Remove the duplicate file already selected with the name: "+$scope.fileList[i].name +  "";
-						         $rootScope.showModal = !$rootScope.showModal;
+								 $rootScope.showModal = !$rootScope.showModal;
 						         $rootScope.contentColor = "#dd4b39";									
 								});								   
 								}

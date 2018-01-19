@@ -1,24 +1,111 @@
-
-<script type="text/javascript">
-$(function() {
-    $('.date-picker').datepicker( {
-        changeMonth: true,
-        changeYear: true,
-        showButtonPanel: true,
-        dateFormat: 'MM',
-        onClose: function(dateText, inst) { 
-            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
-        }
-    });
-});
-</script>
 <style>
+
 .ui-datepicker-calendar {
     display: none;
     }
+
+	 p.ext {
+    margin-left: 2cm;
+}
+     div.box {
+		height: 400px;
+		width: 800px;
+		border: 1px  ;
+		align: center;
+		background: #fbf2b7;
+		padding: 50px 0;
+		 top: 20%;
+  		bottom: 30%;
+  		left: 15%;
+  		right: 10%;
+  		margin-left: 250px;
+  		margin-right: 250px;
+  		overflow-x: hidden;
+  		overflow-y: scroll;
+  		
+		 
+ 
+	}
+	p.error{
+			float:left;
+			color:red;
+			font-size: 15px;
+	
+	}
+	p.success{
+			float:left;
+			color:green;
+			font-size: 15px;
+	
+	}
+
 </style>
 
-<div>
-<label for="startDate">Date :</label>
-    <input name="startDate" id="startDate" class="date-picker" />
+<div ng-controller="loginController" ng-init="init()">
+	<div class="overall" >
+		<nav class="navbar">
+
+			<ul>
+				<li><a ui-sref="home" ui-sref-opts="{reload:true}"><span
+						class="icon fa fa-home"></span>Home</a> <span class="divider"></span></li>
+				<li ng-repeat="application in applications"><a ui-sref="app({appId: application.id})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a> <span
+					class="divider"></span></li>
+
+				
+
+				<li ng-repeat="role in roles">
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="settings" >Settings</a> 
+					
+				</li>
+				<li><span  class="divider"></span></li>
+				<!-- <li ng-repeat="role in roles">
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="settings" >Application Folder Settings</a> 
+					
+				</li>
+				<li><span  class="divider"></span></li> -->
+			</ul>
+
+		</nav>
+	</div>
 </div>
+
+<div ng-controller="settingsController" ng-init="init()">
+
+<div> <h1  style="font-size:22px; color:#960;">Application Configuration</h1></div></br>
+   <div class="box" >
+   	<div class="main" >
+		 <form class="form-horizontal" >
+		 <div >
+			 <label for="userName">User Name</label>
+   			 <input  type="text" name="userName" id="userName" ng-model="userName"  />
+   		 </div>
+		 
+		 <div >
+			 <label for="userRole">User Role</label>
+			 <select ng-model="userRole">
+				<option ng-repeat="role in allRoles" value="{{role.id}}">{{role.roleName}}</option>
+</select>
+   			
+   		 </div>
+   		 
+   		  <div >
+			 <label for="appName">Application Name</label>
+			 <select ng-model="selectedAppId">
+				<option ng-repeat="x in allApplications" value="{{x.id}}">{{x.appName}}</option>
+</select>
+   			
+   		 </div>
+   		 
+   		 
+
+
+   		 
+   		 <div>&nbsp</div>
+   		 <div class="pull-middle">
+   		 <button type="submit" class="btn btn-success" ng-click = "appConfig()">Submit</button>
+			    </div>
+   		 </form>
+   		</div> 
+   		</div>
+</div>
+

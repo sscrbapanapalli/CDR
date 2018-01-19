@@ -356,7 +356,7 @@ public class ApplicationController {
 	 	    List<ApplicationFileUploadConfig> applicationFileUploadConfig = applicationFileUploadConfigRepository.findByApplication(application);
 	    	
 	 	   source=applicationFileUploadConfig.get(1).getFileTrgtPath();
-	 	   destination=applicationFileUploadConfig.get(1).getFileAckPath();
+	 	   destination=applicationFileUploadConfig.get(1).getFileAckPath()+batchUpdate.getBatchId();
 	 	   File destDir = new File(destination);
            File srcDir = new File(source);
            /* for(ApplicationFileUploadConfig archiveProcess:applicationFileUploadConfig){
@@ -366,7 +366,7 @@ public class ApplicationController {
           File srcDir = new File(source);
           String ArchiveResult=archiveFiles(destDir,srcDir);
   	}*/
-  	String ArchiveResult=archiveFiles(destDir,srcDir);
+  	String ArchiveResult=archiveFiles(srcDir,destDir);
   	System.out.println("ArchiveResult" + ArchiveResult);
 	    	
 	    	
@@ -407,13 +407,15 @@ public class ApplicationController {
 	    
 	   
 	    
-	    public String archiveFiles(File srcDir,File arcDir){
+	    public String archiveFiles(File srcDir,File destDir){
 	    	String archiveResult="";
 	    	 try {
 	             // Move the source directory to the destination directory.
 	             // The destination directory must not exists prior to the
 	             // move process.
-	             FileUtils.moveDirectory(srcDir, arcDir);
+	    		 System.out.println("In Archive method:"+srcDir);
+	    		 System.out.println("In Archive method:"+destDir);
+	             FileUtils.moveDirectory(srcDir, destDir);
 	              archiveResult= "Files moved to Archive Folder";
 	         } catch (IOException e) {
 	             e.printStackTrace();
