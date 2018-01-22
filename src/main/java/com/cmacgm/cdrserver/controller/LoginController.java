@@ -7,7 +7,6 @@ import java.util.HashMap;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,8 +49,6 @@ public class LoginController {
 
 	private final HashMap map = new HashMap();
 
-	private static final Logger logger = Logger.getLogger(LoginController.class);
-
 
 	@RequestMapping(value = "/loginUser", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public @ResponseBody RetValue<HashMap> loginUser(@RequestBody UserLoginModel user) throws Exception {
@@ -82,7 +79,7 @@ public class LoginController {
 
 			return FrameworkUtil.getResponseValue(true, "failure", null);
 		} catch (Exception e) {
-			logger.error("This is complete stacktrace", e);
+			
 			return FrameworkUtil.getResponseValue(true, "failure", null);
 		}
 	}

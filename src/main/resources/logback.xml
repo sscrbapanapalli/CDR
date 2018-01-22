@@ -5,7 +5,7 @@
         <File>${LOG_PATH}</File>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <maxIndex>10</maxIndex>
+            <maxIndex>1</maxIndex>
             <fileNamePattern>${LOG_PATH}.%i</fileNamePattern>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
@@ -17,12 +17,10 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %level %logger - %msg%n</pattern>
         </encoder>
     </appender>
-     
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="jsonAppender"/>
-          <appender-ref ref="STDOUT"/> 
+        <!--   <appender-ref ref="STDOUT"/> -->
     </root>
-    
-     
+ 
 </configuration>
 

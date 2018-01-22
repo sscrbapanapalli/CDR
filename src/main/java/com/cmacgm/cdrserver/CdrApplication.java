@@ -1,6 +1,5 @@
 package com.cmacgm.cdrserver;
 
-import org.aspectj.lang.annotation.Aspect;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,9 +19,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableJpaAuditing
 @Configuration
 @EnableJpaRepositories
-@EnableAspectJAutoProxy
 @EnableAutoConfiguration
-@ComponentScan(	    basePackages = {"com.cmacgm.*"}, includeFilters = {@ComponentScan.Filter(Aspect.class)})
+@EnableAspectJAutoProxy
+@ComponentScan
 public class CdrApplication  extends SpringBootServletInitializer  {
 
 	
