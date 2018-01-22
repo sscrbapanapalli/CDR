@@ -13,6 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -38,8 +43,14 @@ public class User {
     private Collection<Role> roles;
     @Column(name="user_display_name",length = 100)
     private String userDisplayName;
+    
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="created_date")
     private Date createdDate;
+    
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="updated_date")
     private Date updatedDate;
     @Column(name="active_indicator")

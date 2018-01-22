@@ -26,18 +26,35 @@
 		 
  
 	}
-	p.error{
-			float:left;
-			color:red;
-			font-size: 15px;
-	
-	}
-	p.success{
-			float:left;
-			color:green;
-			font-size: 15px;
-	
-	}
+	[tooltip]:before {
+    /* needed - do not touch */
+    content: attr(tooltip);
+    position: absolute;
+    opacity: 0;
+    
+    /* customizable */
+    transition: all 0.15s ease;
+    padding: 10px;
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 2px 2px 1px silver;    
+}
+
+[tooltip]:hover:before {
+    /* needed - do not touch */
+    opacity: 1;
+    
+    /* customizable */
+    background: yellow;
+    margin-top: -50px;
+    margin-left: 20px;    
+}
+
+#test{
+    padding: 7px;
+   
+}
+
 
 </style>
 
@@ -75,16 +92,47 @@
    <div class="box" >
    	<div class="main" >
 		 <form class="form-horizontal" >
-		 <div >
-			 <label for="userName">User Name</label>
+		 
+		 <table  id="test" cellpadding="2"  bgcolor="99FFFF" style=" border: red 1px solid;;padding: 7px; width="40%" "  align="center" cellspacing="2">
+		 <tr>
+		 	<td align="right">User Id</td>
+		 	<td> <input  type="text" name="userName" id="userName" ng-model="userName"  /></td>
+		 </tr>
+		 <tr>
+		 	<td align="right">User Role</td>
+		 	<td tooltip="ex:SSC.ABC@CMA-CGM.com" align="left">
+				<select class="multiselect" data-placeholder="Select User Roles" 
+			      ng-model="userRole" ng-options="role.id as role.roleName for role in allRoles"
+			      multiple="multiple" multiselect-dropdown >
+			 	</select>
+			</td>
+		 </tr>	
+		 <tr>
+		 	<td align="right">Application Name</td>
+		 	<td align="left">
+		 		<select class="multiselect" data-placeholder="Select Application"  
+		          ng-model="selectedAppId" ng-options="app.id as app.appName for app in allApplications"
+		          multiple="multiple" multiselect-dropdown >
+			    </select>
+			</td>
+		</tr>	
+		</table>    
+		 		
+		 <!-- <div tooltip="ex:SSC.ABC@CMA-CGM.com">
+			 <label for="userName">User Id</label>
    			 <input  type="text" name="userName" id="userName" ng-model="userName"  />
+   			 <span class="tooltiptext">(ex:SSC.ABC@CMA-CGM.com)</span>
    		 </div>
 		 
 		 <div >
 			 <label for="userRole">User Role</label>
-			 <select ng-model="userRole">
-				<option ng-repeat="role in allRoles" value="{{role.id}}">{{role.roleName}}</option>
-</select>
+				 <select ng-model="userRole">
+						<option ng-repeat="role in allRoles" value="{{role.id}}">{{role.roleName}}</option>
+				</select>
+			<select class="multiselect" data-placeholder="Select User Roles" 
+			      ng-model="userRole" ng-options="role.id as role.roleName for role in allRoles"
+			      multiple="multiple" multiselect-dropdown >
+			  </select>
    			
    		 </div>
    		 
@@ -92,9 +140,15 @@
 			 <label for="appName">Application Name</label>
 			 <select ng-model="selectedAppId">
 				<option ng-repeat="x in allApplications" value="{{x.id}}">{{x.appName}}</option>
-</select>
+			</select>
+			
+			<select class="multiselect" data-placeholder="Select Application" 
+		      ng-model="selectedAppId" ng-options="app.id as app.appName for app in allApplications"
+		      multiple="multiple" multiselect-dropdown >
+			 </select>
+  
    			
-   		 </div>
+   		 </div> -->
    		 
    		 
 

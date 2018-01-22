@@ -559,6 +559,7 @@ angular.module('cdrApp').controller(
 						var userName=$scope.userName;
 						var roleId=$scope.userRole;
 						var selectedAppId=$scope.selectedAppId;
+						$scope.productSelection=[];
 						 /*$rootScope.currentUser=userService.getCurrentUser();*/
 						var createdBy=$rootScope.currentUser.userName;
 						console.log(userName , roleId , selectedAppId , createdBy)
@@ -928,9 +929,92 @@ if ($scope.sessionApp != undefined
 				} ]);
 
 
-
+angular.module('cdrApp').directive('multiselectDropdown', [function() {
+    return function(scope, element, attributes) {
+            
+        // Below setup the dropdown:
+        
+        element.multiselect({
+            buttonClass : 'btn btn-small',
+            buttonWidth : '200px',
+            buttonContainer : '<div class="btn-group" />',
+            maxHeight : 200,
+            enableFiltering : true,
+            enableCaseInsensitiveFiltering: true,
+            buttonText : function(options) {
+                if (options.length == 0) {
+                    return element.data()['placeholder'] + ' <b class="caret"></b>';
+                } else if (options.length > 1) {
+                    return _.first(options).text 
+                    + ' + ' + (options.length - 1)
+                    + ' more selected <b class="caret"></b>';
+                } else {
+                    return _.first(options).text
+                    + ' <b class="caret"></b>';
+                }
+            },
+            // Replicate the native functionality on the elements so
+            // that angular can handle the changes for us.
+            onChange: function (optionElement, checked) {
+                optionElement.removeAttr('selected');
+                if (checked) {
+                    optionElement.prop('selected', 'selected');
+                }
+                element.change();
+            }
+            
+        });
+        // Watch for any changes to the length of our select element
+        scope.$watch(function () {
+            return element[0].length;
+        }, function () {
+            element.multiselect('rebuild');
+        });
+        
+        // Watch for any changes from outside the directive and refresh
+        scope.$watch(attributes.ngModel, function () {
+            element.multiselect('refresh');
+        });
+        
+        // Below maybe some additional setup
+    }
+}]);
 
 'use strict';
+angular.module('cdrApp').run([
+			'$state','$http','$rootScope','globalServices','userService','AuthenticationService',function ( $state,$http,$rootScope,globalServices,userService,AuthenticationService) {
+				
+	   $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams) {	
+	    var requireLogin = toState.data.requireLogin;
+	    $rootScope.currentUser=userService.getCurrentUser();	
+			
+	    if ((requireLogin && typeof $rootScope.currentUser === 'undefined')|| (typeof globalServices.isUserTokenAvailable()=== 'undefined'))
+		 {	 
+	    	$rootScope.isProfilePage=false;
+	        return $state.go('login');	        
+	    }else{	    	
+	    	$rootScope.isProfilePage=true;
+	    }	  
+	    
+	  });
+	  
+	   var lastAccessApp = new Date();
+
+	    $rootScope.$watch(function watchIdleInterval() {
+	        var date = new Date();
+	        var nowDate = date - lastAccessApp;
+	        if (1 * 60 * 100 < nowDate) { //after 8 minutes logout automatically
+	            //$log.log('This is log!');
+	            AuthenticationService.ClearCredentials();  
+	            $rootScope.isProfilePage=false;
+		         $state.go('login');	         
+	        }
+	        lastAccessApp = date;
+	    });
+	  
+	}]);
+
+/*'use strict';
 angular.module('cdrApp').run([
 			'$state','$http','$rootScope','globalServices','userService',function ( $state,$http,$rootScope,globalServices,userService) {
 				
@@ -949,4 +1033,4 @@ angular.module('cdrApp').run([
 	  });
 	   
 
-	}]);
+	}]);*/

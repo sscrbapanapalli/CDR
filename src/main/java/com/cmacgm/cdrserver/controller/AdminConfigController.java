@@ -2,6 +2,7 @@ package com.cmacgm.cdrserver.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,15 +61,16 @@ public class AdminConfigController {
 		
 		 String configResponse="Success";
 		 String userName=request.getParameter("userName");
-		 Long roleId=Long.parseLong(request.getParameter("roleId"));
-		 Long appId=Long.parseLong(request.getParameter("selectedAppId"));
+		 String roleId=request.getParameter("roleId");
+		 String appId=request.getParameter("selectedAppId");
 		 String createdBy=request.getParameter("createdBy");
+		 String userDisplayName=null;
 		 User user=new User();
 		 User checkUser=new User();
 		 checkUser=userRepository.findByUserId(userName);
-		 Application application=new Application();
+		 Application application=null;
 		 List<Application> applicationList=new ArrayList<Application>();
-		 Role role=new Role();
+		 Role role=null;
 		 List<Role> roleList=new ArrayList<Role>();
 		 
 		 System.out.println("In AdminConfigController");
@@ -77,12 +79,32 @@ public class AdminConfigController {
 		 System.out.println("appId" + appId);
 		 System.out.println("createdBy" + createdBy);
 		 
+		 List<String> myListAppIds = new ArrayList<String>(Arrays.asList(appId.split(",")));
+		 List<String> myListRoleIds=new ArrayList<String>(Arrays.asList(roleId.split(",")));
+		 
+		 for(String myListAppId:myListAppIds){
+			 application=new Application(); 
+		     application.setId(Long.parseLong(myListAppId));
+		 	 applicationList.add(application);
+		 }
+		 for(String myListRoleId:myListRoleIds){
+			 role=new Role();
+			 role.setId(Long.parseLong(myListRoleId));
+			 roleList.add(role);
+		
+		 }
+		 
+		 String[] words = userName.split("@");
+			if (words[0] != null)
+				 userDisplayName = words[0];
+			userDisplayName = userDisplayName.toUpperCase();
+		 
 		 if(checkUser==null){
 		 
-		 application.setId(appId);
-		 role.setId(roleId);
-		 applicationList.add(application);
-		 roleList.add(role);
+		/* role.setId(roleId);
+		// applicationList.add(application);
+		 roleList.add(role);*/
+		 user.setUserDisplayName(userDisplayName);
 		 user.setUserId(userName);
 		 user.setCreatedBy(createdBy);
 		 user.setUpdatedBy(createdBy);
@@ -98,10 +120,11 @@ public class AdminConfigController {
 		 }
 		 }else{
 			 
-			 application.setId(appId);
+			/*//application.setId(appId);
 			 role.setId(roleId);
-			 applicationList.add(application);
-			 roleList.add(role);
+			// applicationList.add(application);
+			 roleList.add(role);*/
+			 checkUser.setUserDisplayName(userDisplayName);
 			 checkUser.setUserId(userName);
 			 checkUser.setUpdatedBy(createdBy);
 			 checkUser.setApplications(applicationList);
