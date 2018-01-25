@@ -126,11 +126,11 @@
                       ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
 						dir-paginate="obj in filtered =(batchDetailsResult|filter:search)|orderBy:sortParent:reverse|itemsPerPage: pageSize"
 						current-page="currentPage" pagination-id="original" >
-						<td> <a scroll-on-click class="button-link" ui-sref="."
+						<td> <a title="click here Show Batch History Details" scroll-on-click class="button-link" ui-sref="."
       ng-click='batchFiles($index,obj.id)'>{{obj.batchId}}</a></td>
       <td title="{{obj.batchUploadCrDate|date:'yyyy-MM-dd HH:mm:ss'}}" >{{obj.batchUploadCrDate|date:'yyyy-MM-dd HH:mm:ss'}}</td>      	
 		
-					<td>{{ obj.batchUploadStatus }}<a ng-if="obj.id==currentUploadDetailsResult.id"  ng-click="doReverse(obj.id,obj.batchId,obj.batchUploadMonth)">
+					<td>{{ obj.batchUploadStatus }}<a title="Reverse" ng-if="obj.id==currentUploadDetailsResult.id"  ng-click="doReverse(obj.id,obj.batchId+'  for the month '+obj.batchUploadMonth)">
 						<img style="width: 25px; height: 25px" alt="logo"	src="./app/images/reverse.png" /> 
     </a></td>
 						<td>{{obj.etlProcessed}}</td>
@@ -270,7 +270,24 @@
 				record(s) out of ({{batchFileslist.length }}) entries</div>
 
 		</div>
-
+<div id="confirmation-dialog">
+      <div class="modal fade confirmation-dialog" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">{{confirmationDialogConfig.title}}</h4>
+            </div>
+            <div class="modal-body">
+              <div class="span5">{{confirmationDialogConfig.message +"  Batch ID: "+confirmationDialogConfig.batchId}}</div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" ng-repeat="button in confirmationDialogConfig.buttons" ng-click="confirmReverse(confirmationDialogConfig.id)" class="btn btn-primary">{{button.label}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 	</div>
 	<script>  function generatePdf(tableId) {
         var doc = new jsPDF('l', 'pt', 'a4');

@@ -324,42 +324,66 @@ angular
 								$scope.checkStatus=false;
 								
 							}
-							$scope.doReverse = function(id,batchId,batchUploadMonth){
-								console.log('in  do reverese')
-								
-								var config = {
-										transformRequest : angular.identity,
-										transformResponse : angular.identity,
-										headers : {
-											'Content-Type' : undefined
-										}
+
+							   $scope.showDialog = function(flag) {
+							        jQuery("#confirmation-dialog .modal").modal(flag ? 'show' : 'hide');
+							      };
+									$scope.doReverse = function(id,batchId){
+										console.log('in  do reverese')
+									
+										 $scope.confirmationDialogConfig = {
+										      title: "REVERSE UPLOAD",
+										      message: "Are you sure you want to Reverse?",
+										      buttons: [{
+										        label: "Reverse",
+										        action: "Reverse"
+										      }],
+										      id:id,
+										      batchId:batchId
+										    };
+										    $scope.showDialog(true);			    
+										
+									
 									}
-								if($rootScope.currentUser!=undefined){
-								var url=appConstants.serverUrl+"/api/reverseUpload/";
-								var data = new FormData();
-								data.append("applicationId" , $scope.appId);
-								data.append("userName", $rootScope.currentUser.userName);
-								data.append("selectedBatchUniqueId", id);
-								console.log(data)
-								 if ($window.confirm("Please conform to Reverse Batch Id: "+ batchId+" uploaded for month "+batchUploadMonth)) {
-								$http.post(url,data,config).then(
-										function(response){
-											  $rootScope.buttonClicked = response.data;
-												$rootScope.showModal = !$rootScope.showModal;
-												  $rootScope.contentColor = "#78b266";
-												  $state.go("app", {appId:$window.sessionStorage.getItem('appId')}, {reload: true}); 
+									$scope.confirmReverse =function(id){
+										   console.log($window.sessionStorage.getItem('appId'))
+										     console.log( $rootScope.currentUser.userName)
+										       console.log(id)
+										if($rootScope.currentUser!=undefined){
 											
-										},function(response){
-											
-											 $rootScope.buttonClicked = response.data;
-												$rootScope.showModal = !$rootScope.showModal;
-												  $rootScope.contentColor = "#dd4b39";
-										});
-								 }
-								
-								}
+											var config = {
+													transformRequest : angular.identity,
+													transformResponse : angular.identity,
+													headers : {
+														'Content-Type' : undefined
+													}
+												}
+										var url=appConstants.serverUrl+"/api/reverseUpload/";
+										var data = new FormData();
+										data.append("applicationId" ,$window.sessionStorage.getItem('appId'));
+										data.append("userName", $rootScope.currentUser.userName);
+										data.append("selectedBatchUniqueId", id);
+										console.log(data)
 							
-							}
+										$http.post(url,data,config).then(
+												function(response){
+													
+													  $('body').removeClass().removeAttr('style');$('.modal-backdrop').remove(); // added by me
+													      $rootScope.buttonClicked = response.data;
+														  $rootScope.showModal = !$rootScope.showModal;
+														  $rootScope.contentColor = "#78b266";
+														  $state.go("app", {appId:$window.sessionStorage.getItem('appId')}, {reload: true}); 
+														
+												},function(response){
+													
+													  $('body').removeClass().removeAttr('style');$('.modal-backdrop').remove(); // added by me
+													      $rootScope.buttonClicked = response.data;
+														  $rootScope.showModal = !$rootScope.showModal;
+														  $rootScope.contentColor = "#dd4b39";
+												});							
+										}
+										
+									}
 			
 						} ]);
 
@@ -466,7 +490,7 @@ angular.module('cdrApp')
 							if(response){
 								if($rootScope.currentUser.userName!=undefined && $rootScope.currentUser.userName!=null)
 									$rootScope.username=$rootScope.currentUser.userName								
-							
+									 $('body').removeClass().removeAttr('style');$('.modal-backdrop').remove(); // added by me
 								    $rootScope.isProfilePage=false;
 								    $rootScope.currentUser={};	
 								    $rootScope.username="";
@@ -483,6 +507,7 @@ angular.module('cdrApp')
 								  $state.go("login");
 																
 							}else{
+								 $('body').removeClass().removeAttr('style');$('.modal-backdrop').remove(); // added by me
 								  $rootScope.buttonClicked = "LogOut Error";
 									$rootScope.showModal = !$rootScope.showModal;
 									  $rootScope.contentColor = "#dd4b39";
@@ -1120,7 +1145,7 @@ angular.module('cdrApp').directive('multiselectDropdown', [function() {
 
 'use strict';
 angular.module('cdrApp').run([
-			'$state','$http','$rootScope','globalServices','userService','AuthenticationService',function ( $state,$http,$rootScope,globalServices,userService,AuthenticationService) {
+			'$state','$http','$rootScope','globalServices','userService',function ( $state,$http,$rootScope,globalServices,userService) {
 				
 	   $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams) {	
 	    var requireLogin = toState.data.requireLogin;
@@ -1135,22 +1160,47 @@ angular.module('cdrApp').run([
 	    }	  
 	    
 	  });
-	  
-	   var lastAccessApp = new Date();
+	   
 
-	    $rootScope.$watch(function watchIdleInterval() {
-	        var date = new Date();
-	        var nowDate = date - lastAccessApp;
-	        if (8 * 60 * 100 < nowDate) { //after 8 minutes logout automatically
-	            //$log.log('This is log!');
-	            AuthenticationService.ClearCredentials();  
-	            $rootScope.isProfilePage=false;
-		         $state.go('login');	         
-	        }
-	        lastAccessApp = date;
-	    });
-	  
 	}]);
+
+angular.module('cdrApp').run([
+                  			'$state','$http','$rootScope','$timeout','$document','AuthenticationService',function ( $state,$http,$rootScope,$timeout,$document,AuthenticationService) {
+                				
+    console.log('starting run');
+
+    // Timeout timer value 8 minutes automatically logout
+    var TimeOutTimerValue = 480000;
+
+    // Start a timeout
+    var TimeOut_Thread = $timeout(function(){ LogoutByTimer() } , TimeOutTimerValue);
+    var bodyElement = angular.element($document);
+
+    angular.forEach(['keydown', 'keyup', 'click', 'mousemove', 'DOMMouseScroll', 'mousewheel', 'mousedown', 'touchstart', 'touchmove', 'scroll', 'focus'], 
+    function(EventName) {
+         bodyElement.bind(EventName, function (e) { TimeOut_Resetter(e) });  
+    });
+
+    function LogoutByTimer(){
+        console.log('Logout');
+        ///////////////////////////////////////////////////
+        /// redirect to another page(eg. Login.html) here
+        ///////////////////////////////////////////////////
+       // Timeout timer value 8 minutes automatically logout
+        AuthenticationService.ClearCredentials();  
+   
+    }
+
+    function TimeOut_Resetter(e){
+    
+        /// Stop the pending timeout
+        $timeout.cancel(TimeOut_Thread);
+
+        /// Reset the timeout
+        TimeOut_Thread = $timeout(function(){ LogoutByTimer() } , TimeOutTimerValue);
+    }
+
+}]);
 
 /*'use strict';
 angular.module('cdrApp').run([
