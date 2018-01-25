@@ -38,7 +38,7 @@ import com.cmacgm.cdrserver.repository.BatchHistoryDetailsRepository;
 import com.cmacgm.cdrserver.repository.UserRepository;
 
 /**
- * @filename CdrController.java(To get application vise folder path and to upload file to respective path)
+ * @filename ApplicationController.java(To get application vise folder path and to upload file to respective path)
 * @author Ramesh Kumar B
 
 */

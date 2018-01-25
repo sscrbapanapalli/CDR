@@ -13,6 +13,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>{
 	
 	public Application findById(@Param("id") Long id);
 	
-	public List<Application> findByAppName(@Param("appName") String appName);
+	public Application findByAppName(@Param("appName") String appName);
 
 }

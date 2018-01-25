@@ -12,6 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "application_file_upload_config")
@@ -37,8 +42,14 @@ public class ApplicationFileUploadConfig {
     private String fileAckPath; 
     @Column(name="validation_type",length = 100)
     private String validationType;
+    
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="created_date")
     private Date createdDate;
+    
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name="updated_date")
     private Date updatedDate;
     @Column(name="active_indicator")

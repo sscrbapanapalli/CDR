@@ -10,18 +10,29 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmacgm.cdrserver.model.Application;
+import com.cmacgm.cdrserver.model.ApplicationConfig;
+import com.cmacgm.cdrserver.model.ApplicationFileUploadConfig;
+import com.cmacgm.cdrserver.model.FolderMapping;
 import com.cmacgm.cdrserver.model.Role;
 import com.cmacgm.cdrserver.model.User;
 import com.cmacgm.cdrserver.repository.AdminConfigRepository;
+import com.cmacgm.cdrserver.repository.ApplicationFileUploadConfigRepository;
 import com.cmacgm.cdrserver.repository.ApplicationRepository;
 import com.cmacgm.cdrserver.repository.RolesRepository;
 import com.cmacgm.cdrserver.repository.UserRepository;
+
+/**
+ * @filename AdminConfigController.java(To set user level access to application)
+* @author Ramesh Kumar B
+
+*/
 
 @RestController
 @RequestMapping("/admin")
@@ -38,6 +49,9 @@ public class AdminConfigController {
 	 
 	 @Autowired
 		RolesRepository roleRepository;
+	 
+	 @Autowired
+	 ApplicationFileUploadConfigRepository applicationFileUploadConfigRepository;
 	 
 	 
 	
@@ -139,5 +153,61 @@ public class AdminConfigController {
 			 }
 		 }
 	    
+	 }
+	 
+	 @RequestMapping(value = "/setApplicationConfig", method = RequestMethod.POST ,consumes="application/json", produces="application/json")
+	    public @ResponseBody String setApplicationConfig(@RequestBody ApplicationConfig applicationConfig) throws IllegalStateException, IOException {
+		String configResponse="";
+		String fileType="";
+		String applicationName=applicationConfig.getApplicationName();
+		String targetPath=applicationConfig.getTargetPath();
+		String archivePath=applicationConfig.getArchivePath();
+		String createdBy=applicationConfig.getUserName();
+		List<String> selectedFileType=applicationConfig.getSelectedFileType();
+		List<FolderMapping> folderMapping=applicationConfig.getFolderMapping();
+		Application application=new Application();
+		Application checkApplication=applicationRepository.findByAppName(applicationName);
+		if(checkApplication==null){
+		
+		application.setappName(applicationName);
+		application.setCreatedBy(createdBy);
+		application.setUpdatedBy(createdBy);
+		
+		applicationRepository.save(application);
+		}else{
+			application.setId(checkApplication.getId());
+			application.setappName(applicationName);
+			application.setCreatedBy(createdBy);
+			application.setUpdatedBy(createdBy);
+			applicationRepository.save(application);
+		}
+System.out.println("applicationName" + applicationName.length());
+		System.out.println(selectedFileType.size());
+		System.out.println(folderMapping.size());
+		
+		fileType=String.join(",", selectedFileType);
+		System.out.println(fileType);
+	
+		for(FolderMapping obj:folderMapping){
+			ApplicationFileUploadConfig applicationFileUploadConfig=new ApplicationFileUploadConfig();
+			applicationFileUploadConfig.setApplication(application);
+			applicationFileUploadConfig.setCreatedBy(createdBy);
+			applicationFileUploadConfig.setFileAckPath(archivePath);
+			applicationFileUploadConfig.setFileTrgtPath(targetPath);
+			applicationFileUploadConfig.setFolderCaption(obj.getFolderName());
+			applicationFileUploadConfig.setFileNamePrefix(obj.getFileName());
+			applicationFileUploadConfig.setValidationType(fileType);
+			applicationFileUploadConfig.setUpdatedBy(createdBy);
+			System.out.println(applicationFileUploadConfig);
+			try{
+			applicationFileUploadConfigRepository.save(applicationFileUploadConfig);
+			configResponse="Application Configuration saved successfully";
+			
+			}catch(Exception e){
+				configResponse="Application Configuration failed to save in DB";
+			}
+			
+		}
+		 return configResponse;
 	 }
 }

@@ -21,7 +21,7 @@ public class ApplicationServiceImpl implements ApplicationService{
 	}
 	
 	@Override
-	public List<Application> findByAppName( String applicationName) {
+	public Application findByAppName( String applicationName) {
 		// TODO Auto-generated method stub
 		 return applicationRepository.findByAppName(applicationName);
 	}

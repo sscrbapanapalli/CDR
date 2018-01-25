@@ -1,0 +1,178 @@
+<style>
+.remove{
+    background: #C76868;
+    color: #FFF;
+    font-weight: bold;
+    font-size: 21px;
+    border: 0;
+    cursor: pointer;
+    display: inline-block;
+    padding: 4px 9px;
+    vertical-align: top;
+    line-height: 100%;   
+}
+
+.ui-datepicker-calendar {
+    display: none;
+    }
+
+	 p.ext {
+    margin-left: 2cm;
+}
+     div.box {
+		height: 400px;
+		width: 800px;
+		border: 1px  ;
+		align: center;
+		background: #fbf2b7;
+		padding: 50px 0;
+		 top: 20%;
+  		bottom: 30%;
+  		left: 15%;
+  		right: 10%;
+  		margin-left: 250px;
+  		margin-right: 250px;
+  		overflow-x: hidden;
+  		overflow-y: scroll;
+  		
+		 
+ 
+	}
+	[tooltip]:before {
+    /* needed - do not touch */
+    content: attr(tooltip);
+    position: absolute;
+    opacity: 0;
+    
+    /* customizable */
+    transition: all 0.15s ease;
+    padding: 10px;
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 2px 2px 1px silver;    
+}
+
+[tooltip]:hover:before {
+    /* needed - do not touch */
+    opacity: 1;
+    
+    /* customizable */
+    background: yellow;
+    margin-top: -50px;
+    margin-left: 20px;    
+}
+
+#test{
+    padding: 7px;
+   
+}
+
+
+</style>
+
+<div ng-controller="loginController" ng-init="init()">
+	<div class="overall" >
+		<nav class="navbar">
+
+			<ul>
+				<li><a ui-sref="home" ui-sref-opts="{reload:true}">
+					<span class="icon fa fa-home"></span>Home</a>
+					<span class="divider"></span>
+				</li>
+				<li ng-repeat="application in applications">
+					<a ui-sref="app({appId: application.id})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a>
+					<span class="divider"></span>
+				</li>
+				
+				<!-- <li><a   ui-sref="settings" ><span class="icon fa "></span>Admin Settings</a></li> -->
+
+				<li ng-repeat="role in roles">
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="userSettings" >User Settings</a> 
+					
+				</li>
+				<li><span  class="divider"></span></li>
+				<li ng-repeat="role in roles">
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="applicationSettings" >Application Settings</a> 
+					
+				</li>
+				<li><span  class="divider"></span></li>
+			</ul>
+		</nav>
+	</div>
+</div>
+
+<div ng-controller="settingsController" ng-init="inituser()">
+
+<div> <h1  style="font-size:22px; color:#960;">Application Configuration</h1></div></br>
+   <div class="box" >
+   	<div class="main" >
+		 <form class="form-horizontal" >
+		 
+		 <div class="form-group" >
+				<div class="control-label col-sm-4" >Application Name</div>
+				<div class="col-sm-5" align="left">
+					<input  type="text" name="applicationName" id="applicationName" ng-model="applicationName"  />
+				</div>
+		</div>
+		<div class="form-group" >
+				<div class="control-label col-sm-4" >Target Path</div>
+				<div class="col-sm-5" align="left">
+					<input  type="text" name="targetPath" id="targetPath" ng-model="targetPath" placeholder="//10.13.44.89/Source/GETPAID/" />
+				</div>
+		</div>
+		<div class="form-group" >
+				<div class="control-label col-sm-4" >Archive Path</div>
+				<div class="col-sm-5" align="left">
+					<input  type="text" name="archivePath" id="archivePath" ng-model="archivePath" placeholder="//10.13.44.89/Source/GETPAID/Archive/" />
+				</div>
+		</div>
+		<div class="form-group" >
+				<div class="control-label col-sm-4" >File Type</div>
+				<div class="col-sm-5" align="left">
+					<select class="multiselect" data-placeholder="Select File Type" 
+			     		 ng-model="selectedFileType" ng-options="fileType.type as fileType.type for fileType in fileTypeList"
+			     		 multiple="multiple" multiselect-dropdown >
+			 		</select>
+				</div>
+				
+		</div>
+		<div class="form-group" >
+				<div class="control-label col-sm-4" >Folder Mapping</div>
+				<div class="col-sm-5" >
+					<table cellpadding="0" cellspacing="0">
+			            <tr>
+			                <th>FolderName</th>
+			                <th>FileName</th>
+			                <th></th>
+			            </tr>
+			            <tbody ng-repeat="m in folderMapping">
+			                <tr>
+			                    <td><input type="text" value="{{m.folderName}}" readonly /></td>
+			                    <td><input type="text" value="{{m.fileName}}" readonly /></td>
+			                    <td><button class="remove"  ng-click="Remove($index)">-</button></td>
+			                    <!-- <td><input type="button" ng-click="Remove($index)" value="Remove" /></td> -->
+			                </tr>
+			            </tbody>
+			            <tfoot>
+			                <tr>
+			                    <td><input type="text" ng-model="folderName" /></td>
+			                    <td><input type="text" ng-model="fileName" /></td>
+			                    <td><input type="button" ng-click="Add()" value="Add" /></td>
+			                </tr>
+			            </tfoot>
+		      		 </table>
+				</div>	
+		</div>
+		<div> {{folderName}}</div>
+		<div> {{selectedFileType.size}}</div>
+		
+   		 <div>&nbsp</div>
+   		 <div class="pull-middle">
+   		 <button type="submit" class="btn btn-success" ng-click = "appConfig()">Submit</button>
+			    </div>
+			    
+   		 </form>
+   		</div> 
+   		</div>
+</div>
+

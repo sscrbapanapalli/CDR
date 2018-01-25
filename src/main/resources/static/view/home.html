@@ -16,15 +16,15 @@
 				<!-- <li><a   ui-sref="settings" ><span class="icon fa "></span>Admin Settings</a></li> -->
 
 				<li ng-repeat="role in roles">
-					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="settings" >Settings</a> 
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="userSettings" >User Settings</a> 
 					
 				</li>
 				<li><span  class="divider"></span></li>
-				<!-- <li ng-repeat="role in roles">
-					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="settings" >Application Folder Settings</a> 
+				<li ng-repeat="role in roles">
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="applicationSettings" >Application Settings</a> 
 					
 				</li>
-				<li><span  class="divider"></span></li> -->
+				<li><span  class="divider"></span></li>
 			</ul>
 
 		</nav>
@@ -130,7 +130,7 @@
       ng-click='batchFiles($index,obj.id)'>{{obj.batchId}}</a></td>
       <td title="{{obj.batchUploadCrDate|date:'yyyy-MM-dd HH:mm:ss'}}" >{{obj.batchUploadCrDate|date:'yyyy-MM-dd HH:mm:ss'}}</td>      	
 		
-					<td>{{ obj.batchUploadStatus }}<a ng-if="obj.id==currentUploadDetailsResult.id"  ng-click="doReverse(obj.id)">
+					<td>{{ obj.batchUploadStatus }}<a ng-if="obj.id==currentUploadDetailsResult.id"  ng-click="doReverse(obj.id,obj.batchId,obj.batchUploadMonth)">
 						<img style="width: 25px; height: 25px" alt="logo"	src="./app/images/reverse.png" /> 
     </a></td>
 						<td>{{obj.etlProcessed}}</td>

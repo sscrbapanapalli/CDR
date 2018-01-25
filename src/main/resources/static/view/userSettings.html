@@ -1,0 +1,133 @@
+<style>
+
+.ui-datepicker-calendar {
+    display: none;
+    }
+
+	 p.ext {
+    margin-left: 2cm;
+}
+     div.box {
+		height: 400px;
+		width: 600px;
+		border: 1px  ;
+		align: center;
+		background: #fbf2b7;
+		padding: 50px 0;
+		 top: 20%;
+  		bottom: 30%;
+  		left: 15%;
+  		right: 10%;
+  		margin-left: 250px;
+  		margin-right: 250px;
+  		overflow-x: hidden;
+  		overflow-y: scroll;
+  		
+		 
+ 
+	}
+	[tooltip]:before {
+    /* needed - do not touch */
+    content: attr(tooltip);
+    position: absolute;
+    opacity: 0;
+    
+    /* customizable */
+    transition: all 0.15s ease;
+    padding: 10px;
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 2px 2px 1px silver;    
+}
+
+[tooltip]:hover:before {
+    /* needed - do not touch */
+    opacity: 1;
+    
+    /* customizable */
+    background: yellow;
+    margin-top: -50px;
+    margin-left: 20px;    
+}
+
+#test{
+    padding: 7px;
+   
+}
+
+
+</style>
+
+<div ng-controller="loginController" ng-init="init()">
+	<div class="overall" >
+		<nav class="navbar">
+
+			<ul>
+				<li><a ui-sref="home" ui-sref-opts="{reload:true}">
+					<span class="icon fa fa-home"></span>Home</a>
+					<span class="divider"></span>
+				</li>
+				<li ng-repeat="application in applications">
+					<a ui-sref="app({appId: application.id})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a>
+					<span class="divider"></span>
+				</li>
+				
+				<!-- <li><a   ui-sref="settings" ><span class="icon fa "></span>Admin Settings</a></li> -->
+
+				<li ng-repeat="role in roles">
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="userSettings" >User Settings</a> 
+					
+				</li>
+				<li><span  class="divider"></span></li>
+				<li ng-repeat="role in roles">
+					<a  ng-if="role.roleName=='ROLE_ADMIN' " ui-sref="applicationSettings" >Application Settings</a> 
+					
+				</li>
+				<li><span  class="divider"></span></li>
+			</ul>
+		</nav>
+	</div>
+</div>
+
+<div ng-controller="settingsController" ng-init="init()">
+
+<div> <h1  style="font-size:22px; color:#960;">User Access Configuration</h1></div></br>
+   <div class="box" >
+   	<div class="main" >
+   		<form class="form-horizontal" >
+		 
+		 <div class="form-group" >
+				<div class="control-label col-sm-4" >User Id</div>
+				<div class="col-sm-5" tooltip="ex:SSC.ABC@CMA-CGM.com" align="left">
+					<input  type="text" name="userName" id="userName" ng-model="userName"  />
+				</div>
+		</div>
+		<div class="form-group" >
+				<div class="control-label col-sm-4" >User Role</div>
+				<div class="col-sm-5"  align="left">
+					<select class="multiselect" data-placeholder="Select User Roles" 
+			     		 ng-model="userRole" ng-options="role.id as role.roleName for role in allRoles"
+			     		 multiple="multiple" multiselect-dropdown >
+			 		</select>
+				</div>
+		</div>
+		<div class="form-group" >
+				<div class="control-label col-sm-4" >Application Name</div>
+				<div class="col-sm-5" align="left">
+					<select class="multiselect" data-placeholder="Select Application"  
+		         		 ng-model="selectedAppId" ng-options="app.id as app.appName for app in allApplications"
+		        		  multiple="multiple" multiselect-dropdown >
+			   	    </select>
+				</div>
+		</div>
+		
+   		 <div>&nbsp</div>
+   		 <div class="pull-middle">
+   		 <button type="submit" class="btn btn-success" ng-click = "userConfig()">Submit</button>
+			    </div>
+   		 </form>
+   	
+		 </div> 
+   		</div>
+</div>
+

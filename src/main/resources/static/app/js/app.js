@@ -46,13 +46,19 @@ angular.module('cdrApp').config(
 					    },
 						data:{requireLogin:true}
 
-					}).state("settings", {
-						url : '/settings',
-						templateUrl : 'view/settings.html',
+					}).state("userSettings", {
+						url : '/userSettings',
+						templateUrl : 'view/userSettings.html',
 						controller : "settingsController",
 						controllerAs : "settingsController",
 						data:{requireLogin:true}
 
+					}).state("applicationSettings",{
+						url : '/applicationSettings',
+						templateUrl :'view/applicationSettings.html',
+						controller :"settingsController",
+						controllerAs : "settingsController",
+						data:{requireLogin:true}
 					});
 
 				} ]);
@@ -78,17 +84,17 @@ angular
 							$scope.checkStatus=false;
 							$scope.welcomeMsg=false;
 							$scope.userId=0;
-							 $scope.currentPage = 1;
-							  $scope.pageSize = 6;
-							  $scope.currentPagetest = 1;
-							  $scope.pageSizetest = 6;
-								$scope.showChild=false;		
-								$scope.currentUploadDetailsResult={};							
-							  $scope.selectedId = undefined;
-							  $scope.selectedIdChild = undefined;
-							  $scope.resetParent=function(){
-									 $scope.currentPage = 1;
-									  $scope.pageSize = 6;
+							$scope.currentPage = 1;
+							$scope.pageSize = 6;
+							$scope.currentPagetest = 1;
+							$scope.pageSizetest = 6;
+							$scope.showChild=false;		
+							$scope.currentUploadDetailsResult={};							
+							$scope.selectedId = undefined;
+							$scope.selectedIdChild = undefined;
+							$scope.resetParent=function(){
+							$scope.currentPage = 1;
+							$scope.pageSize = 6;
 									
 									  $scope.search=""
 										  if ( $window.sessionStorage.getItem('appId')  != undefined
@@ -318,7 +324,7 @@ angular
 								$scope.checkStatus=false;
 								
 							}
-							$scope.doReverse = function(id){
+							$scope.doReverse = function(id,batchId,batchUploadMonth){
 								console.log('in  do reverese')
 								
 								var config = {
@@ -335,6 +341,7 @@ angular
 								data.append("userName", $rootScope.currentUser.userName);
 								data.append("selectedBatchUniqueId", id);
 								console.log(data)
+								 if ($window.confirm("Please conform to Reverse Batch Id: "+ batchId+" uploaded for month "+batchUploadMonth)) {
 								$http.post(url,data,config).then(
 										function(response){
 											  $rootScope.buttonClicked = response.data;
@@ -348,6 +355,7 @@ angular
 												$rootScope.showModal = !$rootScope.showModal;
 												  $rootScope.contentColor = "#dd4b39";
 										});
+								 }
 								
 								}
 							
@@ -507,7 +515,15 @@ angular.module('cdrApp').controller(
 				function($scope, $state, $rootScope, $window, $q, $http,
 						appConstants,userService,globalServices,AuthenticationService) {
 					$scope.homepageContent = "settings dashboard page";
-				
+					$scope.applicationName="";
+					$scope.targetPath="";
+					$scope.archivePath="";
+					$scope.selectedFileType = "";
+					$scope.folderMapping = [];
+					$scope.fileTypeList = [{id: 1, type: '.xls'}, {id: 2, type: '.xlsx'},{id: 3, type: '.pdf'}];
+					
+					
+					
 					$scope.inituser = function() {
 						var data = globalServices.isUserTokenAvailable();
 						if (data == null || data == undefined) {
@@ -536,9 +552,6 @@ angular.module('cdrApp').controller(
 											$scope.applications=response.data.applications;	
 											$scope.roles=response.data.roles;	
 										console.log(' settings userDetails' , response)
-										console.log(' applications' , $scope.applications)
-										console.log(' roles' , $scope.roles)
-										
 									});
                         
                         $http.get(masterAppUrl).then(function(response) {
@@ -555,11 +568,15 @@ angular.module('cdrApp').controller(
                         });
 							$scope.inituser();
 						}
-					$scope.appConfig=function(){
+					$scope.userConfig=function(){
 						var userName=$scope.userName;
 						var roleId=$scope.userRole;
 						var selectedAppId=$scope.selectedAppId;
+						var propsLength=0;
 						$scope.productSelection=[];
+						$scope.folderMapping = [];
+						
+						$scope.folderMappingObj = {};
 						 /*$rootScope.currentUser=userService.getCurrentUser();*/
 						var createdBy=$rootScope.currentUser.userName;
 						console.log(userName , roleId , selectedAppId , createdBy)
@@ -569,6 +586,7 @@ angular.module('cdrApp').controller(
 						data.append("roleId", roleId);
 						data.append("selectedAppId", selectedAppId);
 						data.append("createdBy", createdBy);
+						console.log($scope.userRole)
 						
 						var config = {
 								transformRequest : angular.identity,
@@ -577,6 +595,22 @@ angular.module('cdrApp').controller(
 									'Content-Type' : undefined
 								}
 							}
+						if(userName==null || userName==undefined || userName==""){
+							$rootScope.buttonClicked = "Please provide User Id detail";
+							$rootScope.showModal = !$rootScope.showModal;
+							  $rootScope.contentColor = "#dd4b39";
+							
+						}else if(roleId==null || roleId==undefined || roleId==""){
+							$rootScope.buttonClicked = "Please select User roles";
+							$rootScope.showModal = !$rootScope.showModal;
+							  $rootScope.contentColor = "#dd4b39";
+							
+						}else if(selectedAppId==null || selectedAppId==undefined || selectedAppId==""){
+							$rootScope.buttonClicked = "Please select Application";
+							$rootScope.showModal = !$rootScope.showModal;
+							  $rootScope.contentColor = "#dd4b39";
+							
+						}else{
 						$http.post(appCongigUrl,data,config).then(
 								function(response){
 									  $rootScope.buttonClicked = response.data;
@@ -590,9 +624,113 @@ angular.module('cdrApp').controller(
 										$rootScope.showModal = !$rootScope.showModal;
 										  $rootScope.contentColor = "#dd4b39";
 								});
-						
-						
+						}
 					}
+					
+
+			            $scope.Add = function () {
+			            	
+			                //Add the new item to the Array.
+			            	if($scope.folderName==null || $scope.folderName==undefined ||$scope.folderName=="" 
+			            	   ||$scope.fileName==null || $scope.fileName==undefined || $scope.fileName==""){
+			            		$rootScope.buttonClicked = "Please provide Folder Mapping Details";
+								$rootScope.showModal = !$rootScope.showModal;
+								  $rootScope.contentColor = "#dd4b39";
+			            	}else{
+			                var folderMappingObj = {};
+			                
+			                folderMappingObj.folderName = $scope.folderName;
+			                folderMappingObj.fileName = $scope.fileName;
+			                $scope.folderMapping.push(folderMappingObj);
+			            	}
+			                //Clear the TextBoxes.
+			                $scope.folderName = "";
+			                $scope.fileName = "";
+			            	
+			            };
+
+			            $scope.Remove = function (index) {
+			                //Find the record using Index from Array.
+			                var name = $scope.folderMapping[index].folderName;
+			                if ($window.confirm("Do you want to delete folder: " + name)) {
+			                    //Remove the item from Array using Index.
+			                    $scope.folderMapping.splice(index, 1);
+			                }
+			            }
+			            
+			            $scope.appConfig=function(){
+			            	
+			            	 var folderMappingObj = {};
+				                folderMappingObj.folderName = $scope.folderName;
+				                folderMappingObj.fileName = $scope.fileName;
+				                $scope.folderMapping.push(folderMappingObj);
+				                
+				             var url =  appConstants.serverUrl+"/admin/setApplicationConfig/";
+				             
+				             var config = {
+										transformRequest : angular.identity,
+										transformResponse : angular.identity,
+										headers : {
+											'Content-Type' : undefined
+										}
+									}
+				             
+				             var dataObj = {
+				            		 applicationName : $scope.applicationName,
+				            		 targetPath : $scope.targetPath,
+				            		 archivePath : $scope.archivePath,
+				            		 selectedFileType :$scope.selectedFileType,
+				            		 folderMapping :$scope.folderMapping,
+				            		 userName :$rootScope.currentUser.userName
+				     		};
+				             
+				             if($scope.applicationName==null || $scope.applicationName==undefined || $scope.applicationName==""){
+				            	 $rootScope.buttonClicked = "Please provide Application Name";
+									$rootScope.showModal = !$rootScope.showModal;
+									  $rootScope.contentColor = "#dd4b39";
+				             }else if($scope.targetPath==null || $scope.targetPath==undefined || $scope.targetPath==""){
+				            	 $rootScope.buttonClicked = "Please provide Target Path details";
+									$rootScope.showModal = !$rootScope.showModal;
+									  $rootScope.contentColor = "#dd4b39";				            	 
+				             }else if($scope.archivePath==null || $scope.archivePath==undefined || $scope.archivePath==""){
+				            	 $rootScope.buttonClicked = "Please provide Archive Path details";
+									$rootScope.showModal = !$rootScope.showModal;
+									  $rootScope.contentColor = "#dd4b39";				            	 
+				             }else if($scope.selectedFileType==null || $scope.selectedFileType==undefined || $scope.selectedFileType==""){
+				            	 $rootScope.buttonClicked = "Please select file type";
+									$rootScope.showModal = !$rootScope.showModal;
+									  $rootScope.contentColor = "#dd4b39";				            	 
+				             }else if($scope.folderName==null || $scope.folderName==undefined ||$scope.folderName=="" 
+				            	   ||$scope.fileName==null || $scope.fileName==undefined || $scope.fileName==""){
+				            		$rootScope.buttonClicked = "Please provide Folder Mapping Details";
+									$rootScope.showModal = !$rootScope.showModal;
+									  $rootScope.contentColor = "#dd4b39";
+				            	}
+				             else{
+				             $http.post(url,dataObj,
+										{
+											headers : {
+												'Accept' : 'application/json',
+												'Content-Type' : 'application/json'
+											}
+										})
+			                .success(function (response) {  
+			                
+									console.log(response)
+									 $rootScope.buttonClicked = response;
+									$rootScope.showModal = !$rootScope.showModal;
+									  $rootScope.contentColor = "#78b266";
+								
+			                   
+			                });
+			              }
+				            
+				            	
+				            	$scope.folderMapping=[];
+				            	 $scope.folderName = "";
+					             $scope.fileName = "";
+			            	
+			            }
 				} ]);
 
 angular
@@ -1003,7 +1141,7 @@ angular.module('cdrApp').run([
 	    $rootScope.$watch(function watchIdleInterval() {
 	        var date = new Date();
 	        var nowDate = date - lastAccessApp;
-	        if (1 * 60 * 100 < nowDate) { //after 8 minutes logout automatically
+	        if (8 * 60 * 100 < nowDate) { //after 8 minutes logout automatically
 	            //$log.log('This is log!');
 	            AuthenticationService.ClearCredentials();  
 	            $rootScope.isProfilePage=false;

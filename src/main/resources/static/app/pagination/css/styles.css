@@ -209,7 +209,7 @@ text-shadow:none;
 }
 		
    table, th, td {
-			padding:7px; border:#4e95f4 1px solid;
+			padding:2px; border:#4e95f4 1px solid;
 		}
 		.selected {
 			background-color: #fbf2b7;

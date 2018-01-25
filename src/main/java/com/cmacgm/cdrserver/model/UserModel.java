@@ -13,6 +13,9 @@ public class UserModel implements Serializable{
 	private String userToken;
 	private String userId;
 	private String roleType;
+	private String password;
+	private String email;
+	
 	public String getUserName() {
 		return UserName;
 	}
@@ -38,8 +41,7 @@ public class UserModel implements Serializable{
 		this.password = password;
 	}
 
-	private String password;
-	private String email;
+	
 
 	public String getEmail() {
 		return email;
