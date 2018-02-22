@@ -101,29 +101,199 @@
 	</div>
 </div>
 
-<div ng-controller="settingsController" ng-init="inituser()">
+<div ng-controller="appSettingsController" ng-init="init()">
 
 <div> <h1  style="font-size:22px; color:#960;">Application Configuration</h1></div></br>
-   <div class="box" >
-   	<div class="main" >
+<div class="col-xs-2 pull-right" ng-show="viewApplication">
+	<button type="submit" class="btn btn-success" ng-click="addApplication=false">Add New Application</button>
+	&nbsp
+</div>	
+
+<div class="bs-component">
+<table class="table" id="parentId">
+				<thead>
+					<tr>
+						<th ng-click="sort('userName')">Application Name
+						 <!-- <span	class="glyphicon sort-icon"	ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+						</th>
+						<!-- <th ng-click="sort('batchUploadCrDate')">Roles <span
+							class="glyphicon sort-icon"
+							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+						</th>
+						<th ng-click="sort('batchUploadStatus')">Applications <span
+							class="glyphicon sort-icon"
+							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+						</th> -->
+						<th ng-click="sort('activeIndicator')"> Enable Status
+						<!-- <span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+						</th>
+						<th>Created By</th>
+						<th>Updated By</th>
+						<th></th>
+						
+						
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
+						ng-repeat="obj in allApplications"
+						 >
+						<td>{{obj.appName}}</td>
+      					<td>{{obj.activeIndicator}}</td>  
+      					<td>{{obj.createdBy}}</td>
+      					<td>{{obj.updatedBy}}</td>
+      					<td class="pull-middle">
+   						 <button type="submit" class="btn btn-primary" ng-click = "viewAppDetails(obj.id,obj.appName)">view</button>
+   						 <button type="submit" class="btn btn-success" ng-click = "updateAppDetails(obj.id,obj.appName)">Update</button>
+			   			 <button type="submit" class="btn btn-failure" ng-click = "deleteAppDetails(obj.id,obj.appName)">Delete</button>
+						</td>
+					</tr>
+				</tbody>
+				
+			</table>
+
+</div>
+
+<!-- -------View Application Details -->
+
+<div ng-show="viewApplication" align="left"> <h1  style="font-size:22px; color:#960;">Application Folder Configuration for - {{appName}}</h1></div></br>
+
+<div class="bs-component" ng-show="viewApplication">
+<table class="table" id="">
+				<thead>
+					<tr>
+						<th ng-click="sort('')">Folder Name
+						 <!-- <span	class="glyphicon sort-icon"	ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+						</th>
+						<!-- <th ng-click="sort('batchUploadCrDate')">Roles <span
+							class="glyphicon sort-icon"
+							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+						</th>
+						<th ng-click="sort('batchUploadStatus')">Applications <span
+							class="glyphicon sort-icon"
+							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+						</th> -->
+						<th ng-click="sort('')"> File Name
+						<!-- <span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+						</th>
+						<th>File Type</th>
+						<th>Destination File Path</th>
+						<th>Archive Path</th>
+						<th>Created By</th>
+						<th>Updated By</th>					
+						
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
+						ng-repeat="folderObj in appFolderDetails"
+						 >
+						<td>{{folderObj.folderCaption}}</td>
+      					<td>{{folderObj.fileNamePrefix}}</td>  
+      					<td>{{folderObj.validationType}}</td>
+      					<td>{{folderObj.fileTrgtPath}}</td>
+      					<td>{{folderObj.fileAckPath}}</td>
+      					<td>{{folderObj.createdBy}}</td>
+      					<td>{{folderObj.updatedBy}}</td>
+      					
+					</tr>
+				</tbody>
+				
+			</table>
+			
+			<div id="tablenodata"	ng-show=" appFolderDetails =='null'||  appFolderDetails =='undefined' ||  appFolderDetails.length==0">
+			<div>No Records Found.</div>
+
+		</div>
+
+</div>
+
+
+<!-- -------Update Application Details -->
+
+<div ng-show="updateApplication" align="left"> <h1  style="font-size:22px; color:#960;">Application Folder Configuration for - {{appName}}</h1></div></br>
+
+<div class="bs-component" ng-show="updateApplication">
+<table class="table" id="">
+				<thead>
+					<tr>
+						<th ng-click="sort('')">Folder Name
+						 <!-- <span	class="glyphicon sort-icon"	ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+						</th>
+						<!-- <th ng-click="sort('batchUploadCrDate')">Roles <span
+							class="glyphicon sort-icon"
+							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+						</th>
+						<th ng-click="sort('batchUploadStatus')">Applications <span
+							class="glyphicon sort-icon"
+							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+						</th> -->
+						<th ng-click="sort('')"> File Name
+						<!-- <span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+						</th>
+						<th>File Type</th>
+						<th>Destination File Path</th>
+						<th>Archive Path</th>
+						<!-- <th>Created By</th>
+						<th>Updated By</th> -->
+						
+						
+						
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
+						ng-repeat="folderObj in appFolderDetails" >
+						
+						<td><input type="text" value="{{folderObj.folderCaption}}" ng-model="folderObj.folderCaption" /></td>
+			            <td><input type="text" value="{{folderObj.fileNamePrefix}}" ng-model="folderObj.fileNamePrefix" /></td>
+			            <td><input type="text" value="{{folderObj.validationType}}" ng-model="folderObj.validationType" /></td>
+			            <td><input type="text" value="{{folderObj.fileTrgtPath}}" ng-model="folderObj.fileTrgtPath" /></td>
+			            <td><input type="text" value="{{folderObj.fileAckPath}}"  ng-model="folderObj.fileAckPath"/></td>
+			           <!--  <td><input type="text" value="{{folderObj.createdBy}}"  /></td> -->
+			           
+						
+					</tr>
+				</tbody>
+				
+			</table>
+			
+			<div id="tablenodata"	ng-show=" appFolderDetails =='null'||  appFolderDetails =='undefined' ||  appFolderDetails.length==0">
+			<div>No Records Found.</div>
+
+		</div>
+		
+		<div>&nbsp</div>
+   		 <div class="pull-middle">
+   			 <button type="submit" class="btn btn-primary" ng-click = "">Reset</button>
+   			 <button type="submit" class="btn btn-info" ng-click = "addNewRow()">Add Row</button>
+   			 <button type="submit" class="btn btn-success" ng-click = "updateConfig()">Submit</button>
+		</div>
+
+</div>
+
+<!-- -------Add new Application------ -->
+<div ng-hide="addApplication" ng-hide="updateApplication" align="left"> <h1  style="font-size:22px; color:#960;">Add New Application Folder Configuration</h1></div></br>
+   <div class="box" ng-hide="addApplication">
+   	<div class="main" id="addAppMapping"> 
 		 <form class="form-horizontal" >
 		 
 		 <div class="form-group" >
 				<div class="control-label col-sm-4" >Application Name</div>
 				<div class="col-sm-5" align="left">
-					<input  type="text" name="applicationName" id="applicationName" ng-model="applicationName"  />
+					<input  type="text" size="35" name="applicationName" id="applicationName" ng-model="applicationName"  />
 				</div>
 		</div>
 		<div class="form-group" >
 				<div class="control-label col-sm-4" >Target Path</div>
 				<div class="col-sm-5" align="left">
-					<input  type="text" name="targetPath" id="targetPath" ng-model="targetPath" placeholder="//10.13.44.89/Source/GETPAID/" />
+					<input  type="text" size="35" name="targetPath" id="targetPath" ng-model="targetPath" placeholder="//10.13.44.89/Source/GETPAID/" />
 				</div>
 		</div>
 		<div class="form-group" >
 				<div class="control-label col-sm-4" >Archive Path</div>
 				<div class="col-sm-5" align="left">
-					<input  type="text" name="archivePath" id="archivePath" ng-model="archivePath" placeholder="//10.13.44.89/Source/GETPAID/Archive/" />
+					<input  type="text" size="35" name="archivePath" id="archivePath" ng-model="archivePath" placeholder="//10.13.44.89/Source/GETPAID/Archive/" />
 				</div>
 		</div>
 		<div class="form-group" >
@@ -141,8 +311,8 @@
 				<div class="col-sm-5" >
 					<table cellpadding="0" cellspacing="0">
 			            <tr>
-			                <th>FolderName</th>
-			                <th>FileName</th>
+			                <th>Display Name</th>
+			                <th>Destination File Name</th>
 			                <th></th>
 			            </tr>
 			            <tbody ng-repeat="m in folderMapping">
@@ -163,16 +333,33 @@
 		      		 </table>
 				</div>	
 		</div>
-		<div> {{folderName}}</div>
-		<div> {{selectedFileType.size}}</div>
-		
-   		 <div>&nbsp</div>
+		<div>&nbsp</div>
    		 <div class="pull-middle">
-   		 <button type="submit" class="btn btn-success" ng-click = "appConfig()">Submit</button>
-			    </div>
+   			 <button type="submit" class="btn btn-primary" ng-click = "Reset()">Reset</button>
+   			 <button type="submit" class="btn btn-success" ng-click = "appConfig()">Submit</button>
+		</div>
 			    
    		 </form>
    		</div> 
    		</div>
+   		
+   	<div id="confirmation-dialog">
+      <div class="modal fade confirmation-dialog" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">{{confirmationDialogConfig.title}}</h4>
+            </div>
+            <div class="modal-body">
+              <div class="span5">{{confirmationDialogConfig.message +"  Application: "+confirmationDialogConfig.appName}}</div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" ng-repeat="button in confirmationDialogConfig.buttons" ng-click="confirmUserDelete(confirmationDialogConfig.id)" class="btn btn-primary">{{button.label}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 </div>
 
