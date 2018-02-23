@@ -126,7 +126,7 @@ function myFunction() {
 						</th>
 						<th>Applications</th>
 						<th>Roles</th>
-						<th></th>
+						<th>Actions</th>
 						
 						
 					</tr>
@@ -155,27 +155,20 @@ function myFunction() {
    	<div class="main" >
    		<form class="form-horizontal" >
 		 	<div class="form-group" >
-				<div class="control-label col-sm-4" >User Id</div>
-				<div class="col-sm-5" tooltip="ex:SSC.ABC@CMA-CGM.com" align="left">
+				<div class="control-label col-sm-4"  ><label style="float:left;padding-left:100px;">User Id</label></div>
+				<div class="col-sm-5" tooltip="ex:SSC.ABC@CMA-CGM.COM" align="left">
 					<input  type="email" size="35" name="userId" id="userId" ng-model="userId" ng-blur="checkUser()"  ng-disabled="inputReadOnly" required />
 					
 				</div>
 				<div><a ng-if="userExists" > User Already Exist</a></div>
 			</div>
 			<div class="form-group" >
-				<div class="control-label col-sm-4" >Role Name</div>
+				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Role Name</label></div>
 				<div class="col-sm-5" style="float:left;" align="left">
 					<div style="width:40%;float:left" align="left">
 						<label align="right">Available</label>
-						
 						<select size="5" multiple ng-model="userRole" ng-options="role as role.roleName for role in allRoles" style="width: 120px"></select>         
-						
-						
-						<!-- <select size="5" class="multiselect" data-placeholder="Select User Roles" 
-			     			 ng-model="userRole" ng-options="role.id as role.roleName for role in allRoles"
-			     			 multiple="multiple" multiselect-dropdown >
-			 			</select> -->
-			 		</div>
+					</div>
 			 		
 			 		<div style="width:20%;float:left;padding-top:45px;padding-right:20px;padding-left:20px" align="right">
 			 			<div>
@@ -192,33 +185,19 @@ function myFunction() {
 			 		
 			 		<div style="width:40%;float:left" align="left">
 			 			<label align="right">Selected</label>
-			 			
 			 			<select size="5" multiple ng-model="userSelectedRole" ng-options="userRole as userRole.roleName for userRole in userRoles" style="width: 120px"></select>
-   
-			 			
-						<!-- <select size="5" class="multiselect" data-placeholder="Select User Roles" 
-			     			 ng-model="userSelectedRole" ng-options="userRole.id as userRole.roleName for userRole in userRoles"
-			     			 multiple="multiple" multiselect-dropdown >
-			 			</select> -->
-			 		</div>	
+   					</div>	
 				</div>
 			
 				
 			</div>
 			<div class="form-group" >
-				<div class="control-label col-sm-4" >Application Name</div>
+				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Application Name</label></div>
 				<div class="col-sm-5" style="float:left;" align="left">
 					<div style="width:40%;float:left" align="left">
 						<label align="right">Available</label>
-						
 						<select size="5" multiple ng-model="availApplication" ng-options="app as app.appName for app in allApplications" style="width: 120px"></select>         
-						
-						
-						<!-- <select size="5" class="multiselect" data-placeholder="Select User Roles" 
-			     			 ng-model="userRole" ng-options="role.id as role.roleName for role in allRoles"
-			     			 multiple="multiple" multiselect-dropdown >
-			 			</select> -->
-			 		</div>
+					</div>
 			 		
 			 		<div style="width:20%;float:left;padding-top:45px;padding-right:20px;padding-left:20px" align="right">
 			 			<div>
@@ -235,34 +214,18 @@ function myFunction() {
 			 		
 			 		<div style="width:40%;float:left" align="left">
 			 			<label align="right">Selected</label>
-			 			
 			 			<select size="5" multiple ng-model="selectedApplication" ng-options="app as app.appName for app in userApplications" style="width: 120px"></select>
-   
-			 			
-						<!-- <select size="5" class="multiselect" data-placeholder="Select User Roles" 
-			     			 ng-model="userSelectedRole" ng-options="userRole.id as userRole.roleName for userRole in userRoles"
-			     			 multiple="multiple" multiselect-dropdown >
-			 			</select> -->
-			 		</div>	
-				</div>
+  					</div>	
+			   </div>
 				
 				
 			</div>
-			<!-- <div class="form-group" >
-				<div class="control-label col-sm-4" >Application Name</div>
-				<div class="col-sm-5" align="left">
-					<select class="multiselect" data-placeholder="Select Application"  
-		         		 ng-model="selectedAppId" ng-options="app.id as app.appName for app in allApplications"
-		        		  multiple="multiple" multiselect-dropdown >
-			   	    </select>
-				</div>
-			</div> -->
 			<div class="form-group">
-				<div class="control-label col-sm-4" >User Enable</div>
+				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">User Enable</label></div>
 				<div class="col-sm-5" align="left">
 					<input type="checkbox" id="userStatus" ng-model="userStatus" onclick="myFunction()" ng-checked="{{userStatus}}" >
 				</div>
-				<div class="col-sm-4"  align="right" ><p align="left">(Check the box to enable User)</p></div>
+				<!-- <div class="col-sm-4"  align="right" ><p align="left">(Check the box to enable User)</p></div> -->
 			</div>
 			
 			

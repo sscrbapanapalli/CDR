@@ -105,7 +105,7 @@
 
 <div> <h1  style="font-size:22px; color:#960;">Application Configuration</h1></div></br>
 <div class="col-xs-2 pull-right" ng-show="viewApplication">
-	<button type="submit" class="btn btn-success" ng-click="addApplication=false">Add New Application</button>
+	<button type="submit" class="btn btn-success" ng-click="addApplication=false;viewApplication=false">Add New Application</button>
 	&nbsp
 </div>	
 
@@ -129,7 +129,7 @@
 						</th>
 						<th>Created By</th>
 						<th>Updated By</th>
-						<th></th>
+						<th>Actions</th>
 						
 						
 					</tr>
@@ -279,25 +279,25 @@
 		 <form class="form-horizontal" >
 		 
 		 <div class="form-group" >
-				<div class="control-label col-sm-4" >Application Name</div>
+				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Application Name</label></div>
 				<div class="col-sm-5" align="left">
 					<input  type="text" size="35" name="applicationName" id="applicationName" ng-model="applicationName"  />
 				</div>
 		</div>
 		<div class="form-group" >
-				<div class="control-label col-sm-4" >Target Path</div>
+				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Target Path</label></div>
 				<div class="col-sm-5" align="left">
 					<input  type="text" size="35" name="targetPath" id="targetPath" ng-model="targetPath" placeholder="//10.13.44.89/Source/GETPAID/" />
 				</div>
 		</div>
 		<div class="form-group" >
-				<div class="control-label col-sm-4" >Archive Path</div>
+				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Archive Path</label></div>
 				<div class="col-sm-5" align="left">
 					<input  type="text" size="35" name="archivePath" id="archivePath" ng-model="archivePath" placeholder="//10.13.44.89/Source/GETPAID/Archive/" />
 				</div>
 		</div>
 		<div class="form-group" >
-				<div class="control-label col-sm-4" >File Type</div>
+				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">File Type</label></div>
 				<div class="col-sm-5" align="left">
 					<select class="multiselect" data-placeholder="Select File Type" 
 			     		 ng-model="selectedFileType" ng-options="fileType.type as fileType.type for fileType in fileTypeList"
@@ -307,7 +307,7 @@
 				
 		</div>
 		<div class="form-group" >
-				<div class="control-label col-sm-4" >Folder Mapping</div>
+				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Folder Mapping</label></div>
 				<div class="col-sm-5" >
 					<table cellpadding="0" cellspacing="0">
 			            <tr>

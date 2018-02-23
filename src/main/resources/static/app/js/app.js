@@ -538,10 +538,11 @@ angular.module('cdrApp').controller(
 						appConstants,userService,globalServices,AuthenticationService) {
 					$scope.homepageContent = "settings dashboard page";
 					$scope.allUserDetails=[];	
-					$scope.userStatus="";
+					//$scope.userStatus="true";
 					$scope.userRoles=[];
 					$scope.userApplications=[];
 					$scope.allRoles=[];
+					$scope.allRolesConstant=[];
 					$scope.checkUserDetails={};
 					$scope.userId="";
 					
@@ -565,7 +566,7 @@ angular.module('cdrApp').controller(
 					
 					$scope.init=function(){
 						$scope.userName="";
-						
+						$scope.userStatus=true;
                         var url =  appConstants.serverUrl+"/login/getUserAuthDetails/"+$window.sessionStorage.getItem('userToken');
                         var allUsersUrl=appConstants.serverUrl+"/admin/getAllUserDetails/";
                         var masterAppUrl =  appConstants.serverUrl+"/admin/getAllApplications/";	
@@ -578,19 +579,25 @@ angular.module('cdrApp').controller(
 						});
                         
                         $http.get(allUsersUrl).then(function(response){
-                        	$scope.allUserDetails=response.data;
-                        	console.log('allUserDetails' , $scope.allUserDetails)
+                        	$scope.allUserDetails=angular.copy(response.data);
+                        	/*console.log('allUserDetails' , $scope.allUserDetails)*/
                         });
                         
                         $http.get(masterAppUrl).then(function(response) {
                         	/*console.log(' allApplications ' , response)*/
-                        	$scope.allApplications=response.data;	
+                        	$scope.allApplicationsConstant=angular.copy(response.data);
+                        	$scope.allApplications=response.data;
+                        	
                         });
                         
                         $http.get(masterRoleUrl).then(function(response) {
                         	/*console.log(' allRoles ' , response)*/
+                        	$scope.allRolesConstant=angular.copy(response.data);
                         	$scope.allRoles=response.data;	
+                        	
                         });
+                        
+                        
 							$scope.inituser();
 						}
 					$scope.userConfig=function(){
@@ -603,7 +610,7 @@ angular.module('cdrApp').controller(
 			            		 userStatus :$scope.userStatus,
 			            		 createdBy :$rootScope.currentUser.userName
 			     		};
-						console.log(data)
+						//console.log(data)
 											
 						if($scope.userId==null || $scope.userId==undefined || $scope.userId==""){
 							$rootScope.buttonClicked = "Please provide User Id detail";
@@ -621,7 +628,7 @@ angular.module('cdrApp').controller(
 							  $rootScope.contentColor = "#dd4b39";
 							
 						}else{
-							console.log('in else method')
+							//console.log('in else method')
 							
 							 $http.post(userCongigUrl,data,
 										{
@@ -632,7 +639,7 @@ angular.module('cdrApp').controller(
 										})
 							.success(function (response) {  
 	                
-							console.log(response)
+							//console.log(response)
 							$rootScope.buttonClicked = response;
 							$rootScope.showModal = !$rootScope.showModal;
 							$rootScope.contentColor = "#78b266";
@@ -644,12 +651,20 @@ angular.module('cdrApp').controller(
 					
 					$scope.userUpdate=function(rowId,methodName){
 						console.log('in checkUser method', rowId)
-						console.log('in checkUser methodName', methodName)
+						
 						//$scope.userStatus="true";
+						console.log('in user updaTE' ,$scope.allRoles)
+						console.log('in user update1', $scope.allRolesConstant)
 						$scope.userId="";
 						$scope.userApplications=[];
 						$scope.userUpdateObj={}
 						$scope.selectedUserDetails={};
+						$scope.allApplications=angular.copy($scope.allApplicationsConstant);
+						$scope.allRoles=angular.copy($scope.allRolesConstant);
+						console.log('in user updaTE' ,$scope.allRoles)
+						console.log('in user update1', $scope.allRolesConstant)
+						$scope.userId="";
+						
 						
 						if(methodName=="updateUser"){
 							for(var i=0; i<$scope.allUserDetails.length; i++) {									
@@ -657,29 +672,31 @@ angular.module('cdrApp').controller(
 									   $scope.inputReadOnly="true";
 									   $scope.selectedUserDetails=$scope.allUserDetails[i];
 									   $scope.userId=$scope.selectedUserDetails.userId;	
-									   $scope.userApplications=$scope.selectedUserDetails.applications;
-									   $scope.userRoles=$scope.selectedUserDetails.roles;
-									   $scope.userStatus=$scope.selectedUserDetails.activeIndicator;
+									   $scope.userApplications=angular.copy($scope.selectedUserDetails.applications);
+									   $scope.userRoles=angular.copy($scope.selectedUserDetails.roles);
+									   $scope.userStatus=angular.copy($scope.selectedUserDetails.activeIndicator);
 								   }
 							}
 							
 						}
 						if(methodName=="checkUser"){
+							
+							var userId=rowId.toUpperCase();
 							for(var i=0; i<$scope.allUserDetails.length; i++) {									
-								   if(rowId==$scope.allUserDetails[i].userId){
+								   if(userId==$scope.allUserDetails[i].userId){
 									   $scope.userExists="true";
 									   $scope.inputReadOnly="true";
 									   $scope.selectedUserDetails=$scope.allUserDetails[i];
 									   $scope.userId=$scope.selectedUserDetails.userId;	
-									   $scope.userApplications=$scope.selectedUserDetails.applications;
-									   $scope.userRoles=$scope.selectedUserDetails.roles;
-									   $scope.userStatus=$scope.selectedUserDetails.activeIndicator;
+									   $scope.userApplications=angular.copy($scope.selectedUserDetails.applications);
+									   $scope.userRoles=angular.copy($scope.selectedUserDetails.roles);
+									   $scope.userStatus=angular.copy($scope.selectedUserDetails.activeIndicator);
 									   break;
 								   }
-								   $scope.userId=rowId;
+								   $scope.userId=userId;
 								   $scope.userApplications=[];
 								   $scope.userRoles=[];
-								   //$scope.userStatus="true";
+								   $scope.userStatus=true;
 								   $scope.userExists="false";
 								   $scope.inputReadOnly="";
 								   
@@ -758,6 +775,7 @@ angular.module('cdrApp').controller(
 					$scope.moveItem = function(items, from, to) {
 
 				        console.log('Move items: ' + items + ' From: ' + from + ' To: ' + to)
+				        console.log('in user init role constant in move', $scope.allRolesConstant)
 				        //Here from is returned as blank and to as undefined
 
 				        items.forEach(function(item) {
@@ -771,16 +789,20 @@ angular.module('cdrApp').controller(
 				        });
 				    };
 
-				     
-			            
+				        
 			            $scope.Reset=function(){
+			            	//$state.go("userSettings",{},{reload:true});
+			            	
+			            	$scope.allRoles=angular.copy($scope.allRolesConstant);
+			            	
+			            	$scope.allApplications=angular.copy($scope.allApplicationsConstant);
 			            	
 			            	$scope.userId="";
 							$scope.userRoles=[];
 							$scope.userApplications=[];
 							$scope.inputReadOnly="";
 							$scope.userExists="false";
-							$scope.userStatus="true";
+							$scope.userStatus=true;
 								
 			            }
 			            

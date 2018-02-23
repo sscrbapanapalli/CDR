@@ -154,6 +154,7 @@ public class AdminConfigController {
 		
 		 String configResponse="Success";
 		 String userId=userConfig.getUserId();
+		 userId=userId.toUpperCase();
 		 List<Application> selectedAppList=userConfig.getSelectedApplications();
 		 List<Role> selectedRoleList=userConfig.getSelectedRoles();
 		 boolean userStatus=userConfig.getUserStatus();
