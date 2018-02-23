@@ -100,28 +100,27 @@ $(function() {
 		<div>&nbsp</div>
   	
 	<div class="main" >
-		 <form class="form-horizontal" >
-		 <div >
-			 <label for="startDate">Month :</label>
-   			 <input  name="startDate" id="startDate" ng-model="filetest" class="date-picker textbox" />
-   		 </div>
-		 <div>&nbsp;</div>
-		 <div class="form-group" ng-repeat="obj in serverFoldersResult">
-				<label class="control-label col-sm-4" for="uploadfile">{{obj.folderCaption}}</label>
-				<div class="col-sm-5">
-					<input type="file" accept="{{obj.validationType}}" id="file{{$index+1}}" ng-model="filetest" name="file{{$index+1}}" onchange="angular.element(this).scope().setFile(this.files, angular.element(this).scope().$index+1)"  class="btn btn-warning" />
-
-				</div>
+		<form class="form-horizontal" >
+			 <div >
+				 <label for="startDate">Month :</label>
+	   			 <input  name="startDate" id="startDate" ng-model="filetest" class="date-picker textbox" />
+	   		 </div>
+			 <div>&nbsp;</div>
+			 <div class="form-group" ng-repeat="obj in serverFoldersResult">
+					<label class="control-label col-sm-4" for="uploadfile">{{obj.folderCaption}}</label>
+					<div class="col-sm-5">
+						<input type="file" accept="{{obj.validationType}}" id="file{{$index+1}}" ng-model="filetest" name="file{{$index+1}}" onchange="angular.element(this).scope().setFile(this.files, angular.element(this).scope().$index+1)"  class="btn btn-warning" />
+	
+					</div>
+			 </div>
+			 <div class="form-group " id="upload"> 
+				    <div class="pull-middle">
+				    	<button ng-click="angular.copy(filetest)" class="btn btn-primary" type="reset">Reset</button>
+				    	<button type="submit" class="btn btn-success" ng-click = "doUploadFile()">Upload</button>
+				    </div>
+				     <div ng-include="'view/loading.html'" ng-show="dataLoading"></div>
 			</div>
-			<div class="form-group " id="upload"> 
-			    <!-- <div class="col-sm-offset-5 col-sm-10"> btn btn-default  -->
-			    <div class="pull-middle">
-			    <button ng-click="angular.copy(filetest)" class="btn btn-primary" type="reset">Reset</button>
-			    <!-- <button type="submit" class="btn btn-default" ng-click = "reset()">Reset</button> -->
-			      <button type="submit" class="btn btn-success" ng-click = "doUploadFile()">Upload</button>
-			    </div>
-			     <div ng-include="'view/loading.html'" ng-show="dataLoading">
-			</div>
+				    
 		</form> 
 		
 	</div>	

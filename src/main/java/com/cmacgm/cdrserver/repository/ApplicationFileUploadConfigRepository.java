@@ -15,5 +15,6 @@ public interface ApplicationFileUploadConfigRepository extends JpaRepository<App
 	public ApplicationFileUploadConfig findById(@Param("id") Long id);
 	
 	public List<ApplicationFileUploadConfig> findByApplication(@Param("application") Application application);
+	
 
 }

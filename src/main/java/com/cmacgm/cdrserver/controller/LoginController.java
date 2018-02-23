@@ -192,6 +192,7 @@ public class LoginController {
 		if (httpSession.getAttribute("userName") != null && httpSession.getAttribute("userToken") != null) {
 			String userName = (String) httpSession.getAttribute("userName");
 			User user = userRepository.findByUserId(userName + "@CMA-CGM.COM");
+			System.out.println("getUserDetails" + user);
 			if (user != null) {
 
 				userModel = new UserModel();
@@ -199,7 +200,7 @@ public class LoginController {
 				userModel.setUserId(userName + "@CMA-CGM.COM");
 				userModel.setUserName(userName);
 				userModel.setEmail(userName + "@CMA-CGM.COM");
-				userModel.setRoleType(user.getRoles().iterator().next().getRoleName());
+				//userModel.setRoleType(user.getRoles().iterator().next().getRoleName());
 
 				return FrameworkUtil.getResponseValue(true, HttpStatus.OK.toString(), userModel);
 			}
@@ -240,6 +241,8 @@ public class LoginController {
 			if(user!=null){
 			obj.setApplications(user.getApplications());
 			obj.setRoles(user.getRoles());
+			obj.setActiveIndicator(user.isActiveIndicator());
+			obj.setId(user.getId());
 			}
 				
 				return obj;
@@ -249,5 +252,4 @@ public class LoginController {
 		
 
 	}
-
 }

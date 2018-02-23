@@ -1,7 +1,7 @@
  
  var config=angular.module("appConfigApp", [])
 .constant("appConstants",{
-	serverUrl : "http://10.13.44.80:8080/cdr",
+	serverUrl : "http://10.13.44.80:8080/cdr_upload",
 	//serverUrl : "http://localhost:8080",
 
 }).run(function($http, $window) {	

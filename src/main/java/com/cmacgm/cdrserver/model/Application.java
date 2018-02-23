@@ -43,10 +43,10 @@ public class Application {
     private String createdBy;
     @Column(name="updated_by",length = 100)
     private String updatedBy;    
-    @ManyToMany(mappedBy = "applications")
+   /* @ManyToMany(mappedBy = "applications")
     @JsonManagedReference
     private Collection<User> users;   
-
+*/
     public Application() {
         super();
     }
@@ -114,13 +114,13 @@ public class Application {
 		this.updatedBy = updatedBy;
 	}
 
-	public Collection<User> getUsers() {
+	/*public Collection<User> getUsers() {
         return users;
     }
 
     public void setUsers(final Collection<User> users) {
         this.users = users;
-    }
+    }*/
 
     @Override
     public int hashCode() {

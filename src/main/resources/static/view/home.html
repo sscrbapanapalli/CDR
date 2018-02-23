@@ -30,36 +30,32 @@
 		</nav>
 	</div></div>	
 <div ng-controller="homeController" ng-init="init()">
-	
 	<div ng-hide="welcomeMsg" >
-	
-	<div>&nbsp;</div>
+		<div>&nbsp;</div>
 		<!-- <h3>Welcome to CDR Application...</h3> -->
-			<div >
-<h1 class="" style="font-size:22px; color:#960;">Please select the application to get Batch History Details.</h1></div></br>
+		<div >
+			<h1 class="" style="font-size:22px; color:#960;">Please select the application to get Batch History Details.</h1>
+		</div></br>
 		
 	</div>
 
 	<div ng-show="welcomeMsg">
-
 		<div>
 			<div class="bs-component">
 				<div class="col-xs-12">
-<h1 class="pull-left" style="font-size:22px; color:#960;">Batch History</h1></div></br>
-					<form name='myform'>
-						<div>
+					<h1 class="pull-left" style="font-size:22px; color:#960;">Batch History</h1>
+				</div></br>
+				<form name='myform'>
+					<div>
 						<div class="slinputtext ">
-    <i class="fa fa-search left-icon"></i> 
-    <input class="pull-left textbox" required ng-model="search" placeholder="Enter search term"  ng-change="hideChildTable()"/> 
-    <i class="fa fa-close right-icon" ng-click="resetParent()"></i>
-</div>
-					
-						
-							<div class="col-xs-4 pull-right">
-								<label for="search">Record(s) per page</label> <input type="number"
-									min="1" max="100" class="textboxNumber" ng-model="pageSize">
-								<button class="btn btn-warning btn-sm dropdown-toggle"
-									data-toggle="dropdown">
+  						 	<i class="fa fa-search left-icon"></i> 
+						    <input class="pull-left textbox" required ng-model="search" placeholder="Enter search term"  ng-change="hideChildTable()"/> 
+						    <i class="fa fa-close right-icon" ng-click="resetParent()"></i>
+						</div>
+						<div class="col-xs-5 pull-right">
+							<label for="search">Record(s) per page</label> 
+								<input type="number"	min="1" max="100" class="textboxNumber" ng-model="pageSize">
+								<button class="btn btn-warning btn-sm dropdown-toggle"	data-toggle="dropdown">
 									<i class="fa fa-bars"></i> Export Table Data
 								</button>
 								<ul class="dropdown-menu " role="menu">
@@ -81,16 +77,16 @@
 										onClick="$('#parentId').tableExport({tableName:'BatchHistory',type:'excel',escape:'false'});">
 											<img src='./export/images/xls.png' width='24px'> XLS
 									</a></li>
-
-
 								</ul>
-							</div>
+								
+							<button type="submit" class="btn btn-success" ng-click="doUpload()">Upload</button>
+					
 						</div>
-
-					</form>
-
-				</div>
+						
+					</div>
+				</form>
 			</div>
+		</div>
 		
 			<table class="table" id="parentId">
 				<thead>
@@ -122,8 +118,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr 
-                      ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
+					<tr ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
 						dir-paginate="obj in filtered =(batchDetailsResult|filter:search)|orderBy:sortParent:reverse|itemsPerPage: pageSize"
 						current-page="currentPage" pagination-id="original" >
 						<td> <a title="click here Show Batch History Details" scroll-on-click class="button-link" ui-sref="."
@@ -144,7 +139,7 @@
 			<dir-pagination-controls class="pull-left" max-size="10"
 				direction-links="true" boundary-links="true"
 				pagination-id="original">
-		</div>
+	</div>
 
 		<div id="tablenodata"
 			ng-show=" batchDetailsResult =='null'||  batchDetailsResult =='undefined' ||  batchDetailsResult.length==0">
@@ -155,83 +150,71 @@
 			record(s) out of ({{batchDetailsResult.length }}) entries</div>
 
 		<div class="customRow"></div>
-		<div class="form-group" id="upload" ng-show="batchDetailsResult !='undefined' && batchDetailsResult.length>=0">
+		<!-- <div class="form-group" id="upload" ng-show="batchDetailsResult !='undefined' && batchDetailsResult.length>=0">
 			<div class="col-sm-offset-2 col-sm-10">
-			<!-- 	<button type="submit" class="btn btn-primary ng-binding"
-					ng-click="doReverse()">Reverse</button> -->
+				<button type="submit" class="btn btn-primary ng-binding"
+					ng-click="doReverse()">Reverse</button>
 				<button type="submit" class="btn btn-success" ng-click="doUpload()">Upload</button>
 			</div>
 			<div>ETL Possible Status [ 
-        
-   N= <span style="color:#7B68EE;font-weight:bold">New</span>,
-   P= <span style="color:#00CED1;font-weight:bold">In Progress</span>,
-   Y= <span style="color:#2E8B57;font-weight:bold">ETL Processed</span>,
-   X=  <span style="color:#FF0000;font-weight:bold">No Longer Required</span>
-     ]</div>
-		</div>
+        				 N= <span style="color:#7B68EE;font-weight:bold">New</span>,
+   						 P= <span style="color:#00CED1;font-weight:bold">In Progress</span>,
+ 						 Y= <span style="color:#2E8B57;font-weight:bold">ETL Processed</span>,
+  						 X=  <span style="color:#FF0000;font-weight:bold">No Longer Required</span>]
+  				</div>
+		</div> -->
 
 		<div class="customRow"></div>
 		<div ng-show="checkStatus">
 						<div class="col-xs-12">
 <h1 class="pull-left" style="font-size:22px; color:#960;">Batch History Details</h1></div></br>
 		
-			<div class="bs-component">
-
-
-				<form name='myformChild'>
-					<div>
-<div class="slinput">
-    <i class="fa fa-search left-icon"></i> 
-    <input class="pull-left textbox" required ng-model="searchBatch" placeholder="Enter search term"  /> 
-    <i class="fa fa-close right-icon" ng-click="resetChild()"></i>
-</div>				<!-- <div class="col-xs-4 pull-left">
-							  <span class="icon pull-left"><i class="fa fa-search"></i></span><input type="text"
-								required ng-model="searchBatch" class="pull-left textbox" placeholder="Enter search term"> <a
-								class="pull-left close-icon" href=""  ng-click="resetChild()">X</a>
-							
-						</div> -->
-
-
-						<div class="col-xs-4 pull-right">
-							<label for="search">Record(s) per page</label> <input type="number"
-								min="1" max="100" class="textboxNumber" ng-model="pageSizetest">
-							<button class="btn btn-warning btn-sm dropdown-toggle"
-								data-toggle="dropdown">
-								<i class="fa fa-bars"></i> Export Table Data
-							</button>
-							<ul class="dropdown-menu " role="menu">
-								<li class="divider"></li>
-								<li><a uisref="{{'.'}}"
-									onClick="generatePdf('childTable');">
-										<img src='./export/images/pdf.png' width='24px'> PDF
-								</a></li>
-								<li><a uisref="{{'.'}}"
-									onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'doc',escape:'false'});">
-										<img src='./export/images/word.png' width='24px'> Word
-								</a></li>
-								<li class="divider"></li>
-								<li><a uisref="{{'.'}}"
-									onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'csv',escape:'false'});">
-										<img src='./export/images/csv.png' width='24px'> CSV
-								</a></li>
-								<li><a uisref="{{'.'}}"
-									onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'excel',escape:'false'});">
-										<img src='./export/images/xls.png' width='24px'> XLS
-								</a></li>
-
-
-							</ul>
-						</div>
-					</div>
-
-				</form>
-
-			</div>
-
-			<table class="table" id="childTable">
+<div class="bs-component">
+  <form name='myformChild'>
+	<div>
+		<div class="slinput">
+		    <i class="fa fa-search left-icon"></i> 
+		    <input class="pull-left textbox" required ng-model="searchBatch" placeholder="Enter search term"  /> 
+		    <i class="fa fa-close right-icon" ng-click="resetChild()"></i>
+		</div>				
+		<!-- <div class="col-xs-4 pull-left">
+				<span class="icon pull-left"><i class="fa fa-search"></i></span><input type="text"
+				required ng-model="searchBatch" class="pull-left textbox" placeholder="Enter search term">
+				<a class="pull-left close-icon" href=""  ng-click="resetChild()">X</a>
+			 </div> -->
+		<div class="col-xs-4 pull-right">
+			<label for="search">Record(s) per page</label> <input type="number"	min="1" max="100" class="textboxNumber" ng-model="pageSizetest">
+				<button class="btn btn-warning btn-sm dropdown-toggle"	data-toggle="dropdown">
+					<i class="fa fa-bars"></i> Export Table Data
+				</button>
+				<ul class="dropdown-menu " role="menu">
+					<li class="divider"></li>
+					<li><a uisref="{{'.'}}"	onClick="generatePdf('childTable');">
+							<img src='./export/images/pdf.png' width='24px'> PDF
+						</a>
+					</li>
+					<li><a uisref="{{'.'}}"	onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'doc',escape:'false'});">
+							<img src='./export/images/word.png' width='24px'> Word
+						</a>
+					</li>
+					<li class="divider"></li>
+					<li><a uisref="{{'.'}}"	onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'csv',escape:'false'});">
+							<img src='./export/images/csv.png' width='24px'> CSV
+						</a>
+					</li>
+					<li><a uisref="{{'.'}}"	onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'excel',escape:'false'});">
+							<img src='./export/images/xls.png' width='24px'> XLS
+						</a>
+					</li>
+				</ul>
+		</div>
+	</div>
+  </form>
+</div>
+	<table class="table" id="childTable">
 				<thead>
 					<tr>
-						<th ng-click="sortBatch('folderCaption')">Folder Name <span
+						<th ng-click="sortBatch('folderCaption')">Display Name <span
 							class="glyphicon sort-icon"
 							ng-class="{'glyphicon-chevron-up':reverseBatch,'glyphicon-chevron-down':!reverseBatch}"></span>
 						</th>
@@ -239,7 +222,7 @@
 							class="glyphicon sort-icon"
 							ng-class="{'glyphicon-chevron-up':reverseBatch,'glyphicon-chevron-down':!reverseBatch}"></span>
 						</th>
-						<th ng-click="sortBatch('batchFileTrgtPath')">File Path <span
+						<th ng-click="sortBatch('batchFileTrgtPath')">Destination File Path <span
 							class="glyphicon sort-icon"
 							ng-class="{'glyphicon-chevron-up':reverseBatch,'glyphicon-chevron-down':!reverseBatch}"></span>
 						</th>
@@ -288,7 +271,7 @@
         </div>
       </div>
     </div>
-	</div>
+</div>
 	<script>  function generatePdf(tableId) {
         var doc = new jsPDF('l', 'pt', 'a4');
         // doc.text("From HTML", 40, 50);

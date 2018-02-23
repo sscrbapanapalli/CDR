@@ -245,11 +245,11 @@
 					<tr ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
 						ng-repeat="folderObj in appFolderDetails" >
 						
-						<td><input type="text" value="{{folderObj.folderCaption}}" ng-model="folderObj.folderCaption" /></td>
-			            <td><input type="text" value="{{folderObj.fileNamePrefix}}" ng-model="folderObj.fileNamePrefix" /></td>
-			            <td><input type="text" value="{{folderObj.validationType}}" ng-model="folderObj.validationType" /></td>
-			            <td><input type="text" value="{{folderObj.fileTrgtPath}}" ng-model="folderObj.fileTrgtPath" /></td>
-			            <td><input type="text" value="{{folderObj.fileAckPath}}"  ng-model="folderObj.fileAckPath"/></td>
+						<td><input type="text" value="{{folderObj.folderCaption}}" 	ng-model="folderObj.folderCaption" 	 required/></td>
+			            <td><input type="text" value="{{folderObj.fileNamePrefix}}" ng-model="folderObj.fileNamePrefix"	 required/></td>
+			            <td><input type="text" value="{{folderObj.validationType}}" ng-model="folderObj.validationType"	 required/></td>
+			            <td><input type="text" value="{{folderObj.fileTrgtPath}}" 	ng-model="folderObj.fileTrgtPath"	 required/></td>
+			            <td><input type="text" value="{{folderObj.fileAckPath}}"  	ng-model="folderObj.fileAckPath"	 required/></td>
 			           <!--  <td><input type="text" value="{{folderObj.createdBy}}"  /></td> -->
 			           
 						

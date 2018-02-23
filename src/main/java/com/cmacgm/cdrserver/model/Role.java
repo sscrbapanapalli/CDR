@@ -33,9 +33,9 @@ public class Role {
     private String createdBy;
     @Column(name="updated_by",length = 100)
     private String updatedBy;  
-    @ManyToMany(mappedBy = "roles")
+   /* @ManyToMany(mappedBy = "roles")
     @JsonBackReference
-    private Collection<User> users;  
+    private Collection<User> users;  */
   
     public Role() {
         super();
@@ -104,13 +104,13 @@ public class Role {
 		this.updatedBy = updatedBy;
 	}
 
-	public Collection<User> getUsers() {
+	/*public Collection<User> getUsers() {
         return users;
     }
 
     public void setUsers(final Collection<User> users) {
         this.users = users;
-    }    
+    }  */  
 
     @Override
     public int hashCode() {

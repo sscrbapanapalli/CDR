@@ -9,7 +9,7 @@
 }
      div.box {
 		height: 400px;
-		width: 600px;
+		width: 800px;
 		border: 1px  ;
 		align: center;
 		background: #fbf2b7;
@@ -57,6 +57,19 @@
 
 
 </style>
+<!-- <script>
+function myFunction() {
+    var checkBox = document.getElementById("userStatus");
+    
+    if (userStatus == true){
+        text2.style.display = "block";
+        text1.style.display = "none";
+    } else if(userStatus == false){
+    	text1.style.display = "block";
+      	 text2.style.display = "none";
+    }
+}
+</script> -->
 
 <div ng-controller="loginController" ng-init="init()">
 	<div class="overall" >
@@ -92,26 +105,150 @@
 <div ng-controller="settingsController" ng-init="init()">
 
 <div> <h1  style="font-size:22px; color:#960;">User Access Configuration</h1></div></br>
+
+<div class="bs-component">
+<table class="table" id="parentId">
+				<thead>
+					<tr>
+						<th ng-click="sort('userName')">User Name
+						 <!-- <span	class="glyphicon sort-icon"	ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+						</th>
+						<!-- <th ng-click="sort('batchUploadCrDate')">Roles <span
+							class="glyphicon sort-icon"
+							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+						</th>
+						<th ng-click="sort('batchUploadStatus')">Applications <span
+							class="glyphicon sort-icon"
+							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+						</th> -->
+						<th ng-click="sort('activeIndicator')"> Enable Status
+						<!-- <span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+						</th>
+						<th>Applications</th>
+						<th>Roles</th>
+						<th></th>
+						
+						
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
+						ng-repeat="obj in allUserDetails"
+						 >
+						<td> {{obj.userName}}</td>
+      					<td>{{obj.activeIndicator}}</td>  
+      					<td><a ng-repeat="apps in obj.applications">{{apps.appName}},&nbsp</a></td>
+      					<td><a ng-repeat="roles in obj.roles">{{roles.roleName}},&nbsp</a></td>
+      					<td class="pull-middle">
+   						 <button type="submit" class="btn btn-primary" ng-click = "userUpdate(obj.id,'updateUser')">Update</button>
+			   			 <button type="submit" class="btn btn-failure" ng-click = "userDelete(obj.id,obj.userName)">Delete</button>
+						</td>
+					</tr>
+				</tbody>
+				
+			</table>
+
+</div>
+
+
    <div class="box" >
    	<div class="main" >
    		<form class="form-horizontal" >
-		 
-		 <div class="form-group" >
+		 	<div class="form-group" >
 				<div class="control-label col-sm-4" >User Id</div>
 				<div class="col-sm-5" tooltip="ex:SSC.ABC@CMA-CGM.com" align="left">
-					<input  type="text" name="userName" id="userName" ng-model="userName"  />
+					<input  type="email" size="35" name="userId" id="userId" ng-model="userId" ng-blur="checkUser()"  ng-disabled="inputReadOnly" required />
+					
 				</div>
-		</div>
-		<div class="form-group" >
-				<div class="control-label col-sm-4" >User Role</div>
-				<div class="col-sm-5"  align="left">
-					<select class="multiselect" data-placeholder="Select User Roles" 
-			     		 ng-model="userRole" ng-options="role.id as role.roleName for role in allRoles"
-			     		 multiple="multiple" multiselect-dropdown >
-			 		</select>
+				<div><a ng-if="userExists" > User Already Exist</a></div>
+			</div>
+			<div class="form-group" >
+				<div class="control-label col-sm-4" >Role Name</div>
+				<div class="col-sm-5" style="float:left;" align="left">
+					<div style="width:40%;float:left" align="left">
+						<label align="right">Available</label>
+						
+						<select size="5" multiple ng-model="userRole" ng-options="role as role.roleName for role in allRoles" style="width: 120px"></select>         
+						
+						
+						<!-- <select size="5" class="multiselect" data-placeholder="Select User Roles" 
+			     			 ng-model="userRole" ng-options="role.id as role.roleName for role in allRoles"
+			     			 multiple="multiple" multiselect-dropdown >
+			 			</select> -->
+			 		</div>
+			 		
+			 		<div style="width:20%;float:left;padding-top:45px;padding-right:20px;padding-left:20px" align="right">
+			 			<div>
+			 			<a  class="btn btn-info btn-lg" ng-click="moveItem(userRole, allRoles,userRoles)" style="width:25px; height:20px;display:block;padding:0px">
+				        	  <span class="glyphicon glyphicon-arrow-right" ></span> 
+				        </a>
+				        </div>
+				        <div style="padding-top:20px">
+			 			<a  class="btn btn-info btn-lg" ng-click="moveItem(userSelectedRole,userRoles, allRoles)" style="width:25px; height:20px;display:block;padding:0px">
+				        	  <span class="glyphicon glyphicon-arrow-left" ></span> 
+				        </a>
+				        </div>
+			 		</div>
+			 		
+			 		<div style="width:40%;float:left" align="left">
+			 			<label align="right">Selected</label>
+			 			
+			 			<select size="5" multiple ng-model="userSelectedRole" ng-options="userRole as userRole.roleName for userRole in userRoles" style="width: 120px"></select>
+   
+			 			
+						<!-- <select size="5" class="multiselect" data-placeholder="Select User Roles" 
+			     			 ng-model="userSelectedRole" ng-options="userRole.id as userRole.roleName for userRole in userRoles"
+			     			 multiple="multiple" multiselect-dropdown >
+			 			</select> -->
+			 		</div>	
 				</div>
-		</div>
-		<div class="form-group" >
+			
+				
+			</div>
+			<div class="form-group" >
+				<div class="control-label col-sm-4" >Application Name</div>
+				<div class="col-sm-5" style="float:left;" align="left">
+					<div style="width:40%;float:left" align="left">
+						<label align="right">Available</label>
+						
+						<select size="5" multiple ng-model="availApplication" ng-options="app as app.appName for app in allApplications" style="width: 120px"></select>         
+						
+						
+						<!-- <select size="5" class="multiselect" data-placeholder="Select User Roles" 
+			     			 ng-model="userRole" ng-options="role.id as role.roleName for role in allRoles"
+			     			 multiple="multiple" multiselect-dropdown >
+			 			</select> -->
+			 		</div>
+			 		
+			 		<div style="width:20%;float:left;padding-top:45px;padding-right:20px;padding-left:20px" align="right">
+			 			<div>
+			 			<a  class="btn btn-info btn-lg" ng-click="moveItem(availApplication, allApplications, userApplications)" style="width:25px; height:20px;display:block;padding:0px">
+				        	  <span class="glyphicon glyphicon-arrow-right" ></span> 
+				        </a>
+				        </div>
+				        <div style="padding-top:20px">
+			 			<a  class="btn btn-info btn-lg" ng-click="moveItem(selectedApplication,userApplications, allApplications)" style="width:25px; height:20px;display:block;padding:0px">
+				        	  <span class="glyphicon glyphicon-arrow-left" ></span> 
+				        </a>
+				        </div>
+			 		</div>
+			 		
+			 		<div style="width:40%;float:left" align="left">
+			 			<label align="right">Selected</label>
+			 			
+			 			<select size="5" multiple ng-model="selectedApplication" ng-options="app as app.appName for app in userApplications" style="width: 120px"></select>
+   
+			 			
+						<!-- <select size="5" class="multiselect" data-placeholder="Select User Roles" 
+			     			 ng-model="userSelectedRole" ng-options="userRole.id as userRole.roleName for userRole in userRoles"
+			     			 multiple="multiple" multiselect-dropdown >
+			 			</select> -->
+			 		</div>	
+				</div>
+				
+				
+			</div>
+			<!-- <div class="form-group" >
 				<div class="control-label col-sm-4" >Application Name</div>
 				<div class="col-sm-5" align="left">
 					<select class="multiselect" data-placeholder="Select Application"  
@@ -119,15 +256,44 @@
 		        		  multiple="multiple" multiselect-dropdown >
 			   	    </select>
 				</div>
-		</div>
-		
-   		 <div>&nbsp</div>
-   		 <div class="pull-middle">
-   		 <button type="submit" class="btn btn-success" ng-click = "userConfig()">Submit</button>
-			    </div>
+			</div> -->
+			<div class="form-group">
+				<div class="control-label col-sm-4" >User Enable</div>
+				<div class="col-sm-5" align="left">
+					<input type="checkbox" id="userStatus" ng-model="userStatus" onclick="myFunction()" ng-checked="{{userStatus}}" >
+				</div>
+				<div class="col-sm-4"  align="right" ><p align="left">(Check the box to enable User)</p></div>
+			</div>
+			
+			
+			
+   			<div class="pull-middle">
+   				 <button type="submit" class="btn btn-primary" ng-click = "Reset()">Reset</button>
+   				 <button type="submit" class="btn btn-success" ng-click = "userConfig()">Submit</button>
+			</div>
    		 </form>
    	
-		 </div> 
-   		</div>
+	</div> 
+   </div>
+   
+   <div id="confirmation-dialog">
+      <div class="modal fade confirmation-dialog" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">{{confirmationDialogConfig.title}}</h4>
+            </div>
+            <div class="modal-body">
+              <div class="span5">{{confirmationDialogConfig.message +"  User: "+confirmationDialogConfig.userName}}</div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" ng-repeat="button in confirmationDialogConfig.buttons" ng-click="confirmUserDelete(confirmationDialogConfig.id)" class="btn btn-primary">{{button.label}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
 </div>
 
