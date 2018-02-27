@@ -2592,7 +2592,7 @@ th {
 
 .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th,
 	.table>thead>tr>td, .table>thead>tr>th {
-	padding: 8px;
+	/* padding: 8px; */ 					/*  My change for admin screen table */ 
 	line-height: 1.42857143;
 	vertical-align: top;
 	border-top: 1px solid #ddd
@@ -3312,7 +3312,7 @@ select[multiple].form-group-lg .form-control, textarea.form-group-lg .form-contr
 
 .btn {
 	display: inline-block;
-	padding: 6px 12px;
+	padding: 3px 6px;								/*  My change for admin screen table */ 
 	margin-bottom: 0;
 	font-size: 14px;
 	font-weight: 400;

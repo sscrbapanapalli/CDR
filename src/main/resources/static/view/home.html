@@ -9,7 +9,7 @@
 					<span class="divider"></span>
 				</li>
 				<li ng-repeat="application in applications">
-					<a ui-sref="app({appId: application.id})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a>
+					<a ui-sref="app({appId: application.id,appName:application.appName})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a>
 					<span class="divider"></span>
 				</li>
 				
@@ -43,7 +43,7 @@
 		<div>
 			<div class="bs-component">
 				<div class="col-xs-12">
-					<h1 class="pull-left" style="font-size:22px; color:#960;">Batch History</h1>
+					<h1 class="pull-left" style="font-size:22px; color:#960;">Batch History - {{selectedAppName}}</h1>
 				</div></br>
 				<form name='myform'>
 					<div>
@@ -149,7 +149,7 @@
 		<div ng-show="batchDetailsResult !='undefined' && batchDetailsResult.length>=0" class="pull-right">Filtered : ({{ filtered.length }})
 			record(s) out of ({{batchDetailsResult.length }}) entries</div>
 
-		<div class="customRow"></div>
+		<!-- <div class="customRow"></div> -->
 		<!-- <div class="form-group" id="upload" ng-show="batchDetailsResult !='undefined' && batchDetailsResult.length>=0">
 			<div class="col-sm-offset-2 col-sm-10">
 				<button type="submit" class="btn btn-primary ng-binding"
@@ -166,91 +166,91 @@
 
 		<div class="customRow"></div>
 		<div ng-show="checkStatus">
-						<div class="col-xs-12">
-<h1 class="pull-left" style="font-size:22px; color:#960;">Batch History Details</h1></div></br>
-		
-<div class="bs-component">
-  <form name='myformChild'>
-	<div>
-		<div class="slinput">
-		    <i class="fa fa-search left-icon"></i> 
-		    <input class="pull-left textbox" required ng-model="searchBatch" placeholder="Enter search term"  /> 
-		    <i class="fa fa-close right-icon" ng-click="resetChild()"></i>
-		</div>				
-		<!-- <div class="col-xs-4 pull-left">
-				<span class="icon pull-left"><i class="fa fa-search"></i></span><input type="text"
-				required ng-model="searchBatch" class="pull-left textbox" placeholder="Enter search term">
-				<a class="pull-left close-icon" href=""  ng-click="resetChild()">X</a>
-			 </div> -->
-		<div class="col-xs-4 pull-right">
-			<label for="search">Record(s) per page</label> <input type="number"	min="1" max="100" class="textboxNumber" ng-model="pageSizetest">
-				<button class="btn btn-warning btn-sm dropdown-toggle"	data-toggle="dropdown">
-					<i class="fa fa-bars"></i> Export Table Data
-				</button>
-				<ul class="dropdown-menu " role="menu">
-					<li class="divider"></li>
-					<li><a uisref="{{'.'}}"	onClick="generatePdf('childTable');">
-							<img src='./export/images/pdf.png' width='24px'> PDF
-						</a>
-					</li>
-					<li><a uisref="{{'.'}}"	onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'doc',escape:'false'});">
-							<img src='./export/images/word.png' width='24px'> Word
-						</a>
-					</li>
-					<li class="divider"></li>
-					<li><a uisref="{{'.'}}"	onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'csv',escape:'false'});">
-							<img src='./export/images/csv.png' width='24px'> CSV
-						</a>
-					</li>
-					<li><a uisref="{{'.'}}"	onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'excel',escape:'false'});">
-							<img src='./export/images/xls.png' width='24px'> XLS
-						</a>
-					</li>
-				</ul>
-		</div>
-	</div>
-  </form>
-</div>
-	<table class="table" id="childTable">
-				<thead>
-					<tr>
-						<th ng-click="sortBatch('folderCaption')">Display Name <span
-							class="glyphicon sort-icon"
-							ng-class="{'glyphicon-chevron-up':reverseBatch,'glyphicon-chevron-down':!reverseBatch}"></span>
-						</th>
-						<th ng-click="sortBatch('batchFileName')">File Name <span
-							class="glyphicon sort-icon"
-							ng-class="{'glyphicon-chevron-up':reverseBatch,'glyphicon-chevron-down':!reverseBatch}"></span>
-						</th>
-						<th ng-click="sortBatch('batchFileTrgtPath')">Destination File Path <span
-							class="glyphicon sort-icon"
-							ng-class="{'glyphicon-chevron-up':reverseBatch,'glyphicon-chevron-down':!reverseBatch}"></span>
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-click='selectRecordRow($index)'
-						ng-class-odd="ClassOddChild($index)"
-						ng-class-even="ClassEvenChild($index)"
-						dir-paginate="obj1 in filteredChild=(batchFileslist| filter:searchBatch)|orderBy:sortChild:reverseBatch| itemsPerPage: pageSizetest "
-						pagination-id="copy">
-						<td>{{obj1.folderCaption}}
-						<td>{{obj1.batchFileName}}</td>
-						<td href="">{{obj1.batchFileTrgtPath}}</td>
-					</tr>
-				</tbody>
-			</table>
-
-			<dir-pagination-controls boundary-links="true" class="pull-left"
-				pagination-id="copy"></dir-pagination-controls>
-
-			<div id="tablenodata"
-				ng-show=" batchFileslist =='null'||  batchFileslist =='undefined' ||  batchFileslist.length==0">
-				<div>No Record Found.</div>
-
-			</div>
-			<div ng-show="batchFileslist !='undefined' && batchFileslist.length>=0"  class="pull-right">Filtered : ({{ filteredChild.length }})
-				record(s) out of ({{batchFileslist.length }}) entries</div>
+			<div class="col-xs-12">
+				<h1 class="pull-left" style="font-size:18px; color:#333;">Batch History Details - {{selectedAppName}}</h1></div>
+						
+				<div class="bs-component">
+				  <form name='myformChild'>
+					<div>
+						<div class="slinput">
+						    <i class="fa fa-search left-icon"></i> 
+						    <input class="pull-left textbox" required ng-model="searchBatch" placeholder="Enter search term"  /> 
+						    <i class="fa fa-close right-icon" ng-click="resetChild()"></i>
+						</div>				
+						<!-- <div class="col-xs-4 pull-left">
+								<span class="icon pull-left"><i class="fa fa-search"></i></span><input type="text"
+								required ng-model="searchBatch" class="pull-left textbox" placeholder="Enter search term">
+								<a class="pull-left close-icon" href=""  ng-click="resetChild()">X</a>
+							 </div> -->
+						<div class="col-xs-4 pull-right">
+							<label for="search">Record(s) per page</label> <input type="number"	min="1" max="100" class="textboxNumber" ng-model="pageSizetest">
+								<button class="btn btn-warning btn-sm dropdown-toggle"	data-toggle="dropdown">
+									<i class="fa fa-bars"></i> Export Table Data
+								</button>
+								<ul class="dropdown-menu " role="menu">
+									<li class="divider"></li>
+									<li><a uisref="{{'.'}}"	onClick="generatePdf('childTable');">
+											<img src='./export/images/pdf.png' width='24px'> PDF
+										</a>
+									</li>
+									<li><a uisref="{{'.'}}"	onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'doc',escape:'false'});">
+											<img src='./export/images/word.png' width='24px'> Word
+										</a>
+									</li>
+									<li class="divider"></li>
+									<li><a uisref="{{'.'}}"	onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'csv',escape:'false'});">
+											<img src='./export/images/csv.png' width='24px'> CSV
+										</a>
+									</li>
+									<li><a uisref="{{'.'}}"	onClick="$('#childTable').tableExport({tableName:'BatchHistoryDetail',type:'excel',escape:'false'});">
+											<img src='./export/images/xls.png' width='24px'> XLS
+										</a>
+									</li>
+								</ul>
+						</div>
+					</div>
+				  </form>
+				</div>
+					<table class="table" id="childTable">
+								<thead>
+									<tr>
+										<th ng-click="sortBatch('folderCaption')">Display Name <span
+											class="glyphicon sort-icon"
+											ng-class="{'glyphicon-chevron-up':reverseBatch,'glyphicon-chevron-down':!reverseBatch}"></span>
+										</th>
+										<th ng-click="sortBatch('batchFileName')">File Name <span
+											class="glyphicon sort-icon"
+											ng-class="{'glyphicon-chevron-up':reverseBatch,'glyphicon-chevron-down':!reverseBatch}"></span>
+										</th>
+										<th ng-click="sortBatch('batchFileTrgtPath')">Destination File Path <span
+											class="glyphicon sort-icon"
+											ng-class="{'glyphicon-chevron-up':reverseBatch,'glyphicon-chevron-down':!reverseBatch}"></span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-click='selectRecordRow($index)'
+										ng-class-odd="ClassOddChild($index)"
+										ng-class-even="ClassEvenChild($index)"
+										dir-paginate="obj1 in filteredChild=(batchFileslist| filter:searchBatch)|orderBy:sortChild:reverseBatch| itemsPerPage: pageSizetest "
+										pagination-id="copy">
+										<td>{{obj1.folderCaption}}
+										<td>{{obj1.batchFileName}}</td>
+										<td href="">{{obj1.batchFileTrgtPath}}</td>
+									</tr>
+								</tbody>
+					</table>
+				
+							<dir-pagination-controls boundary-links="true" class="pull-left"
+								pagination-id="copy"></dir-pagination-controls>
+				
+							<div id="tablenodata"
+								ng-show=" batchFileslist =='null'||  batchFileslist =='undefined' ||  batchFileslist.length==0">
+								<div>No Record Found.</div>
+				
+							</div>
+							<div ng-show="batchFileslist !='undefined' && batchFileslist.length>=0"  class="pull-right">Filtered : ({{ filteredChild.length }})
+								record(s) out of ({{batchFileslist.length }}) entries</div>
 
 		</div>
 <div id="confirmation-dialog">

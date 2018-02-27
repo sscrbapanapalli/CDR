@@ -25,7 +25,7 @@
 		border: 1px  ;
 		align: center;
 		background: #fbf2b7;
-		padding: 50px 0;
+		padding: 10px 0;
 		 top: 20%;
   		bottom: 30%;
   		left: 15%;
@@ -80,7 +80,7 @@
 					<span class="divider"></span>
 				</li>
 				<li ng-repeat="application in applications">
-					<a ui-sref="app({appId: application.id})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a>
+					<a ui-sref="app({appId: application.id,appName:application.appName})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a>
 					<span class="divider"></span>
 				</li>
 				
@@ -103,29 +103,47 @@
 
 <div ng-controller="appSettingsController" ng-init="init()">
 
-<div> <h1  style="font-size:22px; color:#960;">Application Configuration</h1></div></br>
-<div class="col-xs-2 pull-right" ng-show="viewApplication">
+<div> <h1  style="font-size:22px; color:#960;" align="left" >Application Configuration</h1></div>
+
+<div>
+	<div>
+		<div class="bs-component">
+			<form name='myform'>
+				<div>
+					<div class="slinputtext ">
+  						 	<!-- <i class="fa fa-search left-icon"></i>  -->
+						    <input class="pull-left textbox" required ng-model="search" placeholder="Enter search term"  /> 
+						   <!--  <i class="fa fa-close right-icon" ng-click="resetParent()"></i> -->
+					</div>
+					<div class=" pull-right">
+								<label for="search">Record(s) per page</label> 
+									<input type="number"	min="1" max="100" class="textboxNumber" ng-model="pageSize">
+						</div>
+						<div class="col-xs-2 pull-right" ng-show="viewApplication">
+	<button type="submit" class="btn btn-success" ng-click="addApplication=false;viewApplication=false">Add New Application</button>
+	
+</div>		
+						
+				</div>
+			</form>
+		</div>
+	</div>
+
+<!-- <div class="col-xs-2 pull-right" ng-show="viewApplication">
 	<button type="submit" class="btn btn-success" ng-click="addApplication=false;viewApplication=false">Add New Application</button>
 	&nbsp
-</div>	
+</div>	 -->
 
-<div class="bs-component">
+
 <table class="table" id="parentId">
 				<thead>
 					<tr>
-						<th ng-click="sort('userName')">Application Name
-						 <!-- <span	class="glyphicon sort-icon"	ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+						<th ng-click="sort('appName')">Application Name
+						 <span	class="glyphicon sort-icon"	ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
 						</th>
-						<!-- <th ng-click="sort('batchUploadCrDate')">Roles <span
-							class="glyphicon sort-icon"
-							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
-						</th>
-						<th ng-click="sort('batchUploadStatus')">Applications <span
-							class="glyphicon sort-icon"
-							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
-						</th> -->
+						
 						<th ng-click="sort('activeIndicator')"> Enable Status
-						<!-- <span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+						<span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
 						</th>
 						<th>Created By</th>
 						<th>Updated By</th>
@@ -136,14 +154,14 @@
 				</thead>
 				<tbody>
 					<tr ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
-						ng-repeat="obj in allApplications"
+						dir-paginate="obj in filtered = (allApplications | filter:search) |orderBy:sortKey:reverse | itemsPerPage:pageSize "
 						 >
-						<td>{{obj.appName}}</td>
-      					<td>{{obj.activeIndicator}}</td>  
-      					<td>{{obj.createdBy}}</td>
-      					<td>{{obj.updatedBy}}</td>
+						<td align="left">{{obj.appName}}</td>
+      					<td align="left" class="text-uppercase">{{obj.activeIndicator}}</td>  
+      					<td align="left">{{obj.createdBy}}</td>
+      					<td align="left">{{obj.updatedBy}}</td>
       					<td class="pull-middle">
-   						 <button type="submit" class="btn btn-primary" ng-click = "viewAppDetails(obj.id,obj.appName)">view</button>
+   						 <button type="submit" class="btn btn-primary" ng-click = "viewAppDetails(obj.id,obj.appName)">View</button>
    						 <button type="submit" class="btn btn-success" ng-click = "updateAppDetails(obj.id,obj.appName)">Update</button>
 			   			 <button type="submit" class="btn btn-failure" ng-click = "deleteAppDetails(obj.id,obj.appName)">Delete</button>
 						</td>
@@ -151,42 +169,49 @@
 				</tbody>
 				
 			</table>
+			
+			<div>
+			 	<dir-pagination-controls class="pull-left"
+			       max-size="5"
+			       direction-links="true"
+			       boundary-links="true" >
+	   			 </dir-pagination-controls>
+	   		</div>	 
+			<div id="tablenodata" ng-show=" allApplications =='null'||  allApplications =='undefined' ||  allApplications.length==0">
+				<div>No Record Found.</div>
+			</div>
+			
+			<div  class=" pull-right"ng-show="allApplications !='undefined' && allApplications.length>=0" class="pull-right">Filtered : ({{ filtered.length }})
+							record(s) out of ({{allApplications.length }}) entries
+			</div>
+		
 
 </div>
 
 <!-- -------View Application Details -->
 
-<div ng-show="viewApplication" align="left"> <h1  style="font-size:18px; color:#333;">Application Folder Configuration for - {{appName}}</h1></div></br>
+<div ng-show="viewApplication">
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div  > <h1  style="font-size:18px; color:#333;" align="left" > View Application Folder Configuration for - {{appName}}</h1></div>
 
 <div class="bs-component" ng-show="viewApplication">
 <table class="table" id="">
 				<thead>
 					<tr>
-						<th ng-click="sort('')">Folder Name
-						 <!-- <span	class="glyphicon sort-icon"	ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
-						</th>
-						<!-- <th ng-click="sort('batchUploadCrDate')">Roles <span
-							class="glyphicon sort-icon"
-							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
-						</th>
-						<th ng-click="sort('batchUploadStatus')">Applications <span
-							class="glyphicon sort-icon"
-							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
-						</th> -->
-						<th ng-click="sort('')"> File Name
-						<!-- <span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
-						</th>
-						<th>File Type</th>
+						<th ng-click="sortDetail('folderCaption')">Folder Name 	<span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+						<th ng-click="sortDetail('fileNamePrefix')"> File Name	<span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+						<th>File Type </th>
 						<th>Destination File Path</th>
-						<th>Archive Path</th>
-						<th>Created By</th>
-						<th>Updated By</th>					
+						<th>Archive Path </th>
+						<th ng-click="sortDetail('createdBy')">Created By 		<span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+						<th ng-click="sortDetail('updatedBy')">Updated By 		<span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>					
 						
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
-						ng-repeat="folderObj in appFolderDetails"
+						ng-repeat="folderObj in appFolderDetails | orderBy:sortChild:reverseChild"
 						 >
 						<td>{{folderObj.folderCaption}}</td>
       					<td>{{folderObj.fileNamePrefix}}</td>  
@@ -207,11 +232,15 @@
 		</div>
 
 </div>
-
+</div>
 
 <!-- -------Update Application Details -->
 
-<div ng-show="updateApplication" align="left"> <h1  style="font-size:18px; color:#333;">Application Folder Configuration for - {{appName}}</h1></div></br>
+
+<div ng-show="updateApplication">
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div  align="left"> <h1  style="font-size:18px; color:#333;"> Update Application Folder Configuration for - {{appName}}</h1></div>
 
 <div class="bs-component" ng-show="updateApplication">
 <table class="table" id="">
@@ -271,78 +300,83 @@
 		</div>
 
 </div>
-
+</div>
 <!-- -------Add new Application------ -->
-<div ng-hide="addApplication" ng-hide="updateApplication" align="left"> <h1  style="font-size:18px; color:#333;">Add New Application Folder Configuration</h1></div></br>
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+<div>
+<!-- <div ng-hide="addApplication" align="left"> <h1  style="font-size:18px; color:#333;">Add New Application Folder Configuration</h1></div></br> -->
    <div class="box" ng-hide="addApplication">
    	<div class="main" id="addAppMapping"> 
+   	<div align="left"><a  style="font-size:18px; color:#333;" >Add New Application Folder Configuration</a></div>
+   	<div>&nbsp;</div>
 		 <form class="form-horizontal" >
-		 
-		 <div class="form-group" >
-				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Application Name</label></div>
-				<div class="col-sm-5" align="left">
-					<input  type="text" size="35" name="applicationName" id="applicationName" ng-model="applicationName"  />
-				</div>
-		</div>
-		<div class="form-group" >
-				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Target Path</label></div>
-				<div class="col-sm-5" align="left">
-					<input  type="text" size="35" name="targetPath" id="targetPath" ng-model="targetPath" placeholder="//10.13.44.89/Source/GETPAID/" />
-				</div>
-		</div>
-		<div class="form-group" >
-				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Archive Path</label></div>
-				<div class="col-sm-5" align="left">
-					<input  type="text" size="35" name="archivePath" id="archivePath" ng-model="archivePath" placeholder="//10.13.44.89/Source/GETPAID/Archive/" />
-				</div>
-		</div>
-		<div class="form-group" >
-				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">File Type</label></div>
-				<div class="col-sm-5" align="left">
-					<select class="multiselect" data-placeholder="Select File Type" 
-			     		 ng-model="selectedFileType" ng-options="fileType.type as fileType.type for fileType in fileTypeList"
-			     		 multiple="multiple" multiselect-dropdown >
-			 		</select>
-				</div>
-				
-		</div>
-		<div class="form-group" >
-				<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Folder Mapping</label></div>
-				<div class="col-sm-5" >
-					<table cellpadding="0" cellspacing="0">
-			            <tr>
-			                <th>Display Name</th>
-			                <th>Destination File Name</th>
-			                <th></th>
-			            </tr>
-			            <tbody ng-repeat="m in folderMapping">
-			                <tr>
-			                    <td><input type="text" value="{{m.folderName}}" readonly /></td>
-			                    <td><input type="text" value="{{m.fileName}}" readonly /></td>
-			                    <td><button class="remove"  ng-click="Remove($index)">-</button></td>
-			                    <!-- <td><input type="button" ng-click="Remove($index)" value="Remove" /></td> -->
-			                </tr>
-			            </tbody>
-			            <tfoot>
-			                <tr>
-			                    <td><input type="text" ng-model="folderName" /></td>
-			                    <td><input type="text" ng-model="fileName" /></td>
-			                    <td><input type="button" ng-click="Add()" value="Add" /></td>
-			                </tr>
-			            </tfoot>
-		      		 </table>
-				</div>	
-		</div>
-		<div>&nbsp</div>
-   		 <div class="pull-middle">
-   			 <button type="submit" class="btn btn-primary" ng-click = "Reset()">Reset</button>
-   			 <button type="submit" class="btn btn-success" ng-click = "appConfig()">Submit</button>
-		</div>
+		 	
+		 	<div class="form-group" >
+					<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Application Name</label></div>
+					<div class="col-sm-5" align="left">
+						<input  type="text" size="35" name="applicationName" id="applicationName" ng-model="applicationName"  />
+					</div>
+			</div>
+			<div class="form-group" >
+					<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Target Path</label></div>
+					<div class="col-sm-5" align="left">
+						<input  type="text" size="35" name="targetPath" id="targetPath" ng-model="targetPath" placeholder="//10.13.44.89/Source/GETPAID/" />
+					</div>
+			</div>
+			<div class="form-group" >
+					<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Archive Path</label></div>
+					<div class="col-sm-5" align="left">
+						<input  type="text" size="35" name="archivePath" id="archivePath" ng-model="archivePath" placeholder="//10.13.44.89/Source/GETPAID/Archive/" />
+					</div>
+			</div>
+			<div class="form-group" >
+					<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">File Type</label></div>
+					<div class="col-sm-5" align="left">
+						<select class="multiselect" data-placeholder="Select File Type" 
+				     		 ng-model="selectedFileType" ng-options="fileType.type as fileType.type for fileType in fileTypeList"
+				     		 multiple="multiple" multiselect-dropdown >
+				 		</select>
+					</div>
+					
+			</div>
+			<div class="form-group" >
+					<div class="control-label col-sm-4" ><label style="float:left;padding-left:100px;">Folder Mapping</label></div>
+					<div class="col-sm-5" >
+						<table cellpadding="0" cellspacing="0">
+				            <tr>
+				                <th>Display Name</th>
+				                <th>Destination File Name</th>
+				                <th></th>
+				            </tr>
+				            <tbody ng-repeat="m in folderMapping">
+				                <tr>
+				                    <td><input type="text" value="{{m.folderName}}" readonly /></td>
+				                    <td><input type="text" value="{{m.fileName}}" readonly /></td>
+				                    <td><button class="remove"  ng-click="Remove($index)">-</button></td>
+				                    <!-- <td><input type="button" ng-click="Remove($index)" value="Remove" /></td> -->
+				                </tr>
+				            </tbody>
+				            <tfoot>
+				                <tr>
+				                    <td><input type="text" ng-model="folderName" /></td>
+				                    <td><input type="text" ng-model="fileName" /></td>
+				                    <td><input type="button" ng-click="Add()" value="Add" /></td>
+				                </tr>
+				            </tfoot>
+			      		 </table>
+					</div>	
+			</div>
+			<div>&nbsp</div>
+	   		 <div class="pull-middle">
+	   			 <button type="submit" class="btn btn-primary" ng-click = "Reset()">Reset</button>
+	   			 <button type="submit" class="btn btn-success" ng-click = "appConfig()">Submit</button>
+			</div>
 			    
    		 </form>
    		</div> 
    		</div>
-   		
+ </div>  		
    	<div id="confirmation-dialog">
       <div class="modal fade confirmation-dialog" role="dialog">
         <div class="modal-dialog">

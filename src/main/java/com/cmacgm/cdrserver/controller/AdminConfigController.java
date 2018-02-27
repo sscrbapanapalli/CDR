@@ -2,7 +2,7 @@ package com.cmacgm.cdrserver.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cmacgm.cdrserver.model.Application;
 import com.cmacgm.cdrserver.model.ApplicationConfig;
 import com.cmacgm.cdrserver.model.ApplicationFileUploadConfig;
-import com.cmacgm.cdrserver.model.BatchHistoryDetail;
 import com.cmacgm.cdrserver.model.FolderMapping;
 import com.cmacgm.cdrserver.model.Role;
 import com.cmacgm.cdrserver.model.User;
@@ -80,7 +78,12 @@ public class AdminConfigController {
 	public List<UserHomeModel> getAllUserDetails(){
 		List<User> userResult=userRepository.findAll();
 		List<UserHomeModel> allUserResultList=new ArrayList<>();
+		
 		for(User testObj:userResult){
+			
+			Collection<String> appListObj=new ArrayList<>();
+			Collection<String> roleListObj=new ArrayList<>();
+			
 			UserHomeModel obj=new UserHomeModel();
 			obj.setId(testObj.getId());
 			obj.setUserId(testObj.getUserId());
@@ -91,11 +94,24 @@ public class AdminConfigController {
 			obj.setApplications(testObj.getApplications());
 			obj.setRoles(testObj.getRoles());
 			
+			
+			for(Application appObj:testObj.getApplications()){
+				appListObj.add(appObj.getappName());
+				
+			}
+			for(Role roleObj:testObj.getRoles()){
+				roleListObj.add(roleObj.getRoleName());
+				
+			}
+			obj.setAppList(appListObj);
+			obj.setRoleList(roleListObj);
 			allUserResultList.add(obj);
 			System.out.println("In User all details");
-			/*System.out.println("User testObj"+ ":" + testObj);
-			System.out.println("User obj"+ ":" + obj);
-			*/
+			System.out.println("User testObj"+ ":" + testObj);
+			System.out.println("User obj"+ ":" + obj.getRoles());
+			System.out.println("User appListObj"+ ":" + obj.getAppList());
+			System.out.println("User roleObj"+ ":" + roleListObj);
+			
 		}
 		return allUserResultList;
 	}

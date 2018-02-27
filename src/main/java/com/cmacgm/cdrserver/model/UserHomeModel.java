@@ -13,6 +13,8 @@ public class UserHomeModel {
 	private Date createdDate;
 	private Collection<Application> applications;
 	private Collection<Role> roles;
+	private Collection<String> appList;
+	private Collection<String> roleList;
 	
 	public Collection<Application> getApplications() {
 		return applications;
@@ -28,6 +30,18 @@ public class UserHomeModel {
 	}
 	
 	 
+	public Collection<String> getAppList() {
+		return appList;
+	}
+	public void setAppList(Collection<String> appList) {
+		this.appList = appList;
+	}
+	public Collection<String> getRoleList() {
+		return roleList;
+	}
+	public void setRoleList(Collection<String> roleList) {
+		this.roleList = roleList;
+	}
 	public long getId() {
 		return id;
 	}
@@ -80,6 +94,7 @@ public class UserHomeModel {
 		final StringBuilder builder=new StringBuilder();
 		builder.append("UserHomeModel [applications=").append(applications).append("]").append("[roles=").append(roles).append("]")
 		.append("[activeIndicator=").append(activeIndicator).append("]").append("[id=").append(id).append("]")
+		.append("[appList=").append(appList).append("]").append("[roleList=").append(roleList).append("]")
 		.append("[userName=").append(userName).append("]").append("[userId=").append(userId).append("]")
 		.append("[createdDate=").append(createdDate).append("]").append("[createdBy=").append(createdBy).append("]");
 		return builder.toString();

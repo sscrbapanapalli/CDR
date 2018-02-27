@@ -81,7 +81,7 @@ function myFunction() {
 					<span class="divider"></span>
 				</li>
 				<li ng-repeat="application in applications">
-					<a ui-sref="app({appId: application.id})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a>
+					<a ui-sref="app({appId: application.id,appName:application.appName})" ui-sref-opts="{reload:true}"	>{{application.appName}}</a>
 					<span class="divider"></span>
 				</li>
 				
@@ -104,53 +104,83 @@ function myFunction() {
 
 <div ng-controller="settingsController" ng-init="init()">
 
-<div> <h1  style="font-size:22px; color:#960;">User Access Configuration</h1></div></br>
+	<div> <h1  style="font-size:22px; color:#960;" align="left">User Access Configuration</h1></div>
 
-<div class="bs-component">
-<table class="table" id="parentId">
-				<thead>
-					<tr>
-						<th ng-click="sort('userName')">User Name
-						 <!-- <span	class="glyphicon sort-icon"	ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
-						</th>
-						<!-- <th ng-click="sort('batchUploadCrDate')">Roles <span
-							class="glyphicon sort-icon"
-							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
-						</th>
-						<th ng-click="sort('batchUploadStatus')">Applications <span
-							class="glyphicon sort-icon"
-							ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
-						</th> -->
-						<th ng-click="sort('activeIndicator')"> Enable Status
-						<!-- <span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
-						</th>
-						<th>Applications</th>
-						<th>Roles</th>
-						<th>Actions</th>
-						
-						
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
-						ng-repeat="obj in allUserDetails"
-						 >
-						<td> {{obj.userName}}</td>
-      					<td>{{obj.activeIndicator}}</td>  
-      					<td><a ng-repeat="apps in obj.applications">{{apps.appName}},&nbsp</a></td>
-      					<td><a ng-repeat="roles in obj.roles">{{roles.roleName}},&nbsp</a></td>
-      					<td class="pull-middle">
-   						 <button type="submit" class="btn btn-primary" ng-click = "userUpdate(obj.id,'updateUser')">Update</button>
-			   			 <button type="submit" class="btn btn-failure" ng-click = "userDelete(obj.id,obj.userName)">Delete</button>
-						</td>
-					</tr>
-				</tbody>
-				
-			</table>
+	<div>
+		<div>
+			<div class="bs-component">
+				<form name='myform'>
+					<div>
+						<div class="slinputtext ">
+	  						 	<!-- <i class="fa fa-search left-icon"></i>  -->
+							    <input class="pull-left textbox" required ng-model="search" placeholder="Enter search term"  /> 
+							   <!--  <i class="fa fa-close right-icon" ng-click="resetParent()"></i> -->
+						</div>
+							
+						<div class="pull-right">
+								<label for="search">Record(s) per page</label> 
+									<input type="number"	min="1" max="100" class="textboxNumber" ng-model="pageSize">
+						</div>
+							
+					</div>
+				</form>
+			</div>
+		</div>
 
+		<table class="table" id="parentId">
+			<thead>
+				<tr>
+					<th ng-click="sort('userName')">User Name <span	class="glyphicon sort-icon"	ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+					<th ng-click="sort('activeIndicator')"> Enable Status
+					<span class="glyphicon sort-icon"  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+					<th>Applications</th>
+					<th>Roles</th>
+					<th>Actions</th>
+					
+					
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-class-odd="ClassOdd($index)"  ng-class-even="ClassEven($index)"
+					dir-paginate="obj in filtered= ( allUserDetails | filter:search)| orderBy:sortKey:reverse |itemsPerPage:pageSize"
+					 >
+						<td align="left">{{obj.userName}}</td>
+     					<td align="left" class="text-uppercase">{{obj.activeIndicator}}</td>  
+     					<td align="left">{{obj.appList.join(",")}}</td>
+     					<td align="left">{{obj.roleList.join(",")}}</td>
+     					<td class="pull-middle">
+  						 <button type="submit" class="btn btn-primary" ng-click = "userUpdate(obj.id,'updateUser')">Update</button>
+		   			 <button type="submit" class="btn btn-failure" ng-click = "userDelete(obj.id,obj.userName)">Delete</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		
+			<div class=" pull-left" >
+			 	<dir-pagination-controls
+			       max-size="5"
+			       direction-links="true"
+			       boundary-links="true" >
+	   			 </dir-pagination-controls>
+	   			 &nbsp
+			</div>
+			<div  class="pull-right"ng-show="allUserDetails !='undefined' && allUserDetails.length>=0" class="pull-right">Filtered : ({{ filtered.length }})
+							record(s) out of ({{allUserDetails.length }}) entries
+			</div>
+		
+			
+		
 </div>
 
+<div id="tablenodata"
+			ng-show=" allUserDetails =='null'||  allUserDetails =='undefined' ||  allUserDetails.length==0">
+			<div>No Record Found.</div>
 
+		</div>
+		
+<div>&nbsp </div>
+<div>&nbsp</div>
    <div class="box" >
    	<div class="main" >
    		<form class="form-horizontal" >

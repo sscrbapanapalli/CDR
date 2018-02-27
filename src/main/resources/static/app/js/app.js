@@ -41,7 +41,8 @@ angular.module('cdrApp').config(
 						controllerAs : "homeController",
 						
 					    params: { 
-					    	appId: null,   // can initialise to default value
+					    	appId: null,
+					    	appName: null// can initialise to default value
 					      
 					    },
 						data:{requireLogin:true}
@@ -232,8 +233,9 @@ angular
 										});
 								
 								 var appId = $stateParams.appId
+								 var appName=$stateParams.appName
 									if(appId!=undefined )
-									$scope.batchHistoryDetails(appId);
+									$scope.batchHistoryDetails(appId,appName);
 								
 							};
 							
@@ -241,7 +243,9 @@ angular
 								$scope.selectedIdChild = row;
 							}
 						
-							$scope.batchHistoryDetails = function(appId) {
+							$scope.batchHistoryDetails = function(appId,appName) {
+								$scope.selectedAppName=appName;
+								console.log('appName:' , appName)
 								$scope.selectedId = undefined;
 								$scope.selectedIdChild = undefined;
 								$scope.checkStatus=false;
@@ -526,6 +530,7 @@ angular.module('cdrApp')
 
 angular.module('cdrApp').controller(
 		'settingsController',
+		
 		[
 				'$scope',
 				'$state',
@@ -533,9 +538,9 @@ angular.module('cdrApp').controller(
 				'$window',
 				'$q',
 				'$http',
-				'appConstants','userService','globalServices','AuthenticationService',
-				function($scope, $state, $rootScope, $window, $q, $http,
-						appConstants,userService,globalServices,AuthenticationService) {
+				'appConstants','userService','globalServices','AuthenticationService','$stateParams','anchorSmoothScroll','$location','$filter',
+				function($scope, $state, $rootScope, $window, $q,
+						$http,appConstants,userService,globalServices,AuthenticationService,$stateParams,anchorSmoothScroll,$location,$filter) {
 					$scope.homepageContent = "settings dashboard page";
 					$scope.allUserDetails=[];	
 					//$scope.userStatus="true";
@@ -600,6 +605,13 @@ angular.module('cdrApp').controller(
                         
 							$scope.inituser();
 						}
+					
+					$scope.sort = function(keyname){
+						$scope.sortKey = keyname;   //set the sortKey to the param passed
+						$scope.reverse = !$scope.reverse; //if true make it false and vice versa
+						
+						
+					}
 					$scope.userConfig=function(){
 						
 						var userCongigUrl=appConstants.serverUrl+"/admin/setUserConfiguration/";
@@ -879,6 +891,20 @@ angular.module('cdrApp').controller(
 							
 							
 						});
+						
+					}
+					
+					$scope.sort = function(keyname){
+						$scope.sortKey = keyname;   //set the sortKey to the param passed
+						$scope.reverse = !$scope.reverse; //if true make it false and vice versa
+						
+						
+					}
+					
+					$scope.sortDetail = function(keyname){
+						$scope.sortChild = keyname;   //set the sortKey to the param passed
+						$scope.reverseChild = !$scope.reverseChild; //if true make it false and vice versa
+						
 						
 					}
 					
@@ -1199,7 +1225,7 @@ angular
 									        	 $window.sessionStorage.setItem('currentUser', JSON.stringify(currentUser));				        	
 									        	 $rootScope.currentUser=userService.getCurrentUser();				        	
 										            $rootScope.isProfilePage=true; 
-										            $rootScope.buttonClicked ="welcome! "+$rootScope.currentUser.userName;
+										            $rootScope.buttonClicked ="Welcome! "+$rootScope.currentUser.userName;
 										            $rootScope.showModal = !$rootScope.showModal;
 										            $rootScope.contentColor = "#78b266";
 										           						           	

@@ -41,10 +41,11 @@ public class User {
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     @JsonBackReference
     private Collection<Role> roles;
+    
+    
     @Column(name="user_display_name",length = 100)
     private String userDisplayName;
-    
-    @CreationTimestamp
+   @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name="created_date")
     private Date createdDate;
